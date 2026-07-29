@@ -1,0 +1,504 @@
+/* =========================================================
+   Dexle - game logic
+   ========================================================= */
+
+/* ---------- config ---------- */
+const BUDGET = 10;                       // guesses + hints combined
+const STAGE = ["—", "Base", "Stage 1", "Stage 2"];
+const STAT_NAMES = ["HP","Attack","Defense","Sp. Atk","Sp. Def","Speed"];
+
+const TYPE_COLOR = {
+  normal:"#9FA19F", fire:"#E62829", water:"#2980EF", electric:"#FAC000",
+  grass:"#3FA129", ice:"#3DCEF3", fighting:"#FF8000", poison:"#9141CB",
+  ground:"#915121", flying:"#81B9EF", psychic:"#EF4179", bug:"#91A119",
+  rock:"#AFA981", ghost:"#704170", dragon:"#5060E1", dark:"#50413F",
+  steel:"#60A1B8", fairy:"#EF70EF"
+};
+
+/* ---------- helpers ---------- */
+const $    = id => document.getElementById(id);
+const norm = s  => s.toLowerCase().replace(/[^a-z0-9]/g, "");
+const bst  = p  => p.s.reduce((a, b) => a + b, 0);
+
+const SPRITE = id =>
+  `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${SHINY ? "shiny/" : ""}${id}.png`;
+const ART = id =>
+  `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${SHINY ? "shiny/" : ""}${id}.png`;
+
+/* ---------- state ---------- */
+let DEX     = [];
+let SHINY   = false;
+
+let target  = null;
+let guesses = [];
+let pending = null;        // guess currently shown in the big card
+let over    = false;
+
+let hintsUsed  = 0;
+let hintsTaken = [];
+
+let picked  = null;        // dropdown selection
+let matches = [];
+let cursor  = 0;
+
+const remaining = () => BUDGET - guesses.length - hintsUsed;
+
+/* ---------- load ---------- */
+async function loadDex() {
+  const res = await fetch("pokedex.json");
+  DEX = await res.json();
+  console.log("Loaded", DEX.length, "Pokémon");
+  $("play").disabled = false;
+}
+loadDex();
+
+/* ---------- round control ---------- */
+function newRound() {
+  target  = DEX[Math.floor(Math.random() * DEX.length)];
+  guesses = [];
+  pending = null;
+  over    = false;
+  picked  = null;
+  matches = [];
+
+  hintsUsed  = 0;
+  hintsTaken = [];
+
+  $("start").style.display = "none";
+  $("game").hidden = false;
+
+  $("q").value = "";
+  $("q").disabled = false;
+  $("go").disabled = false;
+  $("q").placeholder = "Type a Pokémon name…";
+  $("searchbar").classList.remove("caught");
+
+  $("inspect").className = "";
+  $("grid").innerHTML    = "";
+  $("hints").innerHTML   = "";
+  $("hintbar").innerHTML = "";
+  $("dexmodal").hidden   = true;
+  $("end").className     = "";
+  $("end").dataset.win   = "";
+
+  drawPips();
+  $("q").focus();
+
+  console.log("Answer:", target.name);   // delete before playing with friends
+}
+
+function drawPips() {
+  const used = guesses.length + hintsUsed;
+  $("pips").innerHTML = Array.from({ length: BUDGET }, (_, i) =>
+    `<div class="pip ${i < used ? "used" : ""}"></div>`).join("");
+  $("left").textContent = remaining();
+  drawHintBar();
+}
+
+/* ---------- autocomplete ---------- */
+function drawList() {
+  const L = $("list");
+  if (!matches.length) { L.className = ""; L.innerHTML = ""; return; }
+
+  L.className = "open";
+  L.innerHTML = matches.map((p, i) => `
+    <div class="opt ${i === cursor ? "sel" : ""}" data-i="${i}">
+      <img src="${SPRITE(p.id)}" alt="" loading="lazy">
+      <span>${p.name}</span>
+      <span class="no">#${String(p.id).padStart(4, "0")}</span>
+    </div>`).join("");
+
+  L.querySelectorAll(".opt").forEach(o => {
+    o.onclick = () => choose(matches[+o.dataset.i]);
+  });
+}
+
+function choose(p) {
+  picked = p;
+  $("q").value = p.name;
+  $("list").className = "";
+  submit();
+}
+
+/* ---------- comparison ---------- */
+function cmp(mine, theirs, tol) {
+  if (mine === theirs) return { c:"hit", a:"✓" };
+  const diff  = Math.abs(mine - theirs);
+  const close = tol != null ? diff <= tol : diff <= Math.max(mine, theirs) * 0.10;
+  return { c: close ? "near" : "", a: theirs > mine ? "↑" : "↓" };
+}
+
+function typeClass(mine, sameSlot, otherSlot) {
+  if (mine === sameSlot) return "hit";                // includes both null
+  if (mine && mine === otherSlot) return "near";
+  return "";
+}
+
+function compare(p) {
+  return {
+    t1:    typeClass(p.t1, target.t1, target.t2),
+    t2:    typeClass(p.t2, target.t2, target.t1),
+    gen:   p.gen === target.gen ? "hit"
+         : Math.abs(p.gen - target.gen) === 1 ? "near" : "",
+    stage: p.stage === target.stage ? "hit" : "",
+    h:     cmp(p.h, target.h),
+    w:     cmp(p.w, target.w),
+    id:    cmp(p.id, target.id, 10),
+    bst:   cmp(bst(p), bst(target)),
+    s:     p.s.map((v, i) => cmp(v, target.s[i])),
+  };
+}
+
+const chip = t => t
+  ? `<span class="type" style="background:${TYPE_COLOR[t]}">${t}</span>`
+  : `<span class="type" style="background:#4A5378">none</span>`;
+
+/* ---------- submitting ---------- */
+function submit() {
+  if (over) return;
+
+  const p = picked || DEX.find(x => norm(x.name) === norm($("q").value));
+  if (!p) { $("q").focus(); return; }
+  if (guesses.some(g => g.id === p.id)) { $("q").value = ""; return; }
+
+  guesses.push(p);
+
+  if (pending) appendRow(pending);   // previous guess drops into history
+  pending = p;
+  showInspect(p);
+
+  drawPips();
+  $("q").value = "";
+  picked  = null;
+  matches = [];
+  $("list").className = "";
+
+  if (p.id === target.id)    finish(true);
+  else if (remaining() <= 0) finish(false);
+  else $("q").focus();
+}
+
+/* ---------- history ---------- */
+function drawHeader() {
+  const cols = ["Guess","Type 1","Type 2","Region","Stage","Height","Weight","Dex #"];
+  const head = document.createElement("div");
+  head.className = "entry head";
+  head.innerHTML =
+    `<div class="row">${cols.map(c => `<div class="cell">${c}</div>`).join("")}</div>`;
+  $("grid").appendChild(head);
+}
+
+function appendRow(p) {
+  if (!$("grid").children.length) drawHeader();
+
+  const r = compare(p);
+  const cell = (cls, inner, i) =>
+    `<div class="cell ${cls}" style="--i:${i}">${inner}</div>`;
+  const stat = (label, val, c, i) =>
+    cell(c.c, `<small>${label}</small>${val}<span class="arrow">${c.a}</span>`, i);
+
+  const entry = document.createElement("div");
+  entry.className = "entry reveal";
+  entry.innerHTML = `
+    <div class="row">
+      <div class="cell name" style="--i:0">
+        <img src="${SPRITE(p.id)}" data-dex="${p.id}" alt="">${p.name}
+      </div>
+      ${cell(r.t1, chip(p.t1), 1)}
+      ${cell(r.t2, chip(p.t2), 2)}
+      ${cell(r.gen, `${p.region}<small>Gen ${p.gen}</small>`, 3)}
+      ${cell(r.stage, STAGE[p.stage], 4)}
+      ${cell(r.h.c, `${p.h} m<span class="arrow">${r.h.a}</span>`, 5)}
+      ${cell(r.w.c, `${p.w} kg<span class="arrow">${r.w.a}</span>`, 6)}
+      ${cell(r.id.c, `#${p.id}<span class="arrow">${r.id.a}</span>`, 7)}
+    </div>
+    <div class="row stats">
+      <div class="cell label">Base stats</div>
+      ${stat("Total", bst(p), r.bst, 8)}
+      ${p.s.map((v, i) => stat(STAT_NAMES[i], v, r.s[i], 9 + i)).join("")}
+    </div>`;
+  const head = $("grid").firstElementChild;
+  $("grid").insertBefore(entry, head.nextElementSibling);
+}
+
+/* ---------- live card ---------- */
+function showInspect(p) {
+  const r = compare(p);
+  const fact = (label, val, cls, arrow) => `
+    <div class="fact ${cls}"><b>${label}</b>
+      <span>${val}${arrow ? `<i class="arrow">${arrow}</i>` : ""}</span>
+    </div>`;
+
+  const types = [p.t1, p.t2].filter(Boolean).map((t, i) =>
+    `<span class="type" style="background:${TYPE_COLOR[t]};margin-right:6px;
+      outline:${(i ? r.t2 : r.t1) === "hit" ? "2px solid var(--hit)" : "none"};
+      outline-offset:2px">${t}</span>`).join("");
+
+  $("inspect").className = "on panel";
+  $("inspect").innerHTML = `
+    <img src="${ART(p.id)}" data-dex="${p.id}" data-art="1" alt="${p.name}">
+    <div style="flex:1; min-width:0">
+      <p class="tag">#${String(p.id).padStart(4,"0")}</p>
+      <h2>${p.name}</h2>
+      <div>${types}<span class="tag">${p.t2 ? "Dual type" : "Single type"}</span></div>
+
+      <div class="facts">
+        ${fact("Type 1", p.t1, r.t1, "")}
+        ${fact("Type 2", p.t2 || "none", r.t2, "")}
+        ${fact("Region", p.region, r.gen, "")}
+        ${fact("Gen", p.gen, r.gen, "")}
+        ${fact("Evolution", STAGE[p.stage], r.stage, "")}
+        ${fact("Height", p.h + " m", r.h.c, r.h.a)}
+        ${fact("Weight", p.w + " kg", r.w.c, r.w.a)}
+        ${fact("Dex #", "#" + p.id, r.id.c, r.id.a)}
+      </div>
+
+      <div class="facts stats">
+        ${fact("Total", bst(p), r.bst.c, r.bst.a)}
+        ${p.s.map((v, i) => fact(STAT_NAMES[i], v, r.s[i].c, r.s[i].a)).join("")}
+      </div>
+    </div>`;
+}
+
+/* ---------- hints ---------- */
+const known = key => guesses.some(g => {
+  if (key === "stage")  return g.stage === target.stage;
+  if (key === "type1")  return g.t1 === target.t1 || g.t2 === target.t1;
+  if (key === "region") return g.gen === target.gen;
+  return false;
+});
+
+function censor(text, name) {
+  const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  let out = text.replace(new RegExp("\\b" + esc(name) + "s?\\b", "gi"), "_______");
+  name.split(/[^A-Za-z0-9é]+/).filter(w => w.length > 2).forEach(w => {
+    out = out.replace(new RegExp("\\b" + esc(w) + "s?\\b", "gi"), "_______");
+  });
+  return out.replace(/_______/g, '<span class="blank">_______</span>');
+}
+
+const HINTS = {
+  stage:  { label:"Evolution stage", get:() => STAGE[target.stage] },
+  type1:  { label:"Primary type",    get:() => `<span class="type" style="background:${TYPE_COLOR[target.t1]}">${target.t1}</span>` },
+  region: { label:"Region",          get:() => `${target.region} · Gen ${target.gen}` },
+  cat:    { label:"Category",        get:() => `The ${target.cat}` },
+  abil:   { label:"Abilities",       get:() => target.abil.join(", ") },
+  desc:   { label:"Pokédex entry",   get:() => censor(target.desc, target.name), wide:true },
+};
+
+function availableHints() {
+  if (over || guesses.length < 5 || remaining() <= 1) return [];
+
+  let pool = ["stage", "type1", "region"].filter(k => !known(k));
+  if (!pool.length) pool = ["cat", "abil"];       // all three already found
+  if (guesses.length >= 8) pool.push("desc");     // late-game entry hint
+
+  return pool.filter(k => !hintsTaken.includes(k));
+}
+
+function drawHintBar() {
+  const pool = availableHints();
+  $("hintbar").innerHTML = pool.length
+    ? `<span class="lead">Hint — costs 1 guess</span>` + pool.map(k =>
+        `<button class="hintbtn" data-h="${k}">${HINTS[k].label}</button>`).join("")
+    : "";
+  $("hintbar").querySelectorAll("[data-h]").forEach(b => {
+    b.onclick = () => takeHint(b.dataset.h);
+  });
+}
+
+function takeHint(key) {
+  if (over || hintsTaken.includes(key)) return;
+  const h = HINTS[key];
+  hintsTaken.push(key);
+  hintsUsed++;
+
+  $("hints").insertAdjacentHTML("beforeend",
+    `<div class="hint ${h.wide ? "wide" : ""}"><b>${h.label}</b>${h.get()}</div>`);
+
+  drawPips();
+  if (remaining() <= 0) finish(false);
+  else $("q").focus();
+}
+
+/* ---------- win / lose ---------- */
+function finish(won) {
+  over = true;
+  $("q").disabled  = true;
+  $("go").disabled = true;
+  $("hintbar").innerHTML = "";
+
+  if (pending) { appendRow(pending); pending = null; }
+
+  $("end").dataset.win = won ? "1" : "";
+  $("endmsg").textContent = won ? "You Caught It!" : `It was ${target.name}`;
+  $("endsub").textContent = won
+    ? `${target.name} in ${guesses.length} ${guesses.length === 1 ? "guess" : "guesses"}` +
+      `${hintsUsed ? ` and ${hintsUsed} hint${hintsUsed > 1 ? "s" : ""}` : ""}.`
+    : `#${target.id} · ${target.region} · ${[target.t1, target.t2].filter(Boolean).join(" / ")}`;
+
+  if (won) {
+    $("searchbar").classList.add("caught");
+    $("q").value = "You Caught It!";
+    fireConfetti();
+    setTimeout(openDex, 2000);
+  } else {
+    showEnd();
+    openDex();
+  }
+}
+
+function showEnd() {
+  $("end").className = "on" + ($("end").dataset.win ? " win" : "");
+  $("end").scrollIntoView({ behavior:"smooth", block:"nearest" });
+}
+
+/* ---------- pokedex modal ---------- */
+function openDex() {
+  const p = target;
+  const chips = [p.t1, p.t2].filter(Boolean).map(t =>
+    `<span class="type" style="background:${TYPE_COLOR[t]};margin-right:6px">${t}</span>`).join("");
+
+  $("dexbody").innerHTML = `
+    <div class="dexhero">
+      <img src="${ART(p.id)}" data-dex="${p.id}" data-art="1" alt="${p.name}">
+      <div style="flex:1;min-width:200px">
+        <p class="tag">#${String(p.id).padStart(4,"0")}</p>
+        <h2>${p.name}</h2>
+        <p class="dexcat">The ${p.cat}</p>
+        <div style="margin-top:10px">${chips}</div>
+      </div>
+    </div>
+    <div class="dexentry">${p.desc}</div>
+    <div class="dexrows">
+      <div class="fact"><b>Height</b><span>${p.h} m</span></div>
+      <div class="fact"><b>Weight</b><span>${p.w} kg</span></div>
+      <div class="fact"><b>Region</b><span>${p.region}</span></div>
+      <div class="fact"><b>Gen</b><span>${p.gen}</span></div>
+      <div class="fact"><b>Stage</b><span>${STAGE[p.stage]}</span></div>
+      <div class="fact"><b>Total</b><span>${bst(p)}</span></div>
+    </div>
+    <div class="hint wide" style="margin-top:14px"><b>Abilities</b>${p.abil.join(", ")}</div>`;
+
+  $("dexmodal").hidden = false;
+}
+
+function closeDex() {
+  $("dexmodal").hidden = true;
+  showEnd();
+}
+
+/* ---------- confetti ---------- */
+function fireConfetti() {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  const cv = $("confetti"), ctx = cv.getContext("2d");
+  const W = cv.width = innerWidth, H = cv.height = innerHeight;
+  cv.classList.add("on");
+
+  const COLORS = ["#E0483C","#FAC000","#2980EF","#3E9D5B","#EF70EF","#FFF3C4","#60A1B8"];
+  const bits = Array.from({ length: 160 }, () => ({
+    x: Math.random() * W,
+    y: -20 - Math.random() * H * 0.6,
+    w: 7 + Math.random() * 6,
+    h: 10 + Math.random() * 8,
+    c: COLORS[Math.floor(Math.random() * COLORS.length)],
+    vy: 2.2 + Math.random() * 2.6,
+    sway: 0.6 + Math.random() * 1.4,
+    phase: Math.random() * Math.PI * 2,
+    spin: (Math.random() - 0.5) * 0.22,
+    rot: Math.random() * Math.PI,
+  }));
+
+  const start = performance.now();
+  (function frame(now) {
+    const t = now - start;
+    ctx.clearRect(0, 0, W, H);
+
+    bits.forEach(b => {
+      b.y   += b.vy;
+      b.x   += Math.sin(b.y / 28 + b.phase) * b.sway;
+      b.rot += b.spin;
+
+      ctx.save();
+      ctx.translate(b.x, b.y);
+      ctx.rotate(b.rot);
+      ctx.globalAlpha = t > 3600 ? Math.max(0, 1 - (t - 3600) / 900) : 1;
+      ctx.fillStyle = b.c;
+      ctx.fillRect(-b.w / 2, -b.h / 2, b.w, b.h * Math.abs(Math.cos(b.rot)));
+      ctx.restore();
+    });
+
+    if (t < 4500) requestAnimationFrame(frame);
+    else { ctx.clearRect(0, 0, W, H); cv.classList.remove("on"); }
+  })(start);
+}
+
+/* =========================================================
+   event bindings - keep them all here
+   ========================================================= */
+$("play").onclick   = newRound;
+$("again").onclick  = newRound;
+$("go").onclick     = submit;
+$("reopen").onclick = openDex;
+$("dexclose").onclick = closeDex;
+
+$("shiny").onclick = () => {
+  SHINY = !SHINY;
+  document.body.classList.toggle("shiny", SHINY);
+  $("shiny").setAttribute("aria-pressed", SHINY);
+
+  if (matches.length) drawList();
+  document.querySelectorAll("[data-dex]").forEach(img => {
+    img.src = img.dataset.art ? ART(img.dataset.dex) : SPRITE(img.dataset.dex);
+  });
+};
+
+$("q").addEventListener("input", e => {
+  const v = norm(e.target.value);
+  picked = null;
+
+  matches = v
+    ? DEX.filter(p => norm(p.name).includes(v))
+         .sort((a, b) => norm(a.name).indexOf(v) - norm(b.name).indexOf(v))
+         .slice(0, 60)
+    : DEX.slice(0, 60);
+
+  cursor = 0;
+  drawList();
+});
+
+$("q").addEventListener("focus", () => {
+  if ($("q").value.trim() && matches.length) drawList();
+});
+
+$("q").addEventListener("keydown", e => {
+  if (!matches.length) return;
+
+  if (e.key === "ArrowDown") {
+    e.preventDefault();
+    cursor = Math.min(cursor + 1, matches.length - 1);
+    drawList();
+    $("list").children[cursor].scrollIntoView({ block:"nearest" });
+  } else if (e.key === "ArrowUp") {
+    e.preventDefault();
+    cursor = Math.max(cursor - 1, 0);
+    drawList();
+    $("list").children[cursor].scrollIntoView({ block:"nearest" });
+  } else if (e.key === "Enter") {
+    e.preventDefault();
+    choose(matches[cursor]);
+  } else if (e.key === "Escape") {
+    $("list").className = "";
+  }
+});
+
+$("dexmodal").onclick = e => { if (e.target.id === "dexmodal") closeDex(); };
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && !$("dexmodal").hidden) closeDex();
+});
+
+document.addEventListener("click", e => {
+  if (!e.target.closest(".searchbar")) $("list").className = "";
+});

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dexle — Gotta Guess 'Em All!</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="wrap">
+
+  <header>
+    <div class="lamp"></div>
+    <div>
+      <h1>Dexle</h1>
+      <p class="tag">Ten guesses. 1,025 Pokémon.</p>
+    </div>
+
+    <button id="shiny" class="toggle" aria-pressed="false"
+            title="Show shiny sprites">
+      <span class="star">✦</span> Shiny
+    </button>
+  </header>
+
+  <!-- shown before a round starts -->
+  <section id="start" class="panel">
+    <h2>Ready when you are</h2>
+    <p>A random Pokémon is waiting. Every guess tells you what you got right.</p>
+    <button id="play">Start round</button>
+  </section>
+
+<section id="game" hidden>
+
+    <div class="status">
+      <div class="pips" id="pips"></div>
+      <p class="tag"><span id="left">10</span> guesses left</p>
+    </div>
+
+    <div id="end">
+      <h2 id="endmsg"></h2>
+      <p class="tag" id="endsub"></p>
+      <div class="endbtns">
+        <button id="again">Play again</button>
+        <button id="reopen" class="ghost">View Pokédex entry</button>
+      </div>
+    </div>
+
+    <div id="hintbar"></div>
+    
+    <div class="searchbar" id="searchbar">
+      <input id="q" type="text" autocomplete="off"
+             placeholder="Type a Pokémon name…" aria-label="Guess a Pokémon">
+      <button id="go">Guess</button>
+      <div id="list" role="listbox"></div>
+    </div>
+
+    <div id="hints"></div>
+
+    <div id="inspect"></div>
+
+    <div class="scroller">
+      <div class="grid" id="grid"></div>
+    </div>
+
+  </section>
+
+</div>
+
+<canvas id="confetti"></canvas>
+
+<div id="dexmodal" hidden>
+  <div class="dexcard">
+    <div class="dexbar">
+      <span class="dexlamp"></span>
+      <span class="dexbar-t">Pokédex entry</span>
+      <button id="dexclose" aria-label="Close">✕</button>
+    </div>
+    <div class="dexbody" id="dexbody"></div>
+  </div>
+</div>
+
+<fieldset class="key">
+    <legend>Key</legend>
+
+    <div class="key-row">
+      <span class="sw hit"></span>  Exact match
+      <span class="sw near"></span> Close
+      <span class="sw miss"></span> No match
+      <span class="sw arr">↑</span> Target is higher
+      <span class="sw arr">↓</span> Target is lower
+    </div>
+
+    <p class="key-note">
+      Close means: the right type in the other slot · a neighbouring generation ·
+      within 10% on height, weight or stats · within 10 of the Dex number
+    </p>
+  </fieldset>
+
+<script src="game.js"></script>
+
+</body>
+</html>
