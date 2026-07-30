@@ -15,6 +15,9 @@ const TYPE_COLOR = {
   steel:"#60A1B8", fairy:"#EF70EF"
 };
 
+const REGIONS = {1:"Kanto", 2:"Johto", 3:"Hoenn", 4:"Sinnoh", 5:"Unova",
+                 6:"Kalos", 7:"Alola", 8:"Galar", 9:"Paldea"};
+
 /* ---------- helpers ---------- */
 const $    = id => document.getElementById(id);
 const norm = s  => s.toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -41,6 +44,12 @@ let picked  = null;        // dropdown selection
 let matches = [];
 let cursor  = 0;
 
+let GENS = new Set([1,2,3,4,5,6,7,8,9]);
+const pool = () => DEX.filter(p => GENS.has(p.gen));
+
+let roundPool = [];              // frozen at round start
+let roundGens = new Set();       // which gens the live round was built from
+
 const remaining = () => BUDGET - guesses.length - hintsUsed;
 
 /* ---------- load ---------- */
@@ -48,13 +57,21 @@ async function loadDex() {
   const res = await fetch("pokedex.json");
   DEX = await res.json();
   console.log("Loaded", DEX.length, "Pokémon");
-  $("play").disabled = false;
+
+  try {
+    const saved = JSON.parse(localStorage.getItem("dexle-gens"));
+    if (Array.isArray(saved) && saved.length) GENS = new Set(saved);
+  } catch (e) {}
+
+  drawGens();
 }
 loadDex();
 
 /* ---------- round control ---------- */
 function newRound() {
-  target  = DEX[Math.floor(Math.random() * DEX.length)];
+  roundPool = pool();                 // freeze - mid-round gen changes can't break this
+  roundGens = new Set(GENS);
+  target    = roundPool[Math.floor(Math.random() * roundPool.length)];
   guesses = [];
   pending = null;
   over    = false;
@@ -83,8 +100,6 @@ function newRound() {
 
   drawPips();
   $("q").focus();
-
-  console.log("Answer:", target.name);   // delete before playing with friends
 }
 
 function drawPips() {
@@ -157,7 +172,7 @@ const chip = t => t
 function submit() {
   if (over) return;
 
-  const p = picked || DEX.find(x => norm(x.name) === norm($("q").value));
+  const p = picked || roundPool.find(x => norm(x.name) === norm($("q").value));
   if (!p) { $("q").focus(); return; }
   if (guesses.some(g => g.id === p.id)) { $("q").value = ""; return; }
 
@@ -434,6 +449,83 @@ function fireConfetti() {
   })(start);
 }
 
+/* ---------- generation drawer ---------- */
+function drawGens() {
+  const counts = {};
+  DEX.forEach(p => counts[p.gen] = (counts[p.gen] || 0) + 1);
+
+  $("genlist").innerHTML = Object.keys(REGIONS).map(g => {
+    const on = GENS.has(+g);
+    return `<label class="genrow ${on ? "on" : ""}">
+      <input type="checkbox" data-g="${g}" ${on ? "checked" : ""}>
+      <span>Gen ${g} \u00b7 ${REGIONS[g]}</span>
+      <span class="rg">${counts[g] || 0}</span>
+    </label>`;
+  }).join("");
+
+  $("genlist").querySelectorAll("input").forEach(cb => {
+    cb.onchange = () => {
+      cb.checked ? GENS.add(+cb.dataset.g) : GENS.delete(+cb.dataset.g);
+      if (!GENS.size) { GENS.add(+cb.dataset.g); cb.checked = true; }   // never empty
+      drawGens();
+    };
+  });
+
+  const n = pool().length;
+  $("pooln").textContent    = n;
+  $("tagcount").textContent = n.toLocaleString();
+  $("play").disabled = !n;
+
+  // is a round in progress that was built from a different selection?
+  const live    = !over && !!target;
+  const changed = live && (roundGens.size !== GENS.size
+                           || [...GENS].some(g => !roundGens.has(g)));
+  $("pending").hidden    = !changed;
+  $("grass").textContent = live && guesses.length
+    ? "Restart in these generations"
+    : "Enter the tall grass";
+
+  try { localStorage.setItem("dexle-gens", JSON.stringify([...GENS])); } catch (e) {}
+}
+
+function openDrawer()  { $("drawer").hidden = false; $("scrim").hidden = false; }
+function closeDrawer() { $("drawer").hidden = true;  $("scrim").hidden = true;  }
+
+/* abandon the round and go back to the "Ready when you are" screen */
+function backToStart() {
+  target  = null;
+  guesses = [];
+  pending = null;
+  over    = false;
+  picked  = null;
+  matches = [];
+
+  hintsUsed  = 0;
+  hintsTaken = [];
+  roundPool  = [];
+  roundGens  = new Set();
+
+  $("game").hidden = true;
+  $("start").style.display = "";
+
+  $("q").value = "";
+  $("q").disabled  = false;
+  $("go").disabled = false;
+  $("searchbar").classList.remove("caught");
+  $("list").className = "";
+
+  $("grid").innerHTML    = "";
+  $("hints").innerHTML   = "";
+  $("hintbar").innerHTML = "";
+  $("inspect").className = "";
+  $("end").className     = "";
+  $("end").dataset.win   = "";
+  $("dexmodal").hidden   = true;
+
+  closeDrawer();
+  drawGens();
+}
+
 /* =========================================================
    event bindings - keep them all here
    ========================================================= */
@@ -442,6 +534,14 @@ $("again").onclick  = newRound;
 $("go").onclick     = submit;
 $("reopen").onclick = openDex;
 $("dexclose").onclick = closeDex;
+
+$("menu").onclick        = openDrawer;
+$("drawerclose").onclick = closeDrawer;
+$("scrim").onclick       = closeDrawer;
+$("genall").onclick  = () => { GENS = new Set([1,2,3,4,5,6,7,8,9]); drawGens(); };
+$("gennone").onclick = () => { GENS = new Set([1]); drawGens(); };
+$("grass").onclick   = () => { closeDrawer(); newRound(); };
+$("reset").onclick   = backToStart;
 
 $("shiny").onclick = () => {
   SHINY = !SHINY;
@@ -458,11 +558,12 @@ $("q").addEventListener("input", e => {
   const v = norm(e.target.value);
   picked = null;
 
+  const P = roundPool;
   matches = v
-    ? DEX.filter(p => norm(p.name).includes(v))
-         .sort((a, b) => norm(a.name).indexOf(v) - norm(b.name).indexOf(v))
-         .slice(0, 60)
-    : DEX.slice(0, 60);
+    ? P.filter(p => norm(p.name).includes(v))
+       .sort((a, b) => norm(a.name).indexOf(v) - norm(b.name).indexOf(v))
+       .slice(0, 60)
+    : P.slice(0, 60);
 
   cursor = 0;
   drawList();

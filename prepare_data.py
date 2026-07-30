@@ -56,6 +56,9 @@ def clean_text(t):
     t = t.replace("POKeMON", "Pokémon").replace("POKéMON", "Pokémon")
     return " ".join(t.split())
 
+TYPES = ["normal","fire","water","electric","grass","ice","fighting","poison","ground",
+         "flying","psychic","bug","rock","ghost","dragon","dark","steel","fairy"]
+
 dex = []
 for r in rows:
     gen = ROMAN[r["generation"].split("-")[1].lower()]
@@ -77,6 +80,8 @@ for r in rows:
         "desc":  clean_text(r["description"]),
         "cat":   r["category"].replace("Pokemon", "Pokémon"),
         "abil":  [a.strip() for a in r["abilities"].split(",") if a.strip()],
+        # damage multiplier taken FROM each attacking type
+        "vs": {t: float(r["against_" + t]) for t in TYPES},
     })
 
 dex.sort(key=lambda p: p["id"])

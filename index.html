@@ -12,31 +12,38 @@
 
   <header>
     <div class="lamp"></div>
-    <div>
+
+    <div class="titles">
       <h1>Dexle</h1>
-      <p class="tag">Ten guesses. 1,025 Pokémon.</p>
+      <p class="tag">Ten guesses. <span id="tagcount">1,025</span> Pokémon.</p>
     </div>
 
-    <button id="shiny" class="toggle" aria-pressed="false"
-            title="Show shiny sprites">
-      <span class="star">✦</span> Shiny
-    </button>
+    <div class="hdr-btns">
+      <button id="shiny" class="toggle" aria-pressed="false" title="Show shiny sprites">
+        <span class="star">✦</span> Shiny
+      </button>
+      <button id="menu" class="toggle" aria-label="Open menu" title="Choose generations">
+        <span class="bars"><i></i><i></i><i></i></span>
+      </button>
+    </div>
   </header>
 
   <!-- shown before a round starts -->
   <section id="start" class="panel">
     <h2>Ready when you are</h2>
     <p>A random Pokémon is waiting. Every guess tells you what you got right.</p>
-    <button id="play">Start round</button>
+    <button id="play" disabled>Start round</button>
   </section>
 
-<section id="game" hidden>
+  <!-- the game itself, hidden until Start is clicked -->
+  <section id="game" hidden>
 
     <div class="status">
       <div class="pips" id="pips"></div>
       <p class="tag"><span id="left">10</span> guesses left</p>
     </div>
 
+    <!-- win / lose card sits at the top -->
     <div id="end">
       <h2 id="endmsg"></h2>
       <p class="tag" id="endsub"></p>
@@ -46,8 +53,9 @@
       </div>
     </div>
 
+    <!-- hints go ABOVE the search bar so the dropdown can never cover them -->
     <div id="hintbar"></div>
-    
+
     <div class="searchbar" id="searchbar">
       <input id="q" type="text" autocomplete="off"
              placeholder="Type a Pokémon name…" aria-label="Guess a Pokémon">
@@ -57,30 +65,17 @@
 
     <div id="hints"></div>
 
+    <!-- live readout for the current guess -->
     <div id="inspect"></div>
 
+    <!-- guess history, newest first -->
     <div class="scroller">
       <div class="grid" id="grid"></div>
     </div>
 
   </section>
 
-</div>
-
-<canvas id="confetti"></canvas>
-
-<div id="dexmodal" hidden>
-  <div class="dexcard">
-    <div class="dexbar">
-      <span class="dexlamp"></span>
-      <span class="dexbar-t">Pokédex entry</span>
-      <button id="dexclose" aria-label="Close">✕</button>
-    </div>
-    <div class="dexbody" id="dexbody"></div>
-  </div>
-</div>
-
-<fieldset class="key">
+  <fieldset class="key">
     <legend>Key</legend>
 
     <div class="key-row">
@@ -95,9 +90,62 @@
       Close means: the right type in the other slot · a neighbouring generation ·
       within 10% on height, weight or stats · within 10 of the Dex number
     </p>
+
+    <p class="key-tip">
+      Want a smaller pool? Pick your generations in the
+      <span class="bars-inline" aria-hidden="true"><i></i><i></i><i></i></span>
+      menu at the top right, then hit <b>Enter the tall grass</b>.
+    </p>
   </fieldset>
 
-<script src="game.js"></script>
+</div>
 
+<!-- confetti overlay -->
+<canvas id="confetti"></canvas>
+
+<!-- pokedex reveal -->
+<div id="dexmodal" hidden>
+  <div class="dexcard">
+    <div class="dexbar">
+      <span class="dexlamp"></span>
+      <span class="dexbar-t">Pokédex entry</span>
+      <button id="dexclose" aria-label="Close">✕</button>
+    </div>
+    <div class="dexbody" id="dexbody"></div>
+  </div>
+</div>
+
+<!-- generation drawer -->
+<div id="scrim" hidden></div>
+
+<aside id="drawer" hidden aria-label="Choose your generation">
+  <div class="drawer-head">
+    <h2>Choose your Generation</h2>
+    <button id="drawerclose" aria-label="Close">✕</button>
+  </div>
+
+  <div class="drawer-body">
+    <p class="tag">Only Pokémon from the checked generations will appear —
+       in the search box and as the answer.</p>
+
+    <div class="genlist" id="genlist"></div>
+
+    <div class="drawer-btns">
+      <button id="genall" class="ghost">All</button>
+      <button id="gennone" class="ghost">Gen 1 only</button>
+    </div>
+
+    <p class="poolcount"><span id="pooln">0</span> Pokémon in play</p>
+
+    <button id="grass">Enter the tall grass</button>
+    <button id="reset" class="ghost">Back to start screen</button>
+
+    <p id="pending" class="drawer-note pending" hidden>
+      Your current round is still using the generations it started with.
+    </p>
+  </div>
+</aside>
+
+<script src="game.js"></script>
 </body>
 </html>
