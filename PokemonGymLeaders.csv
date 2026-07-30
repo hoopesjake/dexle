@@ -1,0 +1,1388 @@
+﻿Generation;Game;Gym;Gym leader;Pokemon;Level;Move 1;Move 2;Move 3;Move 4
+1;Red;Pewter City;Brock;Geodude;12;tackle;defense-curl;;
+1;Red;Pewter City;Brock;Onix;14;tackle;screech;bide;
+1;Red;Cerulean City;misty;Staryu;18;tackle;water-gun;;
+1;Red;Cerulean City;misty;Starmie;21;tackle;water-gun;harden;bubble-beam
+1;Red;Vermilion City;Lt. Surge;Voltorb;21;tackle;screech;sonic-boom;
+1;Red;Vermilion City;Lt. Surge;Pikachu;18;thunder-shock;thunder-wave;growl;quick-attack
+1;Red;Vermilion City;Lt. Surge;Raichu;24;thunderbolt;thunder-shock;thunder-wave;growl
+1;Red;Celadon City;Erika;Victreebel;29;wrap;poison-powder;sleep-powder;razor-leaf
+1;Red;Celadon City;Erika;Tangela;24;bind;constrict;;
+1;Red;Celadon City;Erika;Vileplume;29;poison-powder;mega-drain;sleep-powder;petal-dance
+1;Red;Fuchsia City;Koga;Koffing;37;tackle;smog;sludge;smokescreen
+1;Red;Fuchsia City;Koga;Muk;39;disable;poison-gas;minimize;sludge
+1;Red;Fuchsia City;Koga;Koffing;37;tackle;smog;sludge;smokescreen
+1;Red;Fuchsia City;Koga;Weezing;43;smog;sludge;toxic;self-destruct
+1;Red;Saffron City;Sabrina;Kadabra;38;disable;psybeam;recover;psychic
+1;Red;Saffron City;Sabrina;Mr. Mime;37;confusion;barrier;light-screen;double-slap
+1;Red;Saffron City;Sabrina;Venomoth;38;poison-powder;leech-life;stun-spore;psybeam
+1;Red;Saffron City;Sabrina;Alakazam;43;psybeam;recover;psywave;reflect
+1;Red;Cinnabar Island;Blaine;Growlithe;42;ember;leer;take-down;agility
+1;Red;Cinnabar Island;Blaine;Ponyta;40;tail-whip;stomp;growl;fire-spin
+1;Red;Cinnabar Island;Blaine;Rapidash;42;tail-whip;stomp;growl;fire-spin
+1;Red;Cinnabar Island;Blaine;Arcanine;47;roar;ember;take-down;fire-blast
+1;Red;Viridian City;Giovanni;Rhyhorn;45;stomp;tail-whip;fury-attack;horn-attack
+1;Red;Viridian City;Giovanni;Dugtrio;42;growl;dig;sand-attack;slash
+1;Red;Viridian City;Giovanni;Nidoqueen;44;scratch;tail-whip;poison-sting;body-slam
+1;Red;Viridian City;Giovanni;Nidoking;45;tackle;horn-attack;poison-sting;thrash
+1;Red;Viridian City;Giovanni;Rhydon;50;stomp;tail-whip;fissure;horn-drill
+1;Red;Elite Four;Lorelei;Dewgong;54;growl;aurora-beam;rest;take-down
+1;Red;Elite Four;Lorelei;Cloyster;53;supersonic;clamp;aurora-beam;spike-cannon
+1;Red;Elite Four;Lorelei;Slowbro;54;water-gun;growl;withdraw;amnesia
+1;Red;Elite Four;Lorelei;Jynx;56;double-slap;ice-punch;body-slam;thrash
+1;Red;Elite Four;Lorelei;Lapras;56;body-slam;confuse-ray;hydro-pump;blizzard
+1;Red;Elite Four;Bruno;Onix;53;rock-throw;rage;slam;harden
+1;Red;Elite Four;Bruno;Hitmonchan;55;ice-punch;fire-punch;thunder-punch;counter
+1;Red;Elite Four;Bruno;Hitmonlee;55;jump-kick;focus-energy;high-jump-kick;mega-kick
+1;Red;Elite Four;Bruno;Onix;56;rock-throw;rage;slam;harden
+1;Red;Elite Four;Bruno;Machamp;58;leer;focus-energy;fissure;submission
+1;Red;Elite Four;Agatha;Gengar;56;confuse-ray;night-shade;hypnosis;dream-eater
+1;Red;Elite Four;Agatha;Golbat;56;supersonic;confuse-ray;wing-attack;haze
+1;Red;Elite Four;Agatha;Haunter;55;confuse-ray;night-shade;hypnosis;dream-eater
+1;Red;Elite Four;Agatha;Arbok;58;bite;glare;screech;acid
+1;Red;Elite Four;Agatha;Gengar;60;confuse-ray;night-shade;toxic;dream-eater
+1;Red;Elite Four;Lance;Gyarados;58;hydro-pump;dragon-rage;leer;hyper-beam
+1;Red;Elite Four;Lance;Dragonair;56;agility;slam;dragon-rage;hyper-beam
+1;Red;Elite Four;Lance;Dragonair;56;agility;slam;dragon-rage;hyper-beam
+1;Red;Elite Four;Lance;Aerodactyl;60;supersonic;take-down;bite;hyper-beam
+1;Red;Elite Four;Lance;Dragonite;62;agility;slam;barrier;hyper-beam
+1;Red;Elite Four;Champion Blue Squirtle;Pidgeot;61;wing-attack;mirror-move;sky-attack;whirlwind
+1;Red;Elite Four;Champion Blue Squirtle;Alakazam;59;psybeam;psychic;reflect;recover
+1;Red;Elite Four;Champion Blue Squirtle;Rhydon;61;leer;tail-whip;fury-attack;horn-drill
+1;Red;Elite Four;Champion Blue Squirtle;Arcanine;63;roar;leer;ember;take-down
+1;Red;Elite Four;Champion Blue Squirtle;Gyarados;61;dragon-rage;hydro-pump;hyper-beam;leer
+1;Red;Elite Four;Champion Blue Squirtle;Venusaur;65;growth;mega-drain;razor-leaf;solar-beam
+1;Red;Elite Four;Champion Blue Bulbasaur;Pidgeot;61;wing-attack;mirror-move;sky-attack;whirlwind
+1;Red;Elite Four;Champion Blue Bulbasaur;Alakazam;59;psybeam;psychic;reflect;recover
+1;Red;Elite Four;Champion Blue Bulbasaur;Rhydon;61;leer;tail-whip;fury-attack;horn-drill
+1;Red;Elite Four;Champion Blue Bulbasaur;Gyarados;63;dragon-rage;hydro-pump;hyper-beam;leer
+1;Red;Elite Four;Champion Blue Bulbasaur;Exeggutor;61;hypnosis;barrage;stomp;
+1;Red;Elite Four;Champion Blue Bulbasaur;Charizard;65;fire-blast;rage;slash;fire-spin
+1;Red;Elite Four;Champion Blue charmander;Pidgeot;61;wing-attack;mirror-move;sky-attack;whirlwind
+1;Red;Elite Four;Champion Blue charmander;Alakazam;59;psybeam;psychic;reflect;recover
+1;Red;Elite Four;Champion Blue charmander;Rhydon;61;leer;tail-whip;fury-attack;horn-drill
+1;Red;Elite Four;Champion Blue charmander;Exeggutor;63;hypnosis;barrage;stomp;
+1;Red;Elite Four;Champion Blue charmander;Arcanine;61;roar;leer;ember;take-down
+1;Red;Elite Four;Champion Blue charmander;Blastoise;65;hydro-pump;blizzard;bite;withdraw
+1;Blue;Pewter City;Brock;Geodude;12;tackle;defense-curl;;
+1;Blue;Pewter City;Brock;Onix;14;tackle;screech;bide;
+1;Blue;Cerulean City;misty;Staryu;18;tackle;water-gun;;
+1;Blue;Cerulean City;misty;Starmie;21;tackle;water-gun;harden;bubble-beam
+1;Blue;Vermilion City;Lt. Surge;Voltorb;21;tackle;screech;sonic-boom;
+1;Blue;Vermilion City;Lt. Surge;Pikachu;18;thunder-shock;thunder-wave;growl;quick-attack
+1;Blue;Vermilion City;Lt. Surge;Raichu;24;thunderbolt;thunder-shock;thunder-wave;growl
+1;Blue;Celadon City;Erika;Victreebel;29;wrap;poison-powder;sleep-powder;razor-leaf
+1;Blue;Celadon City;Erika;Tangela;24;bind;constrict;;
+1;Blue;Celadon City;Erika;Vileplume;29;poison-powder;mega-drain;sleep-powder;petal-dance
+1;Blue;Fuchsia City;Koga;Koffing;37;tackle;smog;sludge;smokescreen
+1;Blue;Fuchsia City;Koga;Muk;39;disable;poison-gas;minimize;sludge
+1;Blue;Fuchsia City;Koga;Koffing;37;tackle;smog;sludge;smokescreen
+1;Blue;Fuchsia City;Koga;Weezing;43;smog;sludge;toxic;self-destruct
+1;Blue;Saffron City;Sabrina;Kadabra;38;disable;psybeam;recover;psychic
+1;Blue;Saffron City;Sabrina;Mr. Mime;37;confusion;barrier;light-screen;double-slap
+1;Blue;Saffron City;Sabrina;Venomoth;38;poison-powder;leech-life;stun-spore;psybeam
+1;Blue;Saffron City;Sabrina;Alakazam;43;psybeam;recover;psywave;reflect
+1;Blue;Cinnabar Island;Blaine;Growlithe;42;ember;leer;take-down;agility
+1;Blue;Cinnabar Island;Blaine;Ponyta;40;tail-whip;stomp;growl;fire-spin
+1;Blue;Cinnabar Island;Blaine;Rapidash;42;tail-whip;stomp;growl;fire-spin
+1;Blue;Cinnabar Island;Blaine;Arcanine;47;roar;ember;take-down;fire-blast
+1;Blue;Viridian City;Giovanni;Rhyhorn;45;stomp;tail-whip;fury-attack;horn-attack
+1;Blue;Viridian City;Giovanni;Dugtrio;42;growl;dig;sand-attack;slash
+1;Blue;Viridian City;Giovanni;Nidoqueen;44;scratch;tail-whip;poison-sting;body-slam
+1;Blue;Viridian City;Giovanni;Nidoking;45;tackle;horn-attack;poison-sting;thrash
+1;Blue;Viridian City;Giovanni;Rhydon;50;stomp;tail-whip;fissure;horn-drill
+1;Blue;Elite Four;Lorelei;Dewgong;54;growl;aurora-beam;rest;take-down
+1;Blue;Elite Four;Lorelei;Cloyster;53;supersonic;clamp;aurora-beam;spike-cannon
+1;Blue;Elite Four;Lorelei;Slowbro;54;water-gun;growl;withdraw;amnesia
+1;Blue;Elite Four;Lorelei;Jynx;56;double-slap;ice-punch;body-slam;thrash
+1;Blue;Elite Four;Lorelei;Lapras;56;body-slam;confuse-ray;hydro-pump;blizzard
+1;Blue;Elite Four;Bruno;Onix;53;rock-throw;rage;slam;harden
+1;Blue;Elite Four;Bruno;Hitmonchan;55;ice-punch;fire-punch;thunder-punch;counter
+1;Blue;Elite Four;Bruno;Hitmonlee;55;jump-kick;focus-energy;high-jump-kick;mega-kick
+1;Blue;Elite Four;Bruno;Onix;56;rock-throw;rage;slam;harden
+1;Blue;Elite Four;Bruno;Machamp;58;leer;focus-energy;fissure;submission
+1;Blue;Elite Four;Agatha;Gengar;56;confuse-ray;night-shade;hypnosis;dream-eater
+1;Blue;Elite Four;Agatha;Golbat;56;supersonic;confuse-ray;wing-attack;haze
+1;Blue;Elite Four;Agatha;Haunter;55;confuse-ray;night-shade;hypnosis;dream-eater
+1;Blue;Elite Four;Agatha;Arbok;58;bite;glare;screech;acid
+1;Blue;Elite Four;Agatha;Gengar;60;confuse-ray;night-shade;toxic;dream-eater
+1;Blue;Elite Four;Lance;Gyarados;58;hydro-pump;dragon-rage;leer;hyper-beam
+1;Blue;Elite Four;Lance;Dragonair;56;agility;slam;dragon-rage;hyper-beam
+1;Blue;Elite Four;Lance;Dragonair;56;agility;slam;dragon-rage;hyper-beam
+1;Blue;Elite Four;Lance;Aerodactyl;60;supersonic;take-down;bite;hyper-beam
+1;Blue;Elite Four;Lance;Dragonite;62;agility;slam;barrier;hyper-beam
+1;Blue;Elite Four;Champion Blue Squirtle;Pidgeot;61;wing-attack;mirror-move;sky-attack;whirlwind
+1;Blue;Elite Four;Champion Blue Squirtle;Alakazam;59;psybeam;psychic;reflect;recover
+1;Blue;Elite Four;Champion Blue Squirtle;Rhydon;61;leer;tail-whip;fury-attack;horn-drill
+1;Blue;Elite Four;Champion Blue Squirtle;Arcanine;63;roar;leer;ember;take-down
+1;Blue;Elite Four;Champion Blue Squirtle;Gyarados;61;dragon-rage;hydro-pump;hyper-beam;leer
+1;Blue;Elite Four;Champion Blue Squirtle;Venusaur;65;growth;mega-drain;razor-leaf;solar-beam
+1;Blue;Elite Four;Champion Blue Bulbasaur;Pidgeot;61;wing-attack;mirror-move;sky-attack;whirlwind
+1;Blue;Elite Four;Champion Blue Bulbasaur;Alakazam;59;psybeam;psychic;reflect;recover
+1;Blue;Elite Four;Champion Blue Bulbasaur;Rhydon;61;leer;tail-whip;fury-attack;horn-drill
+1;Blue;Elite Four;Champion Blue Bulbasaur;Gyarados;63;dragon-rage;hydro-pump;hyper-beam;leer
+1;Blue;Elite Four;Champion Blue Bulbasaur;Exeggutor;61;hypnosis;barrage;stomp;
+1;Blue;Elite Four;Champion Blue Bulbasaur;Charizard;65;fire-blast;rage;slash;fire-spin
+1;Blue;Elite Four;Champion Blue charmander;Pidgeot;61;wing-attack;mirror-move;sky-attack;whirlwind
+1;Blue;Elite Four;Champion Blue charmander;Alakazam;59;psybeam;psychic;reflect;recover
+1;Blue;Elite Four;Champion Blue charmander;Rhydon;61;leer;tail-whip;fury-attack;horn-drill
+1;Blue;Elite Four;Champion Blue charmander;Exeggutor;63;hypnosis;barrage;stomp;
+1;Blue;Elite Four;Champion Blue charmander;Arcanine;61;roar;leer;ember;take-down
+1;Blue;Elite Four;Champion Blue charmander;Blastoise;65;hydro-pump;blizzard;bite;withdraw
+1;Yellow;Pewter City;Brock;Geodude;10;tackle;;;
+1;Yellow;Pewter City;Brock;Onix;12;tackle;screech;bide;bind
+1;Yellow;Cerulean City;misty;Staryu;18;tackle;water-gun;;
+1;Yellow;Cerulean City;misty;Starmie;21;tackle;water-gun;harden;bubble-beam
+1;Yellow;Vermilion City;Lt. Surge;Raichu;28;thunderbolt;growl;mega-punch;mega-kick
+1;Yellow;Celadon City;Erika;Weepinbell;32;wrap;stun-spore;sleep-powder;razor-leaf
+1;Yellow;Celadon City;Erika;Tangela;30;bind;mega-drain;vine-whip;constrict
+1;Yellow;Celadon City;Erika;Gloom;32;acid;petal-dance;stun-spore;sleep-powder
+1;Yellow;Fuchsia City;Koga;Venonat;44;tackle;toxic;sleep-powder;psychic
+1;Yellow;Fuchsia City;Koga;Venonat;46;toxic;psybeam;supersonic;psychic
+1;Yellow;Fuchsia City;Koga;Venonat;48;toxic;psychic;sleep-powder;double-edge
+1;Yellow;Fuchsia City;Koga;Venomoth;50;toxic;psychic;leech-life;double-team
+1;Yellow;Saffron City;Sabrina;Abra;50;teleport;flash;;
+1;Yellow;Saffron City;Sabrina;Kadabra;50;psychic;recover;kinesis;psywave
+1;Yellow;Saffron City;Sabrina;Alakazam;50;psychic;psywave;reflect;recover
+1;Yellow;Cinnabar Island;Blaine;Ninetales;48;confuse-ray;quick-attack;tail-whip;flamethrower
+1;Yellow;Cinnabar Island;Blaine;Rapidash;50;take-down;stomp;growl;fire-spin
+1;Yellow;Cinnabar Island;Blaine;Arcanine;54;reflect;flamethrower;take-down;fire-blast
+1;Yellow;Viridian City;Giovanni;Dugtrio;50;sand-attack;dig;fissure;earthquake
+1;Yellow;Viridian City;Giovanni;Persian;53;screech;slash;fury-swipes;double-team
+1;Yellow;Viridian City;Giovanni;Nidoqueen;53;tail-whip;double-kick;poison-sting;thunder
+1;Yellow;Viridian City;Giovanni;Nidoking;55;thunder;leer;earthquake;thrash
+1;Yellow;Viridian City;Giovanni;Rhydon;55;rock-slide;fury-attack;earthquake;horn-drill
+1;Yellow;Elite Four;Lorelei;Dewgong;54;bubble-beam;aurora-beam;rest;take-down
+1;Yellow;Elite Four;Lorelei;Cloyster;53;supersonic;clamp;ice-beam;spike-cannon
+1;Yellow;Elite Four;Lorelei;Slowbro;54;surf;psychic;withdraw;amnesia
+1;Yellow;Elite Four;Lorelei;Jynx;56;double-slap;ice-punch;lovely-kiss;thrash
+1;Yellow;Elite Four;Lorelei;Lapras;56;body-slam;confuse-ray;hydro-pump;blizzard
+1;Yellow;Elite Four;Bruno;Onix;53;rock-throw;dig;slam;screech
+1;Yellow;Elite Four;Bruno;Hitmonchan;55;ice-punch;fire-punch;thunder-punch;double-team
+1;Yellow;Elite Four;Bruno;Hitmonlee;55;double-kick;double-team;high-jump-kick;mega-kick
+1;Yellow;Elite Four;Bruno;Onix;56;rock-slide;screech;earthquake;slam
+1;Yellow;Elite Four;Bruno;Machamp;58;leer;strength;karate-chop;submission
+1;Yellow;Elite Four;Agatha;Gengar;56;confuse-ray;lick;substitute;mega-drain
+1;Yellow;Elite Four;Agatha;Golbat;56;supersonic;leech-life;wing-attack;toxic
+1;Yellow;Elite Four;Agatha;Haunter;55;confuse-ray;lick;hypnosis;dream-eater
+1;Yellow;Elite Four;Agatha;Arbok;58;wrap;glare;screech;acid
+1;Yellow;Elite Four;Agatha;Gengar;60;confuse-ray;psychic;hypnosis;dream-eater
+1;Yellow;Elite Four;Lance;Gyarados;58;hydro-pump;dragon-rage;leer;hyper-beam
+1;Yellow;Elite Four;Lance;Dragonair;56;thunderbolt;slam;thunder-wave;hyper-beam
+1;Yellow;Elite Four;Lance;Dragonair;56;wrap;bubble-beam;ice-beam;hyper-beam
+1;Yellow;Elite Four;Lance;Aerodactyl;60;wing-attack;fly;swift;hyper-beam
+1;Yellow;Elite Four;Lance;Dragonite;62;blizzard;fire-blast;thunder;hyper-beam
+1;Yellow;Elite Four;Champion Blue Vaporeon;Sandslash;61;earthquake;slash;poison-sting;fury-swipes
+1;Yellow;Elite Four;Champion Blue Vaporeon;Alakazam;59;psybeam;psychic;kinesis;recover
+1;Yellow;Elite Four;Champion Blue Vaporeon;Exeggutor;61;barrage;hypnosis;stomp;leech-seed
+1;Yellow;Elite Four;Champion Blue Vaporeon;Magneton;63;thunderbolt;thunder-wave;screech;swift
+1;Yellow;Elite Four;Champion Blue Vaporeon;Ninetales;61;fire-spin;tail-whip;quick-attack;confuse-ray
+1;Yellow;Elite Four;Champion Blue Vaporeon;Vaporeon;65;hydro-pump;aurora-beam;quick-attack;mist
+1;Yellow;Elite Four;Champion Blue Jolteon;Sandslash;61;earthquake;slash;poison-sting;fury-swipes
+1;Yellow;Elite Four;Champion Blue Jolteon;Alakazam;59;psybeam;psychic;kinesis;recover
+1;Yellow;Elite Four;Champion Blue Jolteon;Exeggutor;61;barrage;hypnosis;stomp;leech-seed
+1;Yellow;Elite Four;Champion Blue Jolteon;Ninetales;63;fire-spin;tail-whip;quick-attack;confuse-ray
+1;Yellow;Elite Four;Champion Blue Jolteon;Cloyster;61;ice-beam;spike-cannon;aurora-beam;clamp
+1;Yellow;Elite Four;Champion Blue Jolteon;Jolteon;65;thunder;thunderbolt;quick-attack;Pin Missile
+1;Yellow;Elite Four;Champion Blue Flareon;Sandslash;61;earthquake;slash;poison-sting;fury-swipes
+1;Yellow;Elite Four;Champion Blue Flareon;Alakazam;59;psybeam;psychic;kinesis;recover
+1;Yellow;Elite Four;Champion Blue Flareon;Exeggutor;61;barrage;hypnosis;stomp;leech-seed
+1;Yellow;Elite Four;Champion Blue Flareon;Cloyster;63;ice-beam;spike-cannon;aurora-beam;clamp
+1;Yellow;Elite Four;Champion Blue Flareon;Magneton;61;thunderbolt;thunder-wave;screech;swift
+1;Yellow;Elite Four;Champion Blue Flareon;Flareon;65;flamethrower;quick-attack;smog;fire-spin
+2;Gold;Violet City;Falkner;Pidgey;7;tackle;mud-slap;;
+2;Gold;Violet City;Falkner;Pidgeotto;9;tackle;mud-slap;gust;
+2;Gold;Azalea Town;Bugsy;Metapod;14;tackle;string-shot;harden;
+2;Gold;Azalea Town;Bugsy;Kakuna;14;poison-sting;string-shot;harden;
+2;Gold;Azalea Town;Bugsy;Scyther;16;quick-attack;leer;fury-cutter;
+2;Gold;Goldenrod City;Whitney;Clefairy;18;double-slap;mimic;encore;metronome
+2;Gold;Goldenrod City;Whitney;Miltank;20;rollout;attract;stomp;milk-drink
+2;Gold;Ecruteak City;Morty;Gastly;21;lick;spite;mean-look;curse
+2;Gold;Ecruteak City;Morty;Haunter;21;hypnosis;mimic;curse;night-shade
+2;Gold;Ecruteak City;Morty;Haunter;23;spite;mean-look;mimic;night-shade
+2;Gold;Ecruteak City;Morty;Gengar;25;hypnosis;shadow-ball;mean-look;dream-eater
+2;Gold;Cianwood City;Chuck;Primeape;27;leer;rage;karate-chop;fury-swipes
+2;Gold;Cianwood City;Chuck;Poliwrath;30;hypnosis;mind-reader;surf;dynamic-punch
+2;Gold;Olivine City;Jasmine;Magnemite;30;thunderbolt;supersonic;sonic-boom;thunder-wave
+2;Gold;Olivine City;Jasmine;Magnemite;30;thunderbolt;supersonic;sonic-boom;thunder-wave
+2;Gold;Olivine City;Jasmine;Steelix;35;screech;sunny-day;rock-throw;iron-tail
+2;Gold;Mahogany Town;Pryce;Seel;27;headbutt;icy-wind;aurora-beam;rest
+2;Gold;Mahogany Town;Pryce;Dewgong;29;headbutt;icy-wind;aurora-beam;rest
+2;Gold;Mahogany Town;Pryce;Piloswine;31;icy-wind;fury-attack;mist;blizzard
+2;Gold;Blackthorn City;Clair;Dragonair;37;thunder-wave;surf;slam;dragon-breath
+2;Gold;Blackthorn City;Clair;Dragonair;37;thunder-wave;thunderbolt;slam;dragon-breath
+2;Gold;Blackthorn City;Clair;Dragonair;37;thunder-wave;ice-beam;slam;dragon-breath
+2;Gold;Blackthorn City;Clair;Kingdra;40;smokescreen;surf;hyper-beam;dragon-breath
+2;Gold;Vermilion City;Lt. Surge;Raichu;44;thunder-wave;quick-attack;thunderbolt;thunder
+2;Gold;Vermilion City;Lt. Surge;Electrode;40;screech;double-team;swift;explosion
+2;Gold;Vermilion City;Lt. Surge;Electrode;41;screech;double-team;swift;explosion
+2;Gold;Vermilion City;Lt. Surge;Magneton;40;lock-on;double-team;swift;zap-cannon
+2;Gold;Vermilion City;Lt. Surge;Electabuzz;45;quick-attack;thunder-punch;light-screen;thunder
+2;Gold;Saffron City;Sabrina;Espeon;46;sand-attack;quick-attack;swift;psychic
+2;Gold;Saffron City;Sabrina;Mr. Mime;46;barrier;reflect;baton-pass;psychic
+2;Gold;Saffron City;Sabrina;Alakazam;48;recover;future-sight;psychic;reflect
+2;Gold;Celadon City;Erika;Tangela;42;vine-whip;bind;giga-drain;sleep-powder
+2;Gold;Celadon City;Erika;Jumpluff;41;mega-drain;leech-seed;cotton-spore;giga-drain
+2;Gold;Celadon City;Erika;Victreebel;46;sunny-day;synthesis;acid;razor-leaf
+2;Gold;Celadon City;Erika;Bellossom;46;sunny-day;synthesis;petal-dance;solar-beam
+2;Gold;Fuchsia City;Janine;Crobat;36;screech;supersonic;confuse-ray;wing-attack
+2;Gold;Fuchsia City;Janine;Weezing;36;smog;sludge-bomb;toxic;explosion
+2;Gold;Fuchsia City;Janine;Weezing;37;smog;sludge-bomb;toxic;explosion
+2;Gold;Fuchsia City;Janine;Ariados;33;scary-face;giga-drain;string-shot;night-shade
+2;Gold;Fuchsia City;Janine;Venomoth;39;foresight;double-team;gust;psychic
+2;Gold;Cerulean City;misty;Golduck;42;surf;disable;psych-up;psychic
+2;Gold;Cerulean City;misty;Quagsire;42;surf;amnesia;earthquake;rain-dance
+2;Gold;Cerulean City;misty;Lapras;44;surf;perish-song;blizzard;rain-dance
+2;Gold;Cerulean City;misty;Starmie;47;surf;confuse-ray;recover;ice-beam
+2;Gold;Pewter City;Brock;Graveler;41;defense-curl;rock-slide;rollout;earthquake
+2;Gold;Pewter City;Brock;Rhyhorn;41;fury-attack;scary-face;earthquake;horn-drill
+2;Gold;Pewter City;Brock;Omastar;42;bite;surf;protect;spike-cannon
+2;Gold;Pewter City;Brock;Onix;44;bind;rock-slide;bide;sandstorm
+2;Gold;Pewter City;Brock;Kabutops;42;slash;surf;endure;giga-drain
+2;Gold;Seafoam Islands;Blaine;Magcargo;45;curse;smog;flamethrower;rock-slide
+2;Gold;Seafoam Islands;Blaine;Magmar;45;thunder-punch;fire-punch;sunny-day;confuse-ray
+2;Gold;Seafoam Islands;Blaine;Rapidash;50;quick-attack;fire-spin;fury-attack;fire-blast
+2;Gold;Viridian City;Blue;Pidgeot;56;quick-attack;whirlwind;wing-attack;mirror-move
+2;Gold;Viridian City;Blue;Alakazam;54;disable;recover;psychic;reflect
+2;Gold;Viridian City;Blue;Rhydon;56;fury-attack;sandstorm;rock-slide;earthquake
+2;Gold;Viridian City;Blue;Gyarados;58;twister;hydro-pump;rain-dance;hyper-beam
+2;Gold;Viridian City;Blue;Exeggutor;58;sunny-day;leech-seed;egg-bomb;solar-beam
+2;Gold;Viridian City;Blue;Arcanine;58;roar;swift;flamethrower;extreme-speed
+2;Gold;Elite Four;Will;Xatu;40;quick-attack;future-sight;confuse-ray;psychic
+2;Gold;Elite Four;Will;Jynx;41;double-slap;lovely-kiss;ice-punch;psychic
+2;Gold;Elite Four;Will;Exeggutor;41;reflect;leech-seed;egg-bomb;psychic
+2;Gold;Elite Four;Will;Slowbro;41;curse;amnesia;body-slam;psychic
+2;Gold;Elite Four;Will;Xatu;42;quick-attack;future-sight;confuse-ray;psychic
+2;Gold;Elite Four;Koga;Ariados;40;double-team;spider-web;baton-pass;giga-drain
+2;Gold;Elite Four;Koga;Venomoth;41;supersonic;gust;psychic;toxic
+2;Gold;Elite Four;Koga;Forretress;43;protect;swift;explosion;spikes
+2;Gold;Elite Four;Koga;Muk;42;minimize;acid-armor;sludge-bomb;toxic
+2;Gold;Elite Four;Bruno;Hitmontop;42;pursuit;quick-attack;dig;detect
+2;Gold;Elite Four;Bruno;Hitmonlee;42;swagger;double-kick;high-jump-kick;foresight
+2;Gold;Elite Four;Bruno;Hitmonchan;42;thunder-punch;fire-punch;ice-punch;mach-punch
+2;Gold;Elite Four;Bruno;Onix;43;bind;earthquake;sandstorm;rock-slide
+2;Gold;Elite Four;Bruno;Machamp;46;rock-slide;foresight;vital-throw;cross-chop
+2;Gold;Elite Four;Karen;Umbreon;42;sand-attack;confuse-ray;feint-attack;mean-look
+2;Gold;Elite Four;Karen;Vileplume;42;stun-spore;acid;moonlight;petal-dance
+2;Gold;Elite Four;Karen;Gengar;45;lick;spite;curse;destiny-bond
+2;Gold;Elite Four;Karen;Murkrow;44;quick-attack;whirlwind;pursuit;feint-attack
+2;Gold;Elite Four;Karen;Houndoom;47;roar;pursuit;flamethrower;crunch
+2;Gold;Elite Four;Champion Lance;Gyarados;44;flail;rain-dance;surf;hyper-beam
+2;Gold;Elite Four;Champion Lance;Dragonite;47;thunder-wave;twister;thunder;hyper-beam
+2;Gold;Elite Four;Champion Lance;Dragonite;48;thunder-wave;twister;blizzard;hyper-beam
+2;Gold;Elite Four;Champion Lance;Aerodactyl;46;wing-attack;ancient-power;rock-slide;hyper-beam
+2;Gold;Elite Four;Champion Lance;Charizard;46;flamethrower;wing-attack;slash;hyper-beam
+2;Gold;Elite Four;Champion Lance;Dragonite;50;fire-blast;safeguard;outrage;hyper-beam
+2;Silver;Violet City;Falkner;Pidgey;7;tackle;mud-slap;;
+2;Silver;Violet City;Falkner;Pidgeotto;9;tackle;mud-slap;gust;
+2;Silver;Azalea Town;Bugsy;Metapod;14;tackle;string-shot;harden;
+2;Silver;Azalea Town;Bugsy;Kakuna;14;poison-sting;string-shot;harden;
+2;Silver;Azalea Town;Bugsy;Scyther;16;quick-attack;leer;fury-cutter;
+2;Silver;Goldenrod City;Whitney;Clefairy;18;double-slap;mimic;encore;metronome
+2;Silver;Goldenrod City;Whitney;Miltank;20;rollout;attract;stomp;milk-drink
+2;Silver;Ecruteak City;Morty;Gastly;21;lick;spite;mean-look;curse
+2;Silver;Ecruteak City;Morty;Haunter;21;hypnosis;mimic;curse;night-shade
+2;Silver;Ecruteak City;Morty;Haunter;23;spite;mean-look;mimic;night-shade
+2;Silver;Ecruteak City;Morty;Gengar;25;hypnosis;shadow-ball;mean-look;dream-eater
+2;Silver;Cianwood City;Chuck;Primeape;27;leer;rage;karate-chop;fury-swipes
+2;Silver;Cianwood City;Chuck;Poliwrath;30;hypnosis;mind-reader;surf;dynamic-punch
+2;Silver;Olivine City;Jasmine;Magnemite;30;thunderbolt;supersonic;sonic-boom;thunder-wave
+2;Silver;Olivine City;Jasmine;Magnemite;30;thunderbolt;supersonic;sonic-boom;thunder-wave
+2;Silver;Olivine City;Jasmine;Steelix;35;screech;sunny-day;rock-throw;iron-tail
+2;Silver;Mahogany Town;Pryce;Seel;27;headbutt;icy-wind;aurora-beam;rest
+2;Silver;Mahogany Town;Pryce;Dewgong;29;headbutt;icy-wind;aurora-beam;rest
+2;Silver;Mahogany Town;Pryce;Piloswine;31;icy-wind;fury-attack;mist;blizzard
+2;Silver;Blackthorn City;Clair;Dragonair;37;thunder-wave;surf;slam;dragon-breath
+2;Silver;Blackthorn City;Clair;Dragonair;37;thunder-wave;thunderbolt;slam;dragon-breath
+2;Silver;Blackthorn City;Clair;Dragonair;37;thunder-wave;ice-beam;slam;dragon-breath
+2;Silver;Blackthorn City;Clair;Kingdra;40;smokescreen;surf;hyper-beam;dragon-breath
+2;Silver;Vermilion City;Lt. Surge;Raichu;44;thunder-wave;quick-attack;thunderbolt;thunder
+2;Silver;Vermilion City;Lt. Surge;Electrode;40;screech;double-team;swift;explosion
+2;Silver;Vermilion City;Lt. Surge;Electrode;41;screech;double-team;swift;explosion
+2;Silver;Vermilion City;Lt. Surge;Magneton;40;lock-on;double-team;swift;zap-cannon
+2;Silver;Vermilion City;Lt. Surge;Electabuzz;45;quick-attack;thunder-punch;light-screen;thunder
+2;Silver;Saffron City;Sabrina;Espeon;46;sand-attack;quick-attack;swift;psychic
+2;Silver;Saffron City;Sabrina;Mr. Mime;46;barrier;reflect;baton-pass;psychic
+2;Silver;Saffron City;Sabrina;Alakazam;48;recover;future-sight;psychic;reflect
+2;Silver;Celadon City;Erika;Tangela;42;vine-whip;bind;giga-drain;sleep-powder
+2;Silver;Celadon City;Erika;Jumpluff;41;mega-drain;leech-seed;cotton-spore;giga-drain
+2;Silver;Celadon City;Erika;Victreebel;46;sunny-day;synthesis;acid;razor-leaf
+2;Silver;Celadon City;Erika;Bellossom;46;sunny-day;synthesis;petal-dance;solar-beam
+2;Silver;Fuchsia City;Janine;Crobat;36;screech;supersonic;confuse-ray;wing-attack
+2;Silver;Fuchsia City;Janine;Weezing;36;smog;sludge-bomb;toxic;explosion
+2;Silver;Fuchsia City;Janine;Weezing;37;smog;sludge-bomb;toxic;explosion
+2;Silver;Fuchsia City;Janine;Ariados;33;scary-face;giga-drain;string-shot;night-shade
+2;Silver;Fuchsia City;Janine;Venomoth;39;foresight;double-team;gust;psychic
+2;Silver;Cerulean City;misty;Golduck;42;surf;disable;psych-up;psychic
+2;Silver;Cerulean City;misty;Quagsire;42;surf;amnesia;earthquake;rain-dance
+2;Silver;Cerulean City;misty;Lapras;44;surf;perish-song;blizzard;rain-dance
+2;Silver;Cerulean City;misty;Starmie;47;surf;confuse-ray;recover;ice-beam
+2;Silver;Pewter City;Brock;Graveler;41;defense-curl;rock-slide;rollout;earthquake
+2;Silver;Pewter City;Brock;Rhyhorn;41;fury-attack;scary-face;earthquake;horn-drill
+2;Silver;Pewter City;Brock;Omastar;42;bite;surf;protect;spike-cannon
+2;Silver;Pewter City;Brock;Onix;44;bind;rock-slide;bide;sandstorm
+2;Silver;Pewter City;Brock;Kabutops;42;slash;surf;endure;giga-drain
+2;Silver;Seafoam Islands;Blaine;Magcargo;45;curse;smog;flamethrower;rock-slide
+2;Silver;Seafoam Islands;Blaine;Magmar;45;thunder-punch;fire-punch;sunny-day;confuse-ray
+2;Silver;Seafoam Islands;Blaine;Rapidash;50;quick-attack;fire-spin;fury-attack;fire-blast
+2;Silver;Viridian City;Blue;Pidgeot;56;quick-attack;whirlwind;wing-attack;mirror-move
+2;Silver;Viridian City;Blue;Alakazam;54;disable;recover;psychic;reflect
+2;Silver;Viridian City;Blue;Rhydon;56;fury-attack;sandstorm;rock-slide;earthquake
+2;Silver;Viridian City;Blue;Gyarados;58;twister;hydro-pump;rain-dance;hyper-beam
+2;Silver;Viridian City;Blue;Exeggutor;58;sunny-day;leech-seed;egg-bomb;solar-beam
+2;Silver;Viridian City;Blue;Arcanine;58;roar;swift;flamethrower;extreme-speed
+2;Silver;Elite Four;Will;Xatu;40;quick-attack;future-sight;confuse-ray;psychic
+2;Silver;Elite Four;Will;Jynx;41;double-slap;lovely-kiss;ice-punch;psychic
+2;Silver;Elite Four;Will;Exeggutor;41;reflect;leech-seed;egg-bomb;psychic
+2;Silver;Elite Four;Will;Slowbro;41;curse;amnesia;body-slam;psychic
+2;Silver;Elite Four;Will;Xatu;42;quick-attack;future-sight;confuse-ray;psychic
+2;Silver;Elite Four;Koga;Ariados;40;double-team;spider-web;baton-pass;giga-drain
+2;Silver;Elite Four;Koga;Venomoth;41;supersonic;gust;psychic;toxic
+2;Silver;Elite Four;Koga;Forretress;43;protect;swift;explosion;spikes
+2;Silver;Elite Four;Koga;Muk;42;minimize;acid-armor;sludge-bomb;toxic
+2;Silver;Elite Four;Bruno;Hitmontop;42;pursuit;quick-attack;dig;detect
+2;Silver;Elite Four;Bruno;Hitmonlee;42;swagger;double-kick;high-jump-kick;foresight
+2;Silver;Elite Four;Bruno;Hitmonchan;42;thunder-punch;fire-punch;ice-punch;mach-punch
+2;Silver;Elite Four;Bruno;Onix;43;bind;earthquake;sandstorm;rock-slide
+2;Silver;Elite Four;Bruno;Machamp;46;rock-slide;foresight;vital-throw;cross-chop
+2;Silver;Elite Four;Karen;Umbreon;42;sand-attack;confuse-ray;feint-attack;mean-look
+2;Silver;Elite Four;Karen;Vileplume;42;stun-spore;acid;moonlight;petal-dance
+2;Silver;Elite Four;Karen;Gengar;45;lick;spite;curse;destiny-bond
+2;Silver;Elite Four;Karen;Murkrow;44;quick-attack;whirlwind;pursuit;feint-attack
+2;Silver;Elite Four;Karen;Houndoom;47;roar;pursuit;flamethrower;crunch
+2;Silver;Elite Four;Champion Lance;Gyarados;44;flail;rain-dance;surf;hyper-beam
+2;Silver;Elite Four;Champion Lance;Dragonite;47;thunder-wave;twister;thunder;hyper-beam
+2;Silver;Elite Four;Champion Lance;Dragonite;48;thunder-wave;twister;blizzard;hyper-beam
+2;Silver;Elite Four;Champion Lance;Aerodactyl;46;wing-attack;ancient-power;rock-slide;hyper-beam
+2;Silver;Elite Four;Champion Lance;Charizard;46;flamethrower;wing-attack;slash;hyper-beam
+2;Silver;Elite Four;Champion Lance;Dragonite;50;fire-blast;safeguard;outrage;hyper-beam
+2;Crystal;Violet City;Falkner;Pidgey;7;tackle;mud-slap;;
+2;Crystal;Violet City;Falkner;Pidgeotto;9;tackle;mud-slap;gust;
+2;Crystal;Azalea Town;Bugsy;Metapod;14;tackle;string-shot;harden;
+2;Crystal;Azalea Town;Bugsy;Kakuna;14;poison-sting;string-shot;harden;
+2;Crystal;Azalea Town;Bugsy;Scyther;16;quick-attack;leer;fury-cutter;
+2;Crystal;Goldenrod City;Whitney;Clefairy;18;double-slap;mimic;encore;metronome
+2;Crystal;Goldenrod City;Whitney;Miltank;20;rollout;attract;stomp;milk-drink
+2;Crystal;Ecruteak City;Morty;Gastly;21;lick;spite;mean-look;curse
+2;Crystal;Ecruteak City;Morty;Haunter;21;hypnosis;mimic;curse;night-shade
+2;Crystal;Ecruteak City;Morty;Haunter;23;spite;mean-look;mimic;night-shade
+2;Crystal;Ecruteak City;Morty;Gengar;25;hypnosis;shadow-ball;mean-look;dream-eater
+2;Crystal;Cianwood City;Chuck;Primeape;27;leer;rage;karate-chop;fury-swipes
+2;Crystal;Cianwood City;Chuck;Poliwrath;30;hypnosis;mind-reader;surf;dynamic-punch
+2;Crystal;Olivine City;Jasmine;Magnemite;30;thunderbolt;supersonic;sonic-boom;thunder-wave
+2;Crystal;Olivine City;Jasmine;Magnemite;31;thunderbolt;supersonic;sonic-boom;thunder-wave
+2;Crystal;Olivine City;Jasmine;Steelix;35;screech;sunny-day;rock-throw;iron-tail
+2;Crystal;Mahogany Town;Pryce;Seel;27;headbutt;icy-wind;aurora-beam;rest
+2;Crystal;Mahogany Town;Pryce;Dewgong;29;headbutt;icy-wind;aurora-beam;rest
+2;Crystal;Mahogany Town;Pryce;Piloswine;31;icy-wind;fury-attack;mist;blizzard
+2;Crystal;Blackthorn City;Clair;Dragonair;37;thunder-wave;surf;slam;dragon-breath
+2;Crystal;Blackthorn City;Clair;Dragonair;38;thunder-wave;thunderbolt;slam;dragon-breath
+2;Crystal;Blackthorn City;Clair;Dragonair;39;thunder-wave;ice-beam;slam;dragon-breath
+2;Crystal;Blackthorn City;Clair;Kingdra;40;smokescreen;surf;hyper-beam;dragon-breath
+2;Crystal;Vermilion City;Lt. Surge;Raichu;44;thunder-wave;quick-attack;thunderbolt;thunder
+2;Crystal;Vermilion City;Lt. Surge;Electrode;40;screech;double-team;swift;explosion
+2;Crystal;Vermilion City;Lt. Surge;Electrode;41;screech;double-team;swift;explosion
+2;Crystal;Vermilion City;Lt. Surge;Magneton;40;lock-on;double-team;swift;zap-cannon
+2;Crystal;Vermilion City;Lt. Surge;Electabuzz;45;quick-attack;thunder-punch;light-screen;thunder
+2;Crystal;Saffron City;Sabrina;Espeon;46;sand-attack;quick-attack;swift;psychic
+2;Crystal;Saffron City;Sabrina;Mr. Mime;46;barrier;reflect;baton-pass;psychic
+2;Crystal;Saffron City;Sabrina;Alakazam;48;recover;future-sight;psychic;reflect
+2;Crystal;Celadon City;Erika;Tangela;42;vine-whip;bind;giga-drain;sleep-powder
+2;Crystal;Celadon City;Erika;Jumpluff;41;mega-drain;leech-seed;cotton-spore;giga-drain
+2;Crystal;Celadon City;Erika;Victreebel;46;sunny-day;synthesis;acid;razor-leaf
+2;Crystal;Celadon City;Erika;Bellossom;46;sunny-day;synthesis;petal-dance;solar-beam
+2;Crystal;Fuchsia City;Janine;Crobat;36;screech;supersonic;confuse-ray;wing-attack
+2;Crystal;Fuchsia City;Janine;Weezing;36;smog;sludge-bomb;toxic;explosion
+2;Crystal;Fuchsia City;Janine;Weezing;37;smog;sludge-bomb;toxic;explosion
+2;Crystal;Fuchsia City;Janine;Ariados;33;scary-face;giga-drain;string-shot;night-shade
+2;Crystal;Fuchsia City;Janine;Venomoth;39;foresight;double-team;gust;psychic
+2;Crystal;Cerulean City;misty;Golduck;42;surf;disable;psych-up;psychic
+2;Crystal;Cerulean City;misty;Quagsire;42;surf;amnesia;earthquake;rain-dance
+2;Crystal;Cerulean City;misty;Lapras;44;surf;perish-song;blizzard;rain-dance
+2;Crystal;Cerulean City;misty;Starmie;47;surf;confuse-ray;recover;ice-beam
+2;Crystal;Pewter City;Brock;Graveler;41;defense-curl;rock-slide;rollout;earthquake
+2;Crystal;Pewter City;Brock;Rhyhorn;41;fury-attack;scary-face;earthquake;horn-drill
+2;Crystal;Pewter City;Brock;Omastar;42;bite;surf;protect;spike-cannon
+2;Crystal;Pewter City;Brock;Onix;44;bind;rock-slide;bide;sandstorm
+2;Crystal;Pewter City;Brock;Kabutops;42;slash;surf;endure;giga-drain
+2;Crystal;Seafoam Islands;Blaine;Magcargo;45;curse;smog;flamethrower;rock-slide
+2;Crystal;Seafoam Islands;Blaine;Magmar;45;thunder-punch;fire-punch;sunny-day;confuse-ray
+2;Crystal;Seafoam Islands;Blaine;Rapidash;50;quick-attack;fire-spin;fury-attack;fire-blast
+2;Crystal;Viridian City;Blue;Pidgeot;56;quick-attack;whirlwind;wing-attack;mirror-move
+2;Crystal;Viridian City;Blue;Alakazam;54;disable;recover;psychic;reflect
+2;Crystal;Viridian City;Blue;Rhydon;56;fury-attack;sandstorm;rock-slide;earthquake
+2;Crystal;Viridian City;Blue;Gyarados;58;twister;hydro-pump;rain-dance;hyper-beam
+2;Crystal;Viridian City;Blue;Exeggutor;58;sunny-day;leech-seed;egg-bomb;solar-beam
+2;Crystal;Viridian City;Blue;Arcanine;58;roar;swift;flamethrower;extreme-speed
+2;Crystal;Elite Four;Will;Xatu;40;quick-attack;future-sight;confuse-ray;psychic
+2;Crystal;Elite Four;Will;Jynx;41;double-slap;lovely-kiss;ice-punch;psychic
+2;Crystal;Elite Four;Will;Exeggutor;41;reflect;leech-seed;egg-bomb;psychic
+2;Crystal;Elite Four;Will;Slowbro;41;curse;amnesia;body-slam;psychic
+2;Crystal;Elite Four;Will;Xatu;42;quick-attack;future-sight;confuse-ray;psychic
+2;Crystal;Elite Four;Koga;Ariados;40;double-team;spider-web;baton-pass;giga-drain
+2;Crystal;Elite Four;Koga;Venomoth;41;supersonic;gust;psychic;toxic
+2;Crystal;Elite Four;Koga;Forretress;41;protect;swift;explosion;spikes
+2;Crystal;Elite Four;Koga;Muk;42;minimize;acid-armor;sludge-bomb;toxic
+2;Crystal;Elite Four;Koga;Crobat;44;double-team;quick-attack;wing-attack;toxic
+2;Crystal;Elite Four;Bruno;Hitmontop;42;pursuit;quick-attack;dig;detect
+2;Crystal;Elite Four;Bruno;Hitmonlee;42;swagger;double-kick;high-jump-kick;foresight
+2;Crystal;Elite Four;Bruno;Hitmonchan;42;thunder-punch;fire-punch;ice-punch;mach-punch
+2;Crystal;Elite Four;Bruno;Onix;43;bind;earthquake;sandstorm;rock-slide
+2;Crystal;Elite Four;Bruno;Machamp;46;rock-slide;foresight;vital-throw;cross-chop
+2;Crystal;Elite Four;Karen;Umbreon;42;sand-attack;confuse-ray;feint-attack;mean-look
+2;Crystal;Elite Four;Karen;Vileplume;42;stun-spore;acid;moonlight;petal-dance
+2;Crystal;Elite Four;Karen;Gengar;45;lick;spite;curse;destiny-bond
+2;Crystal;Elite Four;Karen;Murkrow;44;quick-attack;whirlwind;pursuit;feint-attack
+2;Crystal;Elite Four;Karen;Houndoom;47;roar;pursuit;flamethrower;crunch
+2;Crystal;Elite Four;Champion Lance;Gyarados;44;Fla;rain-dance;surf;hyper-beam
+2;Crystal;Elite Four;Champion Lance;Dragonite;47;thunder-wave;twister;blizzard;hyper-beam
+2;Crystal;Elite Four;Champion Lance;Dragonite;48;thunder-wave;twister;blizzard;hyper-beam
+2;Crystal;Elite Four;Champion Lance;Aerodactyl;46;wing-attack;ancient-power;rock-slide;hyper-beam
+2;Crystal;Elite Four;Champion Lance;Charizard;46;flamethrower;wing-attack;slash;hyper-beam
+2;Crystal;Elite Four;Champion Lance;Dragonite;50;fire-blast;safeguard;outrage;hyper-beam
+3;Ruby;Rustboro City;Roxanne;Geodude;14;tackle;defense-curl;rock-throw;rock-tomb
+3;Ruby;Rustboro City;Roxanne;Nosepass;15;tackle;defense-curl;rock-throw;rock-tomb
+3;Ruby;Dewford Town;Brawly;Machop;17;bulk-up;leer;karate-chop;seismic-toss
+3;Ruby;Dewford Town;Brawly;Makuhita;18;bulk-up;knock-off;arm-thrust;sand-attack
+3;Ruby;Mauville City;Wattson;Voltorb;20;spark;sonic-boom;rollout;self-destruct
+3;Ruby;Mauville City;Wattson;Magnemite;22;thunder-shock;supersonic;sonic-boom;thunder-wave
+3;Ruby;Mauville City;Wattson;Magneton;23;shock-wave;supersonic;sonic-boom;thunder-wave
+3;Ruby;Lavaridge Town;Flannery;Slugma;26;overheat;smog;light-screen;sunny-day
+3;Ruby;Lavaridge Town;Flannery;Slugma;26;flamethrower;rock-slide;light-screen;sunny-day
+3;Ruby;Lavaridge Town;Flannery;Torkoal;28;overheat;body-slam;flail;attract
+3;Ruby;Petalburg City;Norman;Slaking;28;encore;facade;yawn;feint-attack
+3;Ruby;Petalburg City;Norman;Vigoroth;30;slash;feint-attack;facade;encore
+3;Ruby;Petalburg City;Norman;Slaking;31;focus-punch;slack-off;facade;feint-attack
+3;Ruby;Fortree City;Winona;Swellow;31;quick-attack;aerial-ace;double-team;endeavor
+3;Ruby;Fortree City;Winona;Pelipper;30;water-gun;supersonic;protect;aerial-ace
+3;Ruby;Fortree City;Winona;Skarmory;32;sand-attack;fury-attack;steel-wing;aerial-ace
+3;Ruby;Fortree City;Winona;Altaria;33;earthquake;dragon-breath;dragon-dance;aerial-ace
+3;Ruby;Mossdeep City;Tate & Liza;Lunatone;42;light-screen;psychic;hypnosis;calm-mind
+3;Ruby;Mossdeep City;Tate & Liza;Solrock;42;sunny-day;solar-beam;psychic;flamethrower
+3;Ruby;Sootopolis City;Wallace;Luvdisc;40;flail;attract;sweet-kiss;water-pulse
+3;Ruby;Sootopolis City;Wallace;Sealeo;40;encore;body-slam;aurora-beam;water-pulse
+3;Ruby;Sootopolis City;Wallace;Seaking;42;horn-drill;fury-attack;rain-dance;water-pulse
+3;Ruby;Sootopolis City;Wallace;Whiscash;42;amnesia;rain-dance;earthquake;water-pulse
+3;Ruby;Sootopolis City;Wallace;Milotic;43;recover;twister;ice-beam;water-pulse
+3;Ruby;Elite Four;Sidney;Mightyena;46;crunch;take-down;sand-attack;roar
+3;Ruby;Elite Four;Sidney;Cacturne;46;feint-attack;needle-arm;cotton-spore;leech-seed
+3;Ruby;Elite Four;Sidney;Shiftry;48;fake-out;extrasensory;double-team;swagger
+3;Ruby;Elite Four;Sidney;Sharpedo;48;surf;crunch;slash;swagger
+3;Ruby;Elite Four;Sidney;Absol;49;swords-dance;slash;aerial-ace;snatch
+3;Ruby;Elite Four;Phoebe;Dusclops;48;curse;confuse-ray;future-sight;shadow-punch
+3;Ruby;Elite Four;Phoebe;Banette;49;spite;will-o-wisp;shadow-ball;feint-attack
+3;Ruby;Elite Four;Phoebe;Banette;49;toxic;skill-swap;shadow-ball;psychic
+3;Ruby;Elite Four;Phoebe;Sableye;50;feint-attack;shadow-ball;psychic;attract
+3;Ruby;Elite Four;Phoebe;Dusclops;51;confuse-ray;shadow-ball;ice-beam;earthquake
+3;Ruby;Elite Four;Glacia;Glalie;50;hail;light-screen;ice-beam;crunch
+3;Ruby;Elite Four;Glacia;Sealeo;50;surf;ice-ball;hail;body-slam
+3;Ruby;Elite Four;Glacia;Sealeo;52;hail;blizzard;dive;attract
+3;Ruby;Elite Four;Glacia;Glalie;52;hail;ice-beam;shadow-ball;crunch
+3;Ruby;Elite Four;Glacia;Walrein;53;blizzard;surf;body-slam;Sheer Cold
+3;Ruby;Elite Four;Drake;Shelgon;52;dragon-claw;rock-tomb;protect;crunch
+3;Ruby;Elite Four;Drake;Altaria;54;take-down;dragon-breath;dragon-dance;refresh
+3;Ruby;Elite Four;Drake;Flygon;53;flamethrower;crunch;dragon-breath;sand-attack
+3;Ruby;Elite Four;Drake;Flygon;53;fly;dig;dragon-breath;sandstorm
+3;Ruby;Elite Four;Drake;Salamence;55;flamethrower;dragon-claw;crunch;fly
+3;Ruby;Elite Four;Champion Steven;Skarmory;57;steel-wing;toxic;aerial-ace;spikes
+3;Ruby;Elite Four;Champion Steven;Claydol;55;earthquake;ancient-power;light-screen;reflect
+3;Ruby;Elite Four;Champion Steven;Aggron;56;earthquake;dragon-claw;thunder;solar-beam
+3;Ruby;Elite Four;Champion Steven;Cradily;56;ancient-power;confuse-ray;sludge-bomb;giga-drain
+3;Ruby;Elite Four;Champion Steven;Armaldo;56;ancient-power;slash;aerial-ace;water-pulse
+3;Ruby;Elite Four;Champion Steven;Metagross;58;meteor-mash;earthquake;psychic;hyper-beam
+3;Sapphire;Rustboro City;Roxanne;Geodude;14;tackle;defense-curl;rock-throw;rock-tomb
+3;Sapphire;Rustboro City;Roxanne;Nosepass;15;tackle;defense-curl;rock-throw;rock-tomb
+3;Sapphire;Dewford Town;Brawly;Machop;17;bulk-up;leer;karate-chop;seismic-toss
+3;Sapphire;Dewford Town;Brawly;Makuhita;18;bulk-up;knock-off;arm-thrust;sand-attack
+3;Sapphire;Mauville City;Wattson;Voltorb;20;spark;sonic-boom;rollout;self-destruct
+3;Sapphire;Mauville City;Wattson;Magnemite;22;thunder-shock;supersonic;sonic-boom;thunder-wave
+3;Sapphire;Mauville City;Wattson;Magneton;23;shock-wave;supersonic;sonic-boom;thunder-wave
+3;Sapphire;Lavaridge Town;Flannery;Slugma;26;overheat;smog;light-screen;sunny-day
+3;Sapphire;Lavaridge Town;Flannery;Slugma;26;flamethrower;rock-slide;light-screen;sunny-day
+3;Sapphire;Lavaridge Town;Flannery;Torkoal;28;overheat;body-slam;flail;attract
+3;Sapphire;Petalburg City;Norman;Slaking;28;encore;facade;yawn;feint-attack
+3;Sapphire;Petalburg City;Norman;Vigoroth;30;slash;feint-attack;facade;encore
+3;Sapphire;Petalburg City;Norman;Slaking;31;focus-punch;slack-off;facade;feint-attack
+3;Sapphire;Fortree City;Winona;Swellow;31;quick-attack;aerial-ace;double-team;endeavor
+3;Sapphire;Fortree City;Winona;Pelipper;30;water-gun;supersonic;protect;aerial-ace
+3;Sapphire;Fortree City;Winona;Skarmory;32;sand-attack;fury-attack;steel-wing;aerial-ace
+3;Sapphire;Fortree City;Winona;Altaria;33;earthquake;dragon-breath;dragon-dance;aerial-ace
+3;Sapphire;Mossdeep City;Tate & Liza;Lunatone;42;light-screen;psychic;hypnosis;calm-mind
+3;Sapphire;Mossdeep City;Tate & Liza;Solrock;42;sunny-day;solar-beam;psychic;flamethrower
+3;Sapphire;Sootopolis City;Wallace;Luvdisc;40;flail;attract;sweet-kiss;water-pulse
+3;Sapphire;Sootopolis City;Wallace;Sealeo;40;encore;body-slam;aurora-beam;water-pulse
+3;Sapphire;Sootopolis City;Wallace;Seaking;42;horn-drill;fury-attack;rain-dance;water-pulse
+3;Sapphire;Sootopolis City;Wallace;Whiscash;42;amnesia;rain-dance;earthquake;water-pulse
+3;Sapphire;Sootopolis City;Wallace;Milotic;43;recover;twister;ice-beam;water-pulse
+3;Sapphire;Elite Four;Sidney;Mightyena;46;crunch;take-down;sand-attack;roar
+3;Sapphire;Elite Four;Sidney;Cacturne;46;feint-attack;needle-arm;cotton-spore;leech-seed
+3;Sapphire;Elite Four;Sidney;Shiftry;48;fake-out;extrasensory;double-team;swagger
+3;Sapphire;Elite Four;Sidney;Sharpedo;48;surf;crunch;slash;swagger
+3;Sapphire;Elite Four;Sidney;Absol;49;swords-dance;slash;aerial-ace;snatch
+3;Sapphire;Elite Four;Phoebe;Dusclops;48;curse;confuse-ray;future-sight;shadow-punch
+3;Sapphire;Elite Four;Phoebe;Banette;49;spite;will-o-wisp;shadow-ball;feint-attack
+3;Sapphire;Elite Four;Phoebe;Banette;49;toxic;skill-swap;shadow-ball;psychic
+3;Sapphire;Elite Four;Phoebe;Sableye;50;feint-attack;shadow-ball;psychic;attract
+3;Sapphire;Elite Four;Phoebe;Dusclops;51;confuse-ray;shadow-ball;ice-beam;earthquake
+3;Sapphire;Elite Four;Glacia;Glalie;50;hail;light-screen;ice-beam;crunch
+3;Sapphire;Elite Four;Glacia;Sealeo;50;surf;ice-ball;hail;body-slam
+3;Sapphire;Elite Four;Glacia;Sealeo;52;hail;blizzard;dive;attract
+3;Sapphire;Elite Four;Glacia;Glalie;52;hail;ice-beam;shadow-ball;crunch
+3;Sapphire;Elite Four;Glacia;Walrein;53;blizzard;surf;body-slam;Sheer Cold
+3;Sapphire;Elite Four;Drake;Shelgon;52;dragon-claw;rock-tomb;protect;crunch
+3;Sapphire;Elite Four;Drake;Altaria;54;take-down;dragon-breath;dragon-dance;refresh
+3;Sapphire;Elite Four;Drake;Flygon;53;flamethrower;crunch;dragon-breath;sand-attack
+3;Sapphire;Elite Four;Drake;Flygon;53;fly;dig;dragon-breath;sandstorm
+3;Sapphire;Elite Four;Drake;Salamence;55;flamethrower;dragon-claw;crunch;fly
+3;Sapphire;Elite Four;Champion Steven;Skarmory;57;steel-wing;toxic;aerial-ace;spikes
+3;Sapphire;Elite Four;Champion Steven;Claydol;55;earthquake;ancient-power;light-screen;reflect
+3;Sapphire;Elite Four;Champion Steven;Aggron;56;earthquake;dragon-claw;thunder;solar-beam
+3;Sapphire;Elite Four;Champion Steven;Cradily;56;ancient-power;confuse-ray;sludge-bomb;giga-drain
+3;Sapphire;Elite Four;Champion Steven;Armaldo;56;ancient-power;slash;aerial-ace;water-pulse
+3;Sapphire;Elite Four;Champion Steven;Metagross;58;meteor-mash;earthquake;psychic;hyper-beam
+3;Emerald;Rustboro City;Roxanne;Geodude;12;tackle;defense-curl;rock-throw;rock-tomb
+3;Emerald;Rustboro City;Roxanne;Geodude;13;tackle;defense-curl;rock-throw;rock-tomb
+3;Emerald;Rustboro City;Roxanne;Nosepass;15;Block;harden;tackle;rock-tomb
+3;Emerald;Dewford Town;Brawly;Machop;16;karate-chop;low-kick;seismic-toss;bulk-up
+3;Emerald;Dewford Town;Brawly;Meditite;16;focus-punch;light-screen;reflect;bulk-up
+3;Emerald;Dewford Town;Brawly;Makuhita;19;arm-thrust;vital-throw;reversal;bulk-up
+3;Emerald;Mauville City;Wattson;Voltorb;20;rollout;spark;self-destruct;shock-wave
+3;Emerald;Mauville City;Wattson;Electrike;20;shock-wave;leer;quick-attack;howl
+3;Emerald;Mauville City;Wattson;Magnemite;22;supersonic;shock-wave;thunder-wave;sonic-boom
+3;Emerald;Mauville City;Wattson;Manectric;24;quick-attack;thunder-wave;shock-wave;howl
+3;Emerald;Lavaridge Town;Flannery;Numel;24;overheat;take-down;magnitude;sunny-day
+3;Emerald;Lavaridge Town;Flannery;Slugma;24;overheat;smog;light-screen;sunny-day
+3;Emerald;Lavaridge Town;Flannery;Camelrupt;26;overheat;tackle;sunny-day;attract
+3;Emerald;Lavaridge Town;Flannery;Torkoal;29;overheat;sunny-day;body-slam;attract
+3;Emerald;Petalburg City;Norman;Spinda;27;teeter-dance;psybeam;facade;encore
+3;Emerald;Petalburg City;Norman;Vigoroth;27;slash;facade;encore;feint-attack
+3;Emerald;Petalburg City;Norman;Linoone;29;slash;belly-drum;facade;headbutt
+3;Emerald;Petalburg City;Norman;Slaking;31;counter;yawn;facade;feint-attack
+3;Emerald;Fortree City;Winona;Swablu;29;perish-song;mirror-move;safeguard;aerial-ace
+3;Emerald;Fortree City;Winona;Tropius;29;sunny-day;aerial-ace;solar-beam;synthesis
+3;Emerald;Fortree City;Winona;Pelipper;30;water-gun;supersonic;protect;aerial-ace
+3;Emerald;Fortree City;Winona;Skarmory;31;sand-attack;fury-attack;steel-wing;aerial-ace
+3;Emerald;Fortree City;Winona;Altaria;33;earthquake;dragon-breath;dragon-dance;aerial-ace
+3;Emerald;Mossdeep City;Tate & Liza;Claydol;41;earthquake;ancient-power;psychic;light-screen
+3;Emerald;Mossdeep City;Tate & Liza;Xatu;41;psychic;sunny-day;confuse-ray;calm-mind
+3;Emerald;Mossdeep City;Tate & Liza;Lunatone;42;light-screen;psychic;hypnosis;calm-mind
+3;Emerald;Mossdeep City;Tate & Liza;Solrock;42;sunny-day;solar-beam;psychic;flamethrower
+3;Emerald;Sootopolis City;Juan;Luvdisc;41;water-pulse;attract;sweet-kiss;flail
+3;Emerald;Sootopolis City;Juan;Whiscash;41;rain-dance;water-pulse;amnesia;earthquake
+3;Emerald;Sootopolis City;Juan;Sealeo;43;encore;body-slam;aurora-beam;water-pulse
+3;Emerald;Sootopolis City;Juan;Crawdaunt;43;water-pulse;crabhammer;taunt;leer
+3;Emerald;Sootopolis City;Juan;Kingdra;46;water-pulse;double-team;ice-beam;rest
+3;Emerald;Elite Four;Sidney;Mightyena;46;crunch;double-edge;sand-attack;roar
+3;Emerald;Elite Four;Sidney;Shiftry;48;torment;double-team;swagger;extrasensory
+3;Emerald;Elite Four;Sidney;Cacturne;46;needle-arm;leech-seed;feint-attack;cotton-spore
+3;Emerald;Elite Four;Sidney;Crawdaunt;48;swords-dance;surf;facade;strength
+3;Emerald;Elite Four;Sidney;Absol;49;aerial-ace;rock-slide;swords-dance;slash
+3;Emerald;Elite Four;Phoebe;Dusclops;48;shadow-punch;confuse-ray;curse;protect
+3;Emerald;Elite Four;Phoebe;Banette;49;shadow-ball;grudge;will-o-wisp;feint-attack
+3;Emerald;Elite Four;Phoebe;Sableye;50;shadow-ball;double-team;night-shade;feint-attack
+3;Emerald;Elite Four;Phoebe;Banette;49;psychic;shadow-ball;thunderbolt;facade
+3;Emerald;Elite Four;Phoebe;Dusclops;51;shadow-ball;ice-beam;earthquake;rock-slide
+3;Emerald;Elite Four;Glacia;Sealeo;50;encore;ice-ball;body-slam;hail
+3;Emerald;Elite Four;Glacia;Glalie;50;crunch;icy-wind;ice-beam;light-screen
+3;Emerald;Elite Four;Glacia;Sealeo;52;blizzard;double-edge;attract;hail
+3;Emerald;Elite Four;Glacia;Glalie;52;explosion;ice-beam;shadow-ball;hail
+3;Emerald;Elite Four;Glacia;Walrein;53;surf;ice-beam;body-slam;Sheer Cold
+3;Emerald;Elite Four;Drake;Shelgon;52;rock-tomb;dragon-claw;double-edge;protect
+3;Emerald;Elite Four;Drake;Altaria;54;double-edge;dragon-breath;aerial-ace;dragon-dance
+3;Emerald;Elite Four;Drake;Kingdra;53;smokescreen;dragon-dance;surf;body-slam
+3;Emerald;Elite Four;Drake;Flygon;53;dragon-breath;flamethrower;crunch;earthquake
+3;Emerald;Elite Four;Drake;Salamence;55;dragon-claw;flamethrower;crunch;rock-slide
+3;Emerald;Elite Four;Wallace;Tentacruel;55;hydro-pump;ice-beam;toxic;sludge-bomb
+3;Emerald;Elite Four;Wallace;Gyarados;56;dragon-dance;hyper-beam;surf;earthquake
+3;Emerald;Elite Four;Wallace;Ludicolo;56;surf;leech-seed;giga-drain;double-team
+3;Emerald;Elite Four;Wallace;Whiscash;56;surf;earthquake;hyper-beam;amnesia
+3;Emerald;Elite Four;Wallace;Wailord;57;water-spout;rain-dance;blizzard;double-edge
+3;Emerald;Elite Four;Wallace;Milotic;58;surf;ice-beam;toxic;recover
+3;Emerald;Elite Four;Champion Steven;Skarmory;77;toxic;spikes;aerial-ace;steel-wing
+3;Emerald;Elite Four;Champion Steven;Claydol;75;reflect;earthquake;light-screen;ancient-power
+3;Emerald;Elite Four;Champion Steven;Cradily;76;giga-drain;ancient-power;ingrain;confuse-ray
+3;Emerald;Elite Four;Champion Steven;Armaldo;76;water-pulse;ancient-power;aerial-ace;slash
+3;Emerald;Elite Four;Champion Steven;Aggron;76;thunder;earthquake;solar-beam;dragon-claw
+3;Emerald;Elite Four;Champion Steven;Metagross;78;earthquake;meteor-mash;psychic;shadow-ball
+4;Diamond;Oreburgh City;roark;Geodude;12;rock-throw;screech;stealth-rock;
+4;Diamond;Oreburgh City;roark;Onix;12;rock-throw;screech;stealth-rock;
+4;Diamond;Oreburgh City;roark;Cranidos;12;rock-throw;screech;stealth-rock;
+4;Diamond;Eterna City;Gardenia;Cherubi;19;grass-knot;leech-seed;safeguard;growth
+4;Diamond;Eterna City;Gardenia;Turtwig;19;grass-knot;razor-leaf;withdraw;reflect
+4;Diamond;Eterna City;Gardenia;Roserade;22;grass-knot;magical-leaf;poison-sting;stun-spore
+4;Diamond;Veilstone Town;Maylene;Meditite;27;drain-punch;confusion;meditate;detect
+4;Diamond;Veilstone Town;Maylene;Machoke;27;brick-break;rock-tomb;foresight;leer
+4;Diamond;Veilstone Town;Maylene;Lucario;30;drain-punch;force-palm;metal-claw;bone-rush
+4;Diamond;Pastoria City;Crasher Wake;Gyarados;27;brine;bite;dragon-rage;swagger
+4;Diamond;Pastoria City;Crasher Wake;Quagsire;27;slam;mud-bomb;mud-sport;tail-whip
+4;Diamond;Pastoria City;Crasher Wake;Floatzel;30;brine;ice-fang;pursuit;swift
+4;Diamond;Hearthome City;Fantina;Drifblim;32;ominous-wind;gust;astonish;minimize
+4;Diamond;Hearthome City;Fantina;Gengar;34;shadow-claw;poison-jab;confuse-ray;spite
+4;Diamond;Hearthome City;Fantina;Mismagius;34;shadow-ball;psybeam;magical-leaf;confuse-ray
+4;Diamond;Canalave City;Byron;Bronzor;36;flash-cannon;extrasensory;confuse-ray;hypnosis
+4;Diamond;Canalave City;Byron;Bronzor;36;gyro-ball;ice-fang;dragon-breath;sandstorm
+4;Diamond;Canalave City;Byron;Bastiodon;39;flash-cannon;ancient-power;iron-defense;rest
+4;Diamond;Snowpoint City;Candice;Snover;38;ice-shard;razor-leaf;leer;ingrain
+4;Diamond;Snowpoint City;Candice;Sneasel;38;avalanche;feint-attack;slash;taunt
+4;Diamond;Snowpoint City;Candice;Medicham;40;ice-punch;force-palm;bulk-up;detect
+4;Diamond;Snowpoint City;Candice;Abomasnow;42;avalanche;wood-hammer;swagger;grass-whistle
+4;Diamond;Sunyshore City;Volkner;Raichu;46;charge-beam;brick-break;light-screen;thunder-wave
+4;Diamond;Sunyshore City;Volkner;Ambipom;48;shock-wave;nasty-plot;agility;baton-pass
+4;Diamond;Sunyshore City;Volkner;Octillery;48;charge-beam;octazooka;aurora-beam;bullet-seed
+4;Diamond;Sunyshore City;Volkner;Luxray;49;charge-beam;thunder-wave;thunder-fang;crunch
+4;Diamond;Elite Four;Aaron;Dustox;53;toxic;bug-buzz;double-team;light-screen
+4;Diamond;Elite Four;Aaron;Beautifly;53;energy-ball;bug-buzz;psychic;shadow-ball
+4;Diamond;Elite Four;Aaron;Vespiquen;54;attack-order;defend-order;heal-order;power-gem
+4;Diamond;Elite Four;Aaron;Heracross;54;megahorn;close-combat;night-slash;stone-edge
+4;Diamond;Elite Four;Aaron;Drapion;57;x-scissor;cross-poison;ice-fang;aerial-ace
+4;Diamond;Elite Four;Bertha;Quagsire;55;dig;double-team;protect;sandstorm
+4;Diamond;Elite Four;Bertha;Sudowoodo;56;earthquake;sucker-punch;hammer-arm;sandstorm
+4;Diamond;Elite Four;Bertha;Golem;56;earthquake;gyro-ball;brick-break;sandstorm
+4;Diamond;Elite Four;Bertha;Whiscash;55;fissure;aqua-tail;zen-headbutt;rock-slide
+4;Diamond;Elite Four;Bertha;Hippowdon;59;earthquake;stone-edge;crunch;curse
+4;Diamond;Elite Four;Flint;Rapidash;58;flare-blitz;solar-beam;bounce;sunny-day
+4;Diamond;Elite Four;Flint;Steelix;57;fire-fang;rock-tomb;screech;sunny-day
+4;Diamond;Elite Four;Flint;Drifblim;58;will-o-wisp;ominous-wind;double-team;baton-pass
+4;Diamond;Elite Four;Flint;Lopunny;57;fire-punch;charm;mirror-coat;sunny-day
+4;Diamond;Elite Four;Flint;Infernape;61;flare-blitz;thunder-punch;mach-punch;earthquake
+4;Diamond;Elite Four;Lucian;Mr. Mime;59;psychic;thunderbolt;reflect;light-screen
+4;Diamond;Elite Four;Lucian;Girafarig;59;psychic;shadow-ball;double-hit;crunch
+4;Diamond;Elite Four;Lucian;Medicham;60;drain-punch;fire-punch;thunder-punch;ice-punch
+4;Diamond;Elite Four;Lucian;Alakazam;60;psychic;energy-ball;focus-blast;recover
+4;Diamond;Elite Four;Lucian;Bronzong;63;psychic;gyro-ball;earthquake;calm-mind
+4;Diamond;Elite Four;Champion Cynthia;Spiritomb;61;dark-pulse;psychic;silver-wind;embargo
+4;Diamond;Elite Four;Champion Cynthia;Roserade;60;energy-ball;sludge-bomb;shadow-ball;extrasensory
+4;Diamond;Elite Four;Champion Cynthia;Gastrodon;60;muddy-water;earthquake;stone-edge;sludge-bomb
+4;Diamond;Elite Four;Champion Cynthia;Lucario;63;aura-sphere;dragon-pulse;psychic;earthquake
+4;Diamond;Elite Four;Champion Cynthia;Milotic;63;surf;ice-beam;mirror-coat;aqua-ring
+4;Diamond;Elite Four;Champion Cynthia;Garchomp;66;dragon-rush;earthquake;brick-break;giga-impact
+4;Pearl;Oreburgh City;roark;Geodude;12;rock-throw;screech;stealth-rock;
+4;Pearl;Oreburgh City;roark;Onix;12;rock-throw;screech;stealth-rock;
+4;Pearl;Oreburgh City;roark;Cranidos;12;rock-throw;screech;stealth-rock;
+4;Pearl;Eterna City;Gardenia;Cherubi;19;grass-knot;leech-seed;safeguard;growth
+4;Pearl;Eterna City;Gardenia;Turtwig;19;grass-knot;razor-leaf;withdraw;reflect
+4;Pearl;Eterna City;Gardenia;Roserade;22;grass-knot;magical-leaf;poison-sting;stun-spore
+4;Pearl;Veilstone Town;Maylene;Meditite;27;drain-punch;confusion;meditate;detect
+4;Pearl;Veilstone Town;Maylene;Machoke;27;brick-break;rock-tomb;foresight;leer
+4;Pearl;Veilstone Town;Maylene;Lucario;30;drain-punch;force-palm;metal-claw;bone-rush
+4;Pearl;Pastoria City;Crasher Wake;Gyarados;27;brine;bite;dragon-rage;swagger
+4;Pearl;Pastoria City;Crasher Wake;Quagsire;27;slam;mud-bomb;mud-sport;tail-whip
+4;Pearl;Pastoria City;Crasher Wake;Floatzel;30;brine;ice-fang;pursuit;swift
+4;Pearl;Hearthome City;Fantina;Drifblim;32;ominous-wind;gust;astonish;minimize
+4;Pearl;Hearthome City;Fantina;Gengar;34;shadow-claw;poison-jab;confuse-ray;spite
+4;Pearl;Hearthome City;Fantina;Mismagius;34;shadow-ball;psybeam;magical-leaf;confuse-ray
+4;Pearl;Canalave City;Byron;Bronzor;36;flash-cannon;extrasensory;confuse-ray;hypnosis
+4;Pearl;Canalave City;Byron;Bronzor;36;gyro-ball;ice-fang;dragon-breath;sandstorm
+4;Pearl;Canalave City;Byron;Bastiodon;39;flash-cannon;ancient-power;iron-defense;rest
+4;Pearl;Snowpoint City;Candice;Snover;38;ice-shard;razor-leaf;leer;ingrain
+4;Pearl;Snowpoint City;Candice;Sneasel;38;avalanche;feint-attack;slash;taunt
+4;Pearl;Snowpoint City;Candice;Medicham;40;ice-punch;force-palm;bulk-up;detect
+4;Pearl;Snowpoint City;Candice;Abomasnow;42;avalanche;wood-hammer;swagger;grass-whistle
+4;Pearl;Sunyshore City;Volkner;Raichu;46;charge-beam;brick-break;light-screen;thunder-wave
+4;Pearl;Sunyshore City;Volkner;Ambipom;48;shock-wave;nasty-plot;agility;baton-pass
+4;Pearl;Sunyshore City;Volkner;Octillery;48;charge-beam;octazooka;aurora-beam;bullet-seed
+4;Pearl;Sunyshore City;Volkner;Luxray;49;charge-beam;thunder-wave;thunder-fang;crunch
+4;Pearl;Elite Four;Aaron;Dustox;53;toxic;bug-buzz;double-team;light-screen
+4;Pearl;Elite Four;Aaron;Beautifly;53;energy-ball;bug-buzz;psychic;shadow-ball
+4;Pearl;Elite Four;Aaron;Vespiquen;54;attack-order;defend-order;heal-order;power-gem
+4;Pearl;Elite Four;Aaron;Heracross;54;megahorn;close-combat;night-slash;stone-edge
+4;Pearl;Elite Four;Aaron;Drapion;57;x-scissor;cross-poison;ice-fang;aerial-ace
+4;Pearl;Elite Four;Bertha;Quagsire;55;dig;double-team;protect;sandstorm
+4;Pearl;Elite Four;Bertha;Sudowoodo;56;earthquake;sucker-punch;hammer-arm;sandstorm
+4;Pearl;Elite Four;Bertha;Golem;56;earthquake;gyro-ball;brick-break;sandstorm
+4;Pearl;Elite Four;Bertha;Whiscash;55;fissure;aqua-tail;zen-headbutt;rock-slide
+4;Pearl;Elite Four;Bertha;Hippowdon;59;earthquake;stone-edge;crunch;curse
+4;Pearl;Elite Four;Flint;Rapidash;58;flare-blitz;solar-beam;bounce;sunny-day
+4;Pearl;Elite Four;Flint;Steelix;57;fire-fang;rock-tomb;screech;sunny-day
+4;Pearl;Elite Four;Flint;Drifblim;58;will-o-wisp;ominous-wind;double-team;baton-pass
+4;Pearl;Elite Four;Flint;Lopunny;57;fire-punch;charm;mirror-coat;sunny-day
+4;Pearl;Elite Four;Flint;Infernape;61;flare-blitz;thunder-punch;mach-punch;earthquake
+4;Pearl;Elite Four;Lucian;Mr. Mime;59;psychic;thunderbolt;reflect;light-screen
+4;Pearl;Elite Four;Lucian;Girafarig;59;psychic;shadow-ball;double-hit;crunch
+4;Pearl;Elite Four;Lucian;Medicham;60;drain-punch;fire-punch;thunder-punch;ice-punch
+4;Pearl;Elite Four;Lucian;Alakazam;60;psychic;energy-ball;focus-blast;recover
+4;Pearl;Elite Four;Lucian;Bronzong;63;psychic;gyro-ball;earthquake;calm-mind
+4;Pearl;Elite Four;Champion Cynthia;Spiritomb;61;dark-pulse;psychic;silver-wind;embargo
+4;Pearl;Elite Four;Champion Cynthia;Roserade;60;energy-ball;sludge-bomb;shadow-ball;extrasensory
+4;Pearl;Elite Four;Champion Cynthia;Gastrodon;60;muddy-water;earthquake;stone-edge;sludge-bomb
+4;Pearl;Elite Four;Champion Cynthia;Lucario;63;aura-sphere;dragon-pulse;psychic;earthquake
+4;Pearl;Elite Four;Champion Cynthia;Milotic;63;surf;ice-beam;mirror-coat;aqua-ring
+4;Pearl;Elite Four;Champion Cynthia;Garchomp;66;dragon-rush;earthquake;brick-break;giga-impact
+4;Platinum;Oreburgh City;roark;Geodude;12;rock-throw;stealth-rock;;
+4;Platinum;Oreburgh City;roark;Onix;12;rock-throw;screech;stealth-rock;
+4;Platinum;Oreburgh City;roark;Cranidos;14;headbutt;leer;pursuit;
+4;Platinum;Eterna City;Gardenia;Turtwig;20;grass-knot;razor-leaf;sunny-day;reflect
+4;Platinum;Eterna City;Gardenia;Cherrim;20;grass-knot;magical-leaf;leech-seed;safeguard
+4;Platinum;Eterna City;Gardenia;Roserade;22;grass-knot;magical-leaf;poison-sting;stun-spore
+4;Platinum;Veilstone Town;Maylene;Meditite;28;drain-punch;confusion;fake-out;rock-tomb
+4;Platinum;Veilstone Town;Maylene;Machoke;29;karate-chop;strength;focus-energy;rock-tomb
+4;Platinum;Veilstone Town;Maylene;Lucario;32;drain-punch;metal-claw;bone-rush;force-palm
+4;Platinum;Pastoria City;Crasher Wake;Gyarados;33;brine;waterfall;bite;twister
+4;Platinum;Pastoria City;Crasher Wake;Quagsire;34;water-pulse;mud-shot;rock-tomb;yawn
+4;Platinum;Pastoria City;Crasher Wake;Floatzel;37;brine;crunch;ice-fang;aqua-jet
+4;Platinum;Hearthome City;Fantina;Duskull;24;will-o-wisp;future-sight;shadow-sneak;pursuit
+4;Platinum;Hearthome City;Fantina;Haunter;24;shadow-claw;sucker-punch;confuse-ray;hypnosis
+4;Platinum;Hearthome City;Fantina;Mismagius;26;shadow-ball;psybeam;magical-leaf;confuse-ray
+4;Platinum;Canalave City;Byron;Magneton;37;flash-cannon;thunderbolt;tri-attack;metal-sound
+4;Platinum;Canalave City;Byron;Steelix;38;flash-cannon;earthquake;ice-fang;sandstorm
+4;Platinum;Canalave City;Byron;Bastiodon;41;metal-burst;stone-edge;iron-defense;taunt
+4;Platinum;Snowpoint City;Candice;Sneasel;40;feint-attack;ice-shard;slash;aerial-ace
+4;Platinum;Snowpoint City;Candice;Piloswine;40;hail;earthquake;stone-edge;avalanche
+4;Platinum;Snowpoint City;Candice;Abomasnow;42;wood-hammer;focus-blast;water-pulse;avalanche
+4;Platinum;Snowpoint City;Candice;Froslass;44;shadow-ball;double-team;psychic;blizzard
+4;Platinum;Sunyshore City;Volkner;Jolteon;46;charge-beam;thunder-wave;iron-tail;quick-attack
+4;Platinum;Sunyshore City;Volkner;Raichu;46;charge-beam;signal-beam;focus-blast;quick-attack
+4;Platinum;Sunyshore City;Volkner;Luxray;48;thunder-fang;ice-fang;fire-fang;crunch
+4;Platinum;Sunyshore City;Volkner;Electivire;50;thunder-punch;fire-punch;giga-impact;quick-attack
+4;Platinum;Elite Four;Aaron;Yanmega;49;air-slash;bug-buzz;u-turn;double-team
+4;Platinum;Elite Four;Aaron;Scizor;49;iron-head;x-scissor;night-slash;quick-attack
+4;Platinum;Elite Four;Aaron;Vespiquen;50;attack-order;defend-order;heal-order;power-gem
+4;Platinum;Elite Four;Aaron;Heracross;51;megahorn;close-combat;night-slash;stone-edge
+4;Platinum;Elite Four;Aaron;Drapion;53;x-scissor;cross-poison;ice-fang;aerial-ace
+4;Platinum;Elite Four;Bertha;Whiscash;50;earth-power;aqua-tail;zen-headbutt;sandstorm
+4;Platinum;Elite Four;Bertha;Gliscor;53;earthquake;ice-fang;fire-fang;thunder-fang
+4;Platinum;Elite Four;Bertha;Hippowdon;52;earthquake;stone-edge;crunch;yawn
+4;Platinum;Elite Four;Bertha;Golem;52;earthquake;fire-punch;thunder-punch;sandstorm
+4;Platinum;Elite Four;Bertha;Rhyperior;55;earthquake;rock-wrecker;megahorn;avalanche
+4;Platinum;Elite Four;Flint;Houndoom;52;flamethrower;sludge-bomb;dark-pulse;sunny-day
+4;Platinum;Elite Four;Flint;Flareon;55;overheat;giga-impact;quick-attack;will-o-wisp
+4;Platinum;Elite Four;Flint;Rapidash;53;flare-blitz;solar-beam;bounce;sunny-day
+4;Platinum;Elite Four;Flint;Infernape;55;flare-blitz;thunder-punch;mach-punch;earthquake
+4;Platinum;Elite Four;Flint;Magmortar;57;flamethrower;thunderbolt;solar-beam;hyper-beam
+4;Platinum;Elite Four;Lucian;Mr. Mime;53;psychic;thunderbolt;reflect;light-screen
+4;Platinum;Elite Four;Lucian;Espeon;55;psychic;shadow-ball;quick-attack;signal-beam
+4;Platinum;Elite Four;Lucian;Bronzong;54;psychic;gyro-ball;earthquake;calm-mind
+4;Platinum;Elite Four;Lucian;Alakazam;56;psychic;energy-ball;focus-blast;recover
+4;Platinum;Elite Four;Lucian;Gallade;59;drain-punch;psycho-cut;leaf-blade;stone-edge
+4;Platinum;Elite Four;Champion Cynthia;Spiritomb;58;dark-pulse;psychic;silver-wind;shadow-ball
+4;Platinum;Elite Four;Champion Cynthia;Roserade;58;energy-ball;sludge-bomb;toxic;extrasensory
+4;Platinum;Elite Four;Champion Cynthia;Togekiss;60;air-slash;aura-sphere;water-pulse;shock-wave
+4;Platinum;Elite Four;Champion Cynthia;Lucario;60;aura-sphere;extreme-speed;shadow-ball;stone-edge
+4;Platinum;Elite Four;Champion Cynthia;Milotic;58;surf;ice-beam;mirror-coat;dragon-pulse
+4;Platinum;Elite Four;Champion Cynthia;Garchomp;62;dragon-rush;earthquake;flamethrower;giga-impact
+5;Black;Striaton City;Chili;Lillipup;12;bite;work-up;odor-sleuth;helping-hand
+5;Black;Striaton City;Chili;Pansear;14;Incinerate;work-up;lick;fury-swipes
+5;Black;Striaton City;Cilan;Lillipup;12;bite;work-up;odor-sleuth;helping-hand
+5;Black;Striaton City;Cilan;Pansage;14;vine-whip;work-up;lick;fury-swipes
+5;Black;Striaton City;Cress;Lillipup;12;bite;work-up;odor-sleuth;helping-hand
+5;Black;Striaton City;Cress;Panpour;14;water-gun;work-up;lick;fury-swipes
+5;Black;Nacrene City;Lenora;Herdier;18;take-down;bite;retaliate;leer
+5;Black;Nacrene City;Lenora;Watchog;20;leer;crunch;retaliate;hypnosis
+5;Black;Castelia City;Burgh;Whirlipede;21;poison-tail;struggle-bug;pursuit;screech
+5;Black;Castelia City;Burgh;Dwebble;21;smack-down;struggle-bug;feint-attack;sand-attack
+5;Black;Castelia City;Burgh;Leavanny;23;razor-leaf;struggle-bug;string-shot;protect
+5;Black;Nimbasa City;Elesa;Emolga;25;pursuit;quick-attack;volt-switch;aerial-ace
+5;Black;Nimbasa City;Elesa;Emolga;26;pursuit;quick-attack;volt-switch;aerial-ace
+5;Black;Nimbasa City;Elesa;Zebstrika;27;quick-attack;spark;volt-switch;flame-charge
+5;Black;Driftveil City;Clay;Krokorok;29;crunch;swagger;bulldoze;torment
+5;Black;Driftveil City;Clay;Palpitoad;29;muddy-water;aqua-ring;bulldoze;bubble-beam
+5;Black;Driftveil City;Clay;Excadrill;31;slash;rock-slide;bulldoze;hone-claws
+5;Black;Mistralton City;Skyla;Swoobat;33;heart-stamp;amnesia;acrobatics;assurance
+5;Black;Mistralton City;Skyla;Unfezant;33;quick-attack;air-slash;leer;razor-wind
+5;Black;Mistralton City;Skyla;Swanna;35;aqua-ring;aerial-ace;air-slash;bubble-beam
+5;Black;Icirrus City;Brycen;Vanillish;37;mirror-shot;acid-armor;frost-breath;astonish
+5;Black;Icirrus City;Brycen;Cryogonal;37;reflect;aurora-beam;frost-breath;rapid-spin
+5;Black;Icirrus City;Brycen;Beartic;39;slash;brine;icicle-crash;swagger
+5;Black;Opelucid City;Drayden;Fraxure;41;dragon-dance;dragon-rage;dragon-tail;assurance
+5;Black;Opelucid City;Drayden;Druddigon;41;chip-away;revenge;dragon-tail;night-slash
+5;Black;Opelucid City;Drayden;Haxorus;43;dragon-dance;slash;dragon-tail;assurance
+5;Black;Elite Four;Shauntal;Cofagrigus;48;will-o-wisp;grass-knot;psychic;shadow-ball
+5;Black;Elite Four;Shauntal;Jellicent;48;energy-ball;brine;surf;shadow-ball
+5;Black;Elite Four;Shauntal;Golurk;48;curse;earthquake;brick-break;shadow-punch
+5;Black;Elite Four;Shauntal;Chandelure;50;payback;fire-blast;psychic;shadow-ball
+5;Black;Elite Four;Grimsley;Scrafty;48;crunch;brick-break;poison-jab;sand-attack
+5;Black;Elite Four;Grimsley;Liepard;48;night-slash;fake-out;aerial-ace;attract
+5;Black;Elite Four;Grimsley;Krookodile;48;crunch;dragon-claw;earthquake;foul-play
+5;Black;Elite Four;Grimsley;Bisharp;50;night-slash;x-scissor;metal-claw;aerial-ace
+5;Black;Elite Four;Caitlin;Reuniclus;48;psychic;energy-ball;focus-blast;thunder
+5;Black;Elite Four;Caitlin;Musharna;48;psychic;shadow-ball;charge-beam;reflect
+5;Black;Elite Four;Caitlin;Sigilyph;48;psychic;shadow-ball;ice-beam;air-slash
+5;Black;Elite Four;Caitlin;Gothitelle;50;psychic;shadow-ball;thunderbolt;calm-mind
+5;Black;Elite Four;Marshal;Throh;48;storm-throw;bulldoze;stone-edge;payback
+5;Black;Elite Four;Marshal;Sawk;48;karate-chop;grass-knot;stone-edge;retaliate
+5;Black;Elite Four;Marshal;Conkeldurr;48;hammer-arm;grass-knot;stone-edge;retaliate
+5;Black;Elite Four;Marshal;Mienshao;50;jump-kick;u-turn;rock-slide;retaliate
+5;Black;Elite Four;Champion Alder;Accelgor;75;focus-blast;bug-buzz;me-first;energy-ball
+5;Black;Elite Four;Champion Alder;Bouffalant;75;head-charge;megahorn;earthquake;stone-edge
+5;Black;Elite Four;Champion Alder;Druddigon;75;outrage;superpower;night-slash;payback
+5;Black;Elite Four;Champion Alder;Vanilluxe;75;blizzard;flash-cannon;light-screen;acid-armor
+5;Black;Elite Four;Champion Alder;Escavalier;75;x-scissor;iron-head;aerial-ace;giga-impact
+5;Black;Elite Four;Champion Alder;Volcarona;77;overheat;quiver-dance;bug-buzz;hyper-beam
+5;White;Striaton City;Chili;Lillipup;12;bite;work-up;odor-sleuth;helping-hand
+5;White;Striaton City;Chili;Pansear;14;Incinerate;work-up;lick;fury-swipes
+5;White;Striaton City;Cilan;Lillipup;12;bite;work-up;odor-sleuth;helping-hand
+5;White;Striaton City;Cilan;Pansage;14;vine-whip;work-up;lick;fury-swipes
+5;White;Striaton City;Cress;Lillipup;12;bite;work-up;odor-sleuth;helping-hand
+5;White;Striaton City;Cress;Panpour;14;water-gun;work-up;lick;fury-swipes
+5;White;Nacrene City;Lenora;Herdier;18;take-down;bite;retaliate;leer
+5;White;Nacrene City;Lenora;Watchog;20;leer;crunch;retaliate;hypnosis
+5;White;Castelia City;Burgh;Whirlipede;21;poison-tail;struggle-bug;pursuit;screech
+5;White;Castelia City;Burgh;Dwebble;21;smack-down;struggle-bug;feint-attack;sand-attack
+5;White;Castelia City;Burgh;Leavanny;23;razor-leaf;struggle-bug;string-shot;protect
+5;White;Nimbasa City;Elesa;Emolga;25;pursuit;quick-attack;volt-switch;aerial-ace
+5;White;Nimbasa City;Elesa;Emolga;26;pursuit;quick-attack;volt-switch;aerial-ace
+5;White;Nimbasa City;Elesa;Zebstrika;27;quick-attack;spark;volt-switch;flame-charge
+5;White;Driftveil City;Clay;Krokorok;29;crunch;swagger;bulldoze;torment
+5;White;Driftveil City;Clay;Palpitoad;29;muddy-water;aqua-ring;bulldoze;bubble-beam
+5;White;Driftveil City;Clay;Excadrill;31;slash;rock-slide;bulldoze;hone-claws
+5;White;Mistralton City;Skyla;Swoobat;33;heart-stamp;amnesia;acrobatics;assurance
+5;White;Mistralton City;Skyla;Unfezant;33;quick-attack;air-slash;leer;razor-wind
+5;White;Mistralton City;Skyla;Swanna;35;aqua-ring;aerial-ace;air-slash;bubble-beam
+5;White;Icirrus City;Brycen;Vanillish;37;mirror-shot;acid-armor;frost-breath;astonish
+5;White;Icirrus City;Brycen;Cryogonal;37;reflect;aurora-beam;frost-breath;rapid-spin
+5;White;Icirrus City;Brycen;Beartic;39;slash;brine;icicle-crash;swagger
+5;White;Opelucid City;Iris;Fraxure;41;dragon-dance;dragon-rage;dragon-tail;assurance
+5;White;Opelucid City;Iris;Druddigon;41;chip-away;revenge;dragon-tail;night-slash
+5;White;Opelucid City;Iris;Haxorus;43;dragon-dance;slash;dragon-tail;assurance
+5;White;Elite Four;Shauntal;Cofagrigus;48;will-o-wisp;grass-knot;psychic;shadow-ball
+5;White;Elite Four;Shauntal;Jellicent;48;energy-ball;brine;surf;shadow-ball
+5;White;Elite Four;Shauntal;Golurk;48;curse;earthquake;brick-break;shadow-punch
+5;White;Elite Four;Shauntal;Chandelure;50;payback;fire-blast;psychic;shadow-ball
+5;White;Elite Four;Grimsley;Scrafty;48;crunch;brick-break;poison-jab;sand-attack
+5;White;Elite Four;Grimsley;Liepard;48;night-slash;fake-out;aerial-ace;attract
+5;White;Elite Four;Grimsley;Krookodile;48;crunch;dragon-claw;earthquake;foul-play
+5;White;Elite Four;Grimsley;Bisharp;50;night-slash;x-scissor;metal-claw;aerial-ace
+5;White;Elite Four;Caitlin;Reuniclus;48;psychic;energy-ball;focus-blast;thunder
+5;White;Elite Four;Caitlin;Musharna;48;psychic;shadow-ball;charge-beam;reflect
+5;White;Elite Four;Caitlin;Sigilyph;48;psychic;shadow-ball;ice-beam;air-slash
+5;White;Elite Four;Caitlin;Gothitelle;50;psychic;shadow-ball;thunderbolt;calm-mind
+5;White;Elite Four;Marshal;Throh;48;storm-throw;bulldoze;stone-edge;payback
+5;White;Elite Four;Marshal;Sawk;48;karate-chop;grass-knot;stone-edge;retaliate
+5;White;Elite Four;Marshal;Conkeldurr;48;hammer-arm;grass-knot;stone-edge;retaliate
+5;White;Elite Four;Marshal;Mienshao;50;jump-kick;u-turn;rock-slide;retaliate
+5;White;Elite Four;Champion Alder;Accelgor;75;focus-blast;bug-buzz;me-first;energy-ball
+5;White;Elite Four;Champion Alder;Bouffalant;75;head-charge;megahorn;earthquake;stone-edge
+5;White;Elite Four;Champion Alder;Druddigon;75;outrage;superpower;night-slash;payback
+5;White;Elite Four;Champion Alder;Vanilluxe;75;blizzard;flash-cannon;light-screen;acid-armor
+5;White;Elite Four;Champion Alder;Escavalier;75;x-scissor;iron-head;aerial-ace;giga-impact
+5;White;Elite Four;Champion Alder;Volcarona;77;overheat;quiver-dance;bug-buzz;hyper-beam
+6;X;Santalune City;Viola;Surskit;10;bubble;water-sport;quick-attack;
+6;X;Santalune City;Viola;Vivillon;12;harden;tackle;Infestation;
+6;X;Cyllage City;Grant;Tyrunt;25;bite;rock-tomb;stomp;
+6;X;Cyllage City;Grant;Amaura;25;thunder-wave;rock-tomb;aurora-beam;take-down
+6;X;Shalour City;Korrina;Mienfoo;29;fake-out;double-slap;power-up-punch;
+6;X;Shalour City;Korrina;Hawlucha;32;hone-claws;flying-press;power-up-punch;
+6;X;Shalour City;Korrina;Machoke;28;rock-tomb;power-up-punch;leer;
+6;X;Courmaline City;Ramos;Jumpluff;30;bullet-seed;acrobatics;leech-seed;
+6;X;Courmaline City;Ramos;Gogoat;34;bulldoze;grass-knot;take-down;
+6;X;Courmaline City;Ramos;Weepinbell;31;grass-knot;poison-powder;acid;gastro-acid
+6;X;Lumiose City;Clemont;Emolga;35;volt-switch;quick-attack;aerial-ace;
+6;X;Lumiose City;Clemont;Magneton;35;thunderbolt;electric-terrain;mirror-shot;
+6;X;Lumiose City;Clemont;Heliolisk;37;thunderbolt;quick-attack;grass-knot;
+6;X;Laverre City;Valerie;Mawile;38;feint-attack;crunch;iron-defense;
+6;X;Laverre City;Valerie;Mr. Mime;39;light-screen;reflect;psychic;dazzling-gleam
+6;X;Laverre City;Valerie;Sylveon;42;dazzling-gleam;quick-attack;swift;charm
+6;X;Anistar City;Olympia;Sigilyph;44;psychic;air-slash;light-screen;reflect
+6;X;Anistar City;Olympia;Slowking;45;psychic;calm-mind;power-gem;yawn
+6;X;Anistar City;Olympia;Meowstic;48;psychic;calm-mind;fake-out;shadow-ball
+6;X;Snowbelle City;Wulfric;Abomasnow;56;ice-beam;ice-shard;energy-ball;
+6;X;Snowbelle City;Wulfric;Cryogonal;55;ice-beam;confuse-ray;flash-cannon;hail
+6;X;Snowbelle City;Wulfric;Avalugg;59;avalanche;crunch;curse;gyro-ball
+6;X;Elite Four;Malva;Pyroar;63;hyper-voice;noble-roar;flamethrower;wild-charge
+6;X;Elite Four;Malva;Torkoal;63;curse;flame-wheel;stone-edge;earthquake
+6;X;Elite Four;Malva;Chandelure;63;flamethrower;confuse-ray;confide;shadow-ball
+6;X;Elite Four;Malva;Talonflame;65;quick-attack;brave-bird;flare-blitz;flail
+6;X;Elite Four;Wikstrom;Klefki;63;spikes;torment;dazzling-gleam;flash-cannon
+6;X;Elite Four;Wikstrom;Probopass;63;power-gem;earth-power;flash-cannon;discharge
+6;X;Elite Four;Wikstrom;Scizor;63;x-scissor;iron-head;bullet-punch;night-slash
+6;X;Elite Four;Wikstrom;Aegislash;65;sacred-sword;iron-head;kings-shield;shadow-claw
+6;X;Elite Four;Drasna;Dragalge;63;sludge-bomb;surf;thunderbolt;dragon-pulse
+6;X;Elite Four;Drasna;Altaria;63;dragon-pulse;moonblast;sing;cotton-guard
+6;X;Elite Four;Drasna;Druddigon;63;dragon-tail;revenge;retaliate;chip-away
+6;X;Elite Four;Drasna;Noivern;65;flamethrower;boomburst;air-slash;dragon-pulse
+6;X;Elite Four;Siebold;Clawitzer;63;dragon-pulse;water-pulse;aura-sphere;dark-pulse
+6;X;Elite Four;Siebold;Starmie;63;psychic;light-screen;surf;dazzling-gleam
+6;X;Elite Four;Siebold;Gyarados;63;waterfall;ice-fang;dragon-dance;earthquake
+6;X;Elite Four;Siebold;Barbaracle;65;stone-edge;razor-shell;cross-chop;x-scissor
+6;X;Elite Four;Champion Diantha;Hawlucha;64;poison-jab;flying-press;swords-dance;x-scissor
+6;X;Elite Four;Champion Diantha;Tyrantrum;65;head-smash;dragon-claw;earthquake;crunch
+6;X;Elite Four;Champion Diantha;Aurorus;65;thunder;blizzard;reflect;light-screen
+6;X;Elite Four;Champion Diantha;Gourgeist;65;trick-or-treat;phantom-force;seed-bomb;shadow-sneak
+6;X;Elite Four;Champion Diantha;Goodra;66;focus-blast;dragon-pulse;fire-blast;muddy-water
+6;X;Elite Four;Champion Diantha;Gardevoir;68;thunderbolt;moonblast;psychic;shadow-ball
+6;Y;Santalune City;Viola;Surskit;10;bubble;water-sport;quick-attack;
+6;Y;Santalune City;Viola;Vivillon;12;harden;tackle;Infestation;
+6;Y;Cyllage City;Grant;Tyrunt;25;bite;rock-tomb;stomp;
+6;Y;Cyllage City;Grant;Amaura;25;thunder-wave;rock-tomb;aurora-beam;take-down
+6;Y;Shalour City;Korrina;Mienfoo;29;fake-out;double-slap;power-up-punch;
+6;Y;Shalour City;Korrina;Hawlucha;32;hone-claws;flying-press;power-up-punch;
+6;Y;Shalour City;Korrina;Machoke;28;rock-tomb;power-up-punch;leer;
+6;Y;Courmaline City;Ramos;Jumpluff;30;bullet-seed;acrobatics;leech-seed;
+6;Y;Courmaline City;Ramos;Gogoat;34;bulldoze;grass-knot;take-down;
+6;Y;Courmaline City;Ramos;Weepinbell;31;grass-knot;poison-powder;acid;gastro-acid
+6;Y;Lumiose City;Clemont;Emolga;35;volt-switch;quick-attack;aerial-ace;
+6;Y;Lumiose City;Clemont;Magneton;35;thunderbolt;electric-terrain;mirror-shot;
+6;Y;Lumiose City;Clemont;Heliolisk;37;thunderbolt;quick-attack;grass-knot;
+6;Y;Laverre City;Valerie;Mawile;38;feint-attack;crunch;iron-defense;
+6;Y;Laverre City;Valerie;Mr. Mime;39;light-screen;reflect;psychic;dazzling-gleam
+6;Y;Laverre City;Valerie;Sylveon;42;dazzling-gleam;quick-attack;swift;charm
+6;Y;Anistar City;Olympia;Sigilyph;44;psychic;air-slash;light-screen;reflect
+6;Y;Anistar City;Olympia;Slowking;45;psychic;calm-mind;power-gem;yawn
+6;Y;Anistar City;Olympia;Meowstic;48;psychic;calm-mind;fake-out;shadow-ball
+6;Y;Snowbelle City;Wulfric;Abomasnow;56;ice-beam;ice-shard;energy-ball;
+6;Y;Snowbelle City;Wulfric;Cryogonal;55;ice-beam;confuse-ray;flash-cannon;hail
+6;Y;Snowbelle City;Wulfric;Avalugg;59;avalanche;crunch;curse;gyro-ball
+6;Y;Elite Four;Malva;Pyroar;63;hyper-voice;noble-roar;flamethrower;wild-charge
+6;Y;Elite Four;Malva;Torkoal;63;curse;flame-wheel;stone-edge;earthquake
+6;Y;Elite Four;Malva;Chandelure;63;flamethrower;confuse-ray;confide;shadow-ball
+6;Y;Elite Four;Malva;Talonflame;65;quick-attack;brave-bird;flare-blitz;flail
+6;Y;Elite Four;Wikstrom;Klefki;63;spikes;torment;dazzling-gleam;flash-cannon
+6;Y;Elite Four;Wikstrom;Probopass;63;power-gem;earth-power;flash-cannon;discharge
+6;Y;Elite Four;Wikstrom;Scizor;63;x-scissor;iron-head;bullet-punch;night-slash
+6;Y;Elite Four;Wikstrom;Aegislash;65;sacred-sword;iron-head;kings-shield;shadow-claw
+6;Y;Elite Four;Drasna;Dragalge;63;sludge-bomb;surf;thunderbolt;dragon-pulse
+6;Y;Elite Four;Drasna;Altaria;63;dragon-pulse;moonblast;sing;cotton-guard
+6;Y;Elite Four;Drasna;Druddigon;63;dragon-tail;revenge;retaliate;chip-away
+6;Y;Elite Four;Drasna;Noivern;65;flamethrower;boomburst;air-slash;dragon-pulse
+6;Y;Elite Four;Siebold;Clawitzer;63;dragon-pulse;water-pulse;aura-sphere;dark-pulse
+6;Y;Elite Four;Siebold;Starmie;63;psychic;light-screen;surf;dazzling-gleam
+6;Y;Elite Four;Siebold;Gyarados;63;waterfall;ice-fang;dragon-dance;earthquake
+6;Y;Elite Four;Siebold;Barbaracle;65;stone-edge;razor-shell;cross-chop;x-scissor
+6;Y;Elite Four;Champion Diantha;Hawlucha;64;poison-jab;flying-press;swords-dance;x-scissor
+6;Y;Elite Four;Champion Diantha;Tyrantrum;65;head-smash;dragon-claw;earthquake;crunch
+6;Y;Elite Four;Champion Diantha;Aurorus;65;thunder;blizzard;reflect;light-screen
+6;Y;Elite Four;Champion Diantha;Gourgeist;65;trick-or-treat;phantom-force;seed-bomb;shadow-sneak
+6;Y;Elite Four;Champion Diantha;Goodra;66;focus-blast;dragon-pulse;fire-blast;muddy-water
+6;Y;Elite Four;Champion Diantha;Gardevoir;68;thunderbolt;moonblast;psychic;shadow-ball
+7;Sun;Hau'oli City;Ilima Rowlet;Yungoos;9;tackle;pursuit;leer;
+7;Sun;Hau'oli City;Ilima Rowlet;Smeargle;10;ember;tackle;;
+7;Sun;Hau'oli City;Ilima Litten;Yungoos;9;tackle;pursuit;leer;
+7;Sun;Hau'oli City;Ilima Litten;Smeargle;10;water-gun;tackle;;
+7;Sun;Hau'oli City;Ilima Popplio;Yungoos;9;tackle;pursuit;leer;
+7;Sun;Hau'oli City;Ilima Popplio;Smeargle;10;leafage;tackle;;
+7;Sun;Hau'oli City;Ilima;Gumshoos;15;tackle;pursuit;leer;
+7;Sun;Hau'oli City;Ilima;Smeargle;14;quick-attack;ember;water-gun;leafage
+7;Sun;Iki Town;Hala;Mankey;14;karate-chop;focus-energy;pursuit;
+7;Sun;Iki Town;Hala;Makuhita;14;fake-out;sand-attack;arm-thrust;
+7;Sun;Iki Town;Hala;Crabrawler;15;power-up-punch;pursuit;leer;
+7;Sun;Brooklet Hill;Lana;Chinchou;26;bubble-beam;thunder-wave;electro-ball;
+7;Sun;Brooklet Hill;Lana;Shellder;26;water-gun;supersonic;icicle-spear;
+7;Sun;Brooklet Hill;Lana;Araquanid;27;bug-bite;bite;bubble-beam;
+7;Sun;Royal Avenue;Kiawe;Growlithe;26;bite;fire-fang;;
+7;Sun;Royal Avenue;Kiawe;Fletchinder;26;ember;quick-attack;peck;
+7;Sun;Royal Avenue;Kiawe;Marowak;27;flame-wheel;hex;bonemerang;will-o-wisp
+7;Sun;Ruins of Life;Olivia;Nosepass;26;rock-slide;spark;thunder-wave;
+7;Sun;Ruins of Life;Olivia;Boldore;26;rock-blast;mud-slap;headbutt;
+7;Sun;Ruins of Life;Olivia;Lycanroc;27;bite;rock-throw;;
+7;Sun;Pokémon League;Sophocles;Togedemaru;61;electric-terrain;zing-zap;spiky-shield;fell-stinger
+7;Sun;Pokémon League;Sophocles;Magnezone;61;flash-cannon;discharge;tri-attack;reflect
+7;Sun;Pokémon League;Sophocles;Electivire;61;thunder-punch;giga-impact;fire-punch;quick-attack
+7;Sun;Pokémon League;Sophocles;Vikavolt;61;bug-buzz;thunderbolt;air-slash;guillotine
+7;Sun;Pokémon League;Sophocles;Golem;61;stone-edge;steamroller;thunder-punch;heavy-slam
+7;Sun;Pokémon League;Acerola;Sableye;54;shadow-claw;zen-headbutt;confuse-ray;fake-out
+7;Sun;Pokémon League;Acerola;Drifblim;54;ominous-wind;focus-energy;amnesia;baton-pass
+7;Sun;Pokémon League;Acerola;Dhelmise;54;slam;shadow-ball;energy-ball;whirlpool
+7;Sun;Pokémon League;Acerola;Froslass;54;blizzard;shadow-ball;confuse-ray;ice-shard
+7;Sun;Pokémon League;Acerola;Palossand;55;shadow-ball;earth-power;giga-drain;iron-defense
+7;Sun;Malie City;Nanu;Sableye;38;power-gem;shadow-ball;fake-out;
+7;Sun;Malie City;Nanu;Krokorok;38;crunch;assurance;swagger;earthquake
+7;Sun;Malie City;Nanu;Persian;39;power-gem;fake-out;dark-pulse;
+7;Sun;Vast Poni Canyon;None;Kommo-o;45;clanging-scales;sky-uppercut;flash-cannon;protect
+7;Sun;Vast Poni Canyon;None;Hakamo-o;32;sky-uppercut;autotomize;work-up;bide
+7;Sun;Vast Poni Canyon;None;Scizor;32;metal-claw;pursuit;leer;fury-cutter
+7;Sun;Poni Gauntlet;Mina;Klefki;61;dazzling-gleam;flash-cannon;reflect;light-screen
+7;Sun;Poni Gauntlet;Mina;Granbull;61;crunch;play-rough;earthquake;stone-edge
+7;Sun;Poni Gauntlet;Mina;Shiinotic;61;spore;moonblast;dream-eater;giga-drain
+7;Sun;Poni Gauntlet;Mina;Wigglytuff;61;dazzling-gleam;hyper-voice;flamethrower;ice-beam
+7;Sun;Poni Gauntlet;Mina;Ribombee;61;pollen-puff;dazzling-gleam;psychic;energy-ball
+7;Sun;Vast Poni Canyon;Hapu;Dugtrio;47;iron-head;earthquake;sucker-punch;sandstorm
+7;Sun;Vast Poni Canyon;Hapu;Gastrodon;47;muddy-water;mud-bomb;recover;
+7;Sun;Vast Poni Canyon;Hapu;Flygon;47;earth-power;dragon-breath;;
+7;Sun;Vast Poni Canyon;Hapu;Mudsdale;48;heavy-slam;earthquake;double-kick;counter
+7;Sun;Elite Four;Hala;Hariyama;54;fake-out;close-combat;knock-off;
+7;Sun;Elite Four;Hala;Primeape;54;cross-chop;outrage;punishment;pursuit
+7;Sun;Elite Four;Hala;Bewear;54;hammer-arm;brutal-swing;;
+7;Sun;Elite Four;Hala;Poliwrath;54;waterfall;submission;;
+7;Sun;Elite Four;Hala;Crabominable;55;ice-hammer;close-combat;;
+7;Sun;Elite Four;Olivia;Relicanth;54;hydro-pump;ancient-power;yawn;
+7;Sun;Elite Four;Olivia;Carbink;54;power-gem;moonblast;reflect;
+7;Sun;Elite Four;Olivia;Golem;54;thunder-punch;rock-blast;steamroller;
+7;Sun;Elite Four;Olivia;Probopass;54;earth-power;power-gem;thunder-wave;sandstorm
+7;Sun;Elite Four;Olivia;Lycanroc;55;crunch;stone-edge;counter;rock-climb
+7;Sun;Elite Four;Acerola;Sableye;54;shadow-claw;zen-headbutt;confuse-ray;fake-out
+7;Sun;Elite Four;Acerola;Drifblim;54;ominous-wind;focus-energy;amnesia;baton-pass
+7;Sun;Elite Four;Acerola;Dhelmise;54;slam;shadow-ball;energy-ball;whirlpool
+7;Sun;Elite Four;Acerola;Froslass;54;blizzard;shadow-ball;confuse-ray;ice-shard
+7;Sun;Elite Four;Acerola;Palossand;55;shadow-ball;earth-power;giga-drain;iron-defense
+7;Sun;Elite Four;Kahili;Skarmory;54;slash;steel-wing;feint;spikes
+7;Sun;Elite Four;Kahili;Crobat;54;air-slash;swift;supersonic;poison-fang
+7;Sun;Elite Four;Kahili;Oricorio;54;revelation-dance;teeter-dance;air-slash;feather-dance
+7;Sun;Elite Four;Kahili;Mandibuzz;54;bone-rush;brave-bird;punishment;flatter
+7;Sun;Elite Four;Kahili;Toucannon;55;bullet-seed;rock-blast;beak-blast;screech
+7;Sun;Elite Four;Kukui Rowlet;Lycanroc;57;stone-edge;accelerock;crunch;stealth-rock
+7;Sun;Elite Four;Kukui Rowlet;Ninetales;56;dazzling-gleam;blizzard;ice-shard;safeguard
+7;Sun;Elite Four;Kukui Rowlet;Braviary;56;crush-claw;brave-bird;tailwind;whirlwind
+7;Sun;Elite Four;Kukui Rowlet;Magnezone;56;thunderbolt;flash-cannon;thunder-wave;mirror-coat
+7;Sun;Elite Four;Kukui Rowlet;Snorlax;56;body-slam;crunch;heavy-slam;high-horsepower
+7;Sun;Elite Four;Kukui Rowlet;Incineroar;58;flare-blitz;darkest-lariat;outrage;cross-chop
+7;Sun;Elite Four;Kukui Litten;Lycanroc;57;stone-edge;accelerock;crunch;stealth-rock
+7;Sun;Elite Four;Kukui Litten;Ninetales;56;dazzling-gleam;blizzard;ice-shard;safeguard
+7;Sun;Elite Four;Kukui Litten;Braviary;56;crush-claw;brave-bird;tailwind;whirlwind
+7;Sun;Elite Four;Kukui Litten;Magnezone;56;thunderbolt;flash-cannon;thunder-wave;mirror-coat
+7;Sun;Elite Four;Kukui Litten;Snorlax;56;body-slam;crunch;heavy-slam;high-horsepower
+7;Sun;Elite Four;Kukui Litten;Primarina;58;sparkling-aria;moonblast;aqua-jet;hyper-voice
+7;Sun;Elite Four;Kukui Popplio;Lycanroc;57;stone-edge;accelerock;crunch;stealth-rock
+7;Sun;Elite Four;Kukui Popplio;Ninetales;56;dazzling-gleam;blizzard;ice-shard;safeguard
+7;Sun;Elite Four;Kukui Popplio;Braviary;56;crush-claw;brave-bird;tailwind;whirlwind
+7;Sun;Elite Four;Kukui Popplio;Magnezone;56;thunderbolt;flash-cannon;thunder-wave;mirror-coat
+7;Sun;Elite Four;Kukui Popplio;Snorlax;56;body-slam;crunch;heavy-slam;high-horsepower
+7;Sun;Elite Four;Kukui Popplio;Decidueye;58;leaf-blade;spirit-shackle;brave-bird;sucker-punch
+7;Moon;Hau'oli City;Ilima Rowlet;Yungoos;9;tackle;pursuit;leer;
+7;Moon;Hau'oli City;Ilima Rowlet;Smeargle;10;ember;tackle;;
+7;Moon;Hau'oli City;Ilima Litten;Yungoos;9;tackle;pursuit;leer;
+7;Moon;Hau'oli City;Ilima Litten;Smeargle;10;water-gun;tackle;;
+7;Moon;Hau'oli City;Ilima Popplio;Yungoos;9;tackle;pursuit;leer;
+7;Moon;Hau'oli City;Ilima Popplio;Smeargle;10;leafage;tackle;;
+7;Moon;Hau'oli City;Ilima;Gumshoos;15;tackle;pursuit;leer;
+7;Moon;Hau'oli City;Ilima;Smeargle;14;quick-attack;ember;water-gun;leafage
+7;Moon;Iki Town;Hala;Mankey;14;karate-chop;focus-energy;pursuit;
+7;Moon;Iki Town;Hala;Makuhita;14;fake-out;sand-attack;arm-thrust;
+7;Moon;Iki Town;Hala;Crabrawler;15;power-up-punch;pursuit;leer;
+7;Moon;Brooklet Hill;Lana;Chinchou;26;bubble-beam;thunder-wave;electro-ball;
+7;Moon;Brooklet Hill;Lana;Shellder;26;water-gun;supersonic;icicle-spear;
+7;Moon;Brooklet Hill;Lana;Araquanid;27;bug-bite;bite;bubble-beam;
+7;Moon;Lush Jungle;Mallow;Phantump;26;leech-seed;feint-attack;confuse-ray;astonish
+7;Moon;Lush Jungle;Mallow;Shiinotic;26;ingrain;mega-drain;sleep-powder;astonish
+7;Moon;Lush Jungle;Mallow;Steenee;27;teeter-dance;magical-leaf;double-slap;rapid-spin
+7;Moon;Ruins of Life;Olivia;Nosepass;26;rock-slide;spark;thunder-wave;
+7;Moon;Ruins of Life;Olivia;Boldore;26;rock-blast;mud-slap;headbutt;
+7;Moon;Ruins of Life;Olivia;Lycanroc;27;bite;rock-throw;;
+7;Moon;Pokémon League;Sophocles;Togedemaru;61;electric-terrain;zing-zap;spiky-shield;fell-stinger
+7;Moon;Pokémon League;Sophocles;Magnezone;61;flash-cannon;discharge;tri-attack;reflect
+7;Moon;Pokémon League;Sophocles;Electivire;61;thunder-punch;giga-impact;fire-punch;quick-attack
+7;Moon;Pokémon League;Sophocles;Vikavolt;61;bug-buzz;thunderbolt;air-slash;guillotine
+7;Moon;Pokémon League;Sophocles;Golem;61;stone-edge;steamroller;thunder-punch;heavy-slam
+7;Moon;Pokémon League;Acerola;Sableye;54;shadow-claw;zen-headbutt;confuse-ray;fake-out
+7;Moon;Pokémon League;Acerola;Drifblim;54;ominous-wind;focus-energy;amnesia;baton-pass
+7;Moon;Pokémon League;Acerola;Dhelmise;54;slam;shadow-ball;energy-ball;whirlpool
+7;Moon;Pokémon League;Acerola;Froslass;54;blizzard;shadow-ball;confuse-ray;ice-shard
+7;Moon;Pokémon League;Acerola;Palossand;55;shadow-ball;earth-power;giga-drain;iron-defense
+7;Moon;Malie City;Nanu;Sableye;38;power-gem;shadow-ball;fake-out;
+7;Moon;Malie City;Nanu;Krokorok;38;crunch;assurance;swagger;earthquake
+7;Moon;Malie City;Nanu;Persian;39;power-gem;fake-out;dark-pulse;
+7;Moon;Vast Poni Canyon;None;Kommo-o;45;clanging-scales;sky-uppercut;flash-cannon;protect
+7;Moon;Vast Poni Canyon;None;Hakamo-o;32;sky-uppercut;autotomize;work-up;bide
+7;Moon;Vast Poni Canyon;None;Scizor;32;metal-claw;pursuit;leer;fury-cutter
+7;Moon;Poni Gauntlet;Mina;Klefki;61;dazzling-gleam;flash-cannon;reflect;light-screen
+7;Moon;Poni Gauntlet;Mina;Granbull;61;crunch;play-rough;earthquake;stone-edge
+7;Moon;Poni Gauntlet;Mina;Shiinotic;61;spore;moonblast;dream-eater;giga-drain
+7;Moon;Poni Gauntlet;Mina;Wigglytuff;61;dazzling-gleam;hyper-voice;flamethrower;ice-beam
+7;Moon;Poni Gauntlet;Mina;Ribombee;61;pollen-puff;dazzling-gleam;psychic;energy-ball
+7;Moon;Vast Poni Canyon;Hapu;Dugtrio;47;iron-head;earthquake;sucker-punch;sandstorm
+7;Moon;Vast Poni Canyon;Hapu;Gastrodon;47;muddy-water;mud-bomb;recover;
+7;Moon;Vast Poni Canyon;Hapu;Flygon;47;earth-power;dragon-breath;;
+7;Moon;Vast Poni Canyon;Hapu;Mudsdale;48;heavy-slam;earthquake;double-kick;counter
+7;Moon;Pokémon League;Hala;Hariyama;54;fake-out;close-combat;knock-off;
+7;Moon;Pokémon League;Hala;Primeape;54;cross-chop;outrage;punishment;pursuit
+7;Moon;Pokémon League;Hala;Bewear;54;hammer-arm;brutal-swing;;
+7;Moon;Pokémon League;Hala;Poliwrath;54;waterfall;submission;;
+7;Moon;Pokémon League;Hala;Crabominable;55;ice-hammer;close-combat;;
+7;Moon;Pokémon League;Olivia;Relicanth;54;hydro-pump;ancient-power;yawn;
+7;Moon;Pokémon League;Olivia;Carbink;54;power-gem;moonblast;reflect;
+7;Moon;Pokémon League;Olivia;Golem;54;thunder-punch;rock-blast;steamroller;
+7;Moon;Pokémon League;Olivia;Probopass;54;earth-power;power-gem;thunder-wave;sandstorm
+7;Moon;Pokémon League;Olivia;Lycanroc;55;crunch;stone-edge;counter;rock-climb
+7;Moon;Pokémon League;Acerola;Sableye;54;shadow-claw;zen-headbutt;confuse-ray;fake-out
+7;Moon;Pokémon League;Acerola;Drifblim;54;ominous-wind;focus-energy;amnesia;baton-pass
+7;Moon;Pokémon League;Acerola;Dhelmise;54;slam;shadow-ball;energy-ball;whirlpool
+7;Moon;Pokémon League;Acerola;Froslass;54;blizzard;shadow-ball;confuse-ray;ice-shard
+7;Moon;Pokémon League;Acerola;Palossand;55;shadow-ball;earth-power;giga-drain;iron-defense
+7;Moon;Pokémon League;Kahili;Skarmory;54;slash;steel-wing;feint;spikes
+7;Moon;Pokémon League;Kahili;Crobat;54;air-slash;swift;supersonic;poison-fang
+7;Moon;Pokémon League;Kahili;Oricorio;54;revelation-dance;teeter-dance;air-slash;feather-dance
+7;Moon;Pokémon League;Kahili;Mandibuzz;54;bone-rush;brave-bird;punishment;flatter
+7;Moon;Pokémon League;Kahili;Toucannon;55;bullet-seed;rock-blast;beak-blast;screech
+7;Moon;Pokémon League;Kukui Rowlet;Lycanroc;57;stone-edge;accelerock;crunch;stealth-rock
+7;Moon;Pokémon League;Kukui Rowlet;Ninetales;56;dazzling-gleam;blizzard;ice-shard;safeguard
+7;Moon;Pokémon League;Kukui Rowlet;Braviary;56;crush-claw;brave-bird;tailwind;whirlwind
+7;Moon;Pokémon League;Kukui Rowlet;Magnezone;56;thunderbolt;flash-cannon;thunder-wave;mirror-coat
+7;Moon;Pokémon League;Kukui Rowlet;Snorlax;56;body-slam;crunch;heavy-slam;high-horsepower
+7;Moon;Pokémon League;Kukui Rowlet;Incineroar;58;flare-blitz;darkest-lariat;outrage;cross-chop
+7;Moon;Pokémon League;Kukui Litten;Lycanroc;57;stone-edge;accelerock;crunch;stealth-rock
+7;Moon;Pokémon League;Kukui Litten;Ninetales;56;dazzling-gleam;blizzard;ice-shard;safeguard
+7;Moon;Pokémon League;Kukui Litten;Braviary;56;crush-claw;brave-bird;tailwind;whirlwind
+7;Moon;Pokémon League;Kukui Litten;Magnezone;56;thunderbolt;flash-cannon;thunder-wave;mirror-coat
+7;Moon;Pokémon League;Kukui Litten;Snorlax;56;body-slam;crunch;heavy-slam;high-horsepower
+7;Moon;Pokémon League;Kukui Litten;Primarina;58;sparkling-aria;moonblast;aqua-jet;hyper-voice
+7;Moon;Pokémon League;Kukui Popplio;Lycanroc;57;stone-edge;accelerock;crunch;stealth-rock
+7;Moon;Pokémon League;Kukui Popplio;Ninetales;56;dazzling-gleam;blizzard;ice-shard;safeguard
+7;Moon;Pokémon League;Kukui Popplio;Braviary;56;crush-claw;brave-bird;tailwind;whirlwind
+7;Moon;Pokémon League;Kukui Popplio;Magnezone;56;thunderbolt;flash-cannon;thunder-wave;mirror-coat
+7;Moon;Pokémon League;Kukui Popplio;Snorlax;56;body-slam;crunch;heavy-slam;high-horsepower
+7;Moon;Pokémon League;Kukui Popplio;Decidueye;58;leaf-blade;spirit-shackle;brave-bird;sucker-punch
+8;Sword;Turffield;Milo;Gossifleur;19;magical-leaf;round;rapid-spin;
+8;Sword;Turffield;Milo;Eldegoss;20;magical-leaf;leafage;round;
+8;Sword;Hulbury;Nessa;Goldeen;22;water-pulse;whirlpool;horn-attack;agility
+8;Sword;Hulbury;Nessa;Arrokuda;23;aqua-jet;bite;whirlpool;fury-attack
+8;Sword;Hulbury;Nessa;Drednaw;24;razor-shell;water-gun;bite;headbutt
+8;Sword;Motostoke;Kabu;Ninetales;25;will-o-wisp;fire-spin;quick-attack;ember
+8;Sword;Motostoke;Kabu;Arcanine;25;will-o-wisp;flame-wheel;bite;agility
+8;Sword;Motostoke;Kabu;Centiskorch;27;flame-wheel;coil;bug-bite;smokescreen
+8;Sword;Stow-on-Side;Bea;Hitmontop;34;triple-kick;quick-attack;counter;revenge
+8;Sword;Stow-on-Side;Bea;Pangoro;34;bullet-punch;circle-throw;night-slash;work-up
+8;Sword;Stow-on-Side;Bea;Sirfetch'd;35;detect;swords-dance;brutal-swing;revenge
+8;Sword;Stow-on-Side;Bea;Machamp;36;scary-face;revenge;knock-off;strength
+8;Sword;Ballonlea;Opal;Weezing;36;sludge;fairy-wing;tackle;
+8;Sword;Ballonlea;Opal;Mawile;36;draining-kiss;crunch;iron-defense;astonish
+8;Sword;Ballonlea;Opal;Togekiss;37;air-slash;draining-kiss;ancient-power;
+8;Sword;Ballonlea;Opal;Alcremie;38;draining-kiss;acid-armor;sweet-kiss;
+8;Sword;Circhester;Gordie;Barbaracle;40;shell-smash;rock-tomb;razor-shell;
+8;Sword;Circhester;Gordie;Shuckle;40;power-split;stone-edge;struggle-bug;rock-tomb
+8;Sword;Circhester;Gordie;Stonjourner;41;stealth-rock;rock-tomb;body-slam;wonder-room
+8;Sword;Circhester;Gordie;Coalossal;42;tar-shot;stealth-rock;heat-crash;rock-tomb
+8;Sword;Spikemuth;Piers;Scrafty;44;fake-out;sand-attack;brick-break;payback
+8;Sword;Spikemuth;Piers;Malamar;45;night-slash;foul-play;psycho-cut;payback
+8;Sword;Spikemuth;Piers;Skuntank;45;sucker-punch;screech;toxic;snarl
+8;Sword;Spikemuth;Piers;Obstagoon;46;obstruct;throat-chop;counter;shadow-claw
+8;Sword;Hammerlocke;Raihan;Gigalith;46;stealth-rock;sand-tomb;rock-blast;body-press
+8;Sword;Hammerlocke;Raihan;Flygon;47;thunder-punch;breaking-swipe;crunch;steel-wing
+8;Sword;Hammerlocke;Raihan;Sandaconda;46;protect;glare;fire-fang;earth-power
+8;Sword;Hammerlocke;Raihan;Duraludon;48;breaking-swipe;body-press;stone-edge;iron-head
+8;Sword;Champion Cup;Marnie;Liepard;47;fake-out;torment;nasty-plot;snarl
+8;Sword;Champion Cup;Marnie;toxicroak;47;venoshock;sucker-punch;swagger;toxic
+8;Sword;Champion Cup;Marnie;Scrafty;47;swagger;scary-face;brick-break;crunch
+8;Sword;Champion Cup;Marnie;Morpeko;48;bullet-seed;torment;spark;bite
+8;Sword;Champion Cup;Marnie;Grimmsnarl;49;spirit-break;darkest-lariat;bulk-up;torment
+8;Sword;Champion Cup;Hop Scorbunny;Dubwool;48;cotton-guard;reversal;body-slam;zen-headbutt
+8;Sword;Champion Cup;Hop Scorbunny;Corviknight;48;steel-wing;drill-peck;scary-face;swagger
+8;Sword;Champion Cup;Hop Scorbunny;Pincurchin;47;thunderbolt;poison-jab;curse;
+8;Sword;Champion Cup;Hop Scorbunny;Snorlax;47;heavy-slam;high-horsepower;hammer-arm;
+8;Sword;Champion Cup;Hop Scorbunny;Inteleon;49;snipe-shot;mud-shot;icy-wind;dark-pulse
+8;Sword;Champion Cup;Hop Sobble;Dubwool;48;cotton-guard;reversal;body-slam;zen-headbutt
+8;Sword;Champion Cup;Hop Sobble;Corviknight;48;steel-wing;drill-peck;scary-face;swagger
+8;Sword;Champion Cup;Hop Sobble;Pincurchin;47;thunderbolt;poison-jab;curse;
+8;Sword;Champion Cup;Hop Sobble;Snorlax;47;heavy-slam;high-horsepower;hammer-arm;
+8;Sword;Champion Cup;Hop Sobble;Rillaboom;49;drum-beating;high-horsepower;snarl;uproar
+8;Sword;Champion Cup;Hop Grookey;Dubwool;48;cotton-guard;reversal;body-slam;zen-headbutt
+8;Sword;Champion Cup;Hop Grookey;Corviknight;48;steel-wing;drill-peck;scary-face;swagger
+8;Sword;Champion Cup;Hop Grookey;Pincurchin;47;thunderbolt;poison-jab;curse;
+8;Sword;Champion Cup;Hop Grookey;Snorlax;47;heavy-slam;high-horsepower;hammer-arm;
+8;Sword;Champion Cup;Hop Grookey;Cinderace;49;pyro-ball;counter;gunk-shot;bounce
+8;Sword;Champion Cup;Bede;Mawile;51;play-rough;iron-head;crunch;
+8;Sword;Champion Cup;Bede;Gardevoir;51;dazzling-gleam;psychic;calm-mind;wish
+8;Sword;Champion Cup;Bede;Rapidash;52;psycho-cut;take-down;dazzling-gleam;quick-attack
+8;Sword;Champion Cup;Bede;Hatterene;53;psychic;dazzling-gleam;calm-mind;mystical-fire
+8;Sword;Champion Cup;Nessa;Golisopod;51;first-impression;liquidation;swords-dance;shadow-claw
+8;Sword;Champion Cup;Nessa;Pelipper;51;roost;air-slash;water-pulse;tailwind
+8;Sword;Champion Cup;Nessa;Barraskewda;52;liquidation;throat-chop;ice-fang;drill-run
+8;Sword;Champion Cup;Nessa;Seaking;52;smart-strike;megahorn;aqua-ring;waterfall
+8;Sword;Champion Cup;Nessa;Drednaw;53;liquidation;jaw-lock;rock-tomb;crunch
+8;Sword;Champion Cup;Bea;Hawlucha;52;flying-press;high-jump-kick;bounce;
+8;Sword;Champion Cup;Bea;Grapploct;52;octolock;submission;bind;mega-punch
+8;Sword;Champion Cup;Bea;Sirfetch'd;53;leaf-blade;slam;brick-break;brutal-swing
+8;Sword;Champion Cup;Bea;Falinks;53;no-retreat;bulk-up;close-combat;rock-tomb
+8;Sword;Champion Cup;Bea;Machamp;54;cross-chop;revenge;fire-punch;strength
+8;Sword;Champion Cup;Raihan;Torkoal;53;lava-plume;body-press;solar-beam;yawn
+8;Sword;Champion Cup;Raihan;Goodra;54;rain-dance;surf;thunder;muddy-water
+8;Sword;Champion Cup;Raihan;Turtonator;54;sunny-day;dragon-pulse;shell-trap;fire-blast
+8;Sword;Champion Cup;Raihan;Flygon;54;sandstorm;dragon-claw;earthquake;crunch
+8;Sword;Champion Cup;Raihan;Duraludon;55;dragon-claw;body-press;stone-edge;iron-head
+8;Sword;Champion Cup;Champion Leon Grookey;Aegislash;62;kings-shield;shadow-ball;sacred-sword;flash-cannon
+8;Sword;Champion Cup;Champion Leon Grookey;Dragapult;62;shadow-ball;flamethrower;thunderbolt;dragon-breath
+8;Sword;Champion Cup;Champion Leon Grookey;Haxorus;63;poison-jab;iron-tail;outrage;earthquake
+8;Sword;Champion Cup;Champion Leon Grookey;Seismitoad;64;toxic;drain-punch;liquidation;earthquake
+8;Sword;Champion Cup;Champion Leon Grookey;Cinderace;64;pyro-ball;feint;acrobatics;quick-attack
+8;Sword;Champion Cup;Champion Leon Grookey;Charizard;65;fire-blast;air-slash;solar-beam;ancient-power
+8;Sword;Champion Cup;Champion Leon Scorbunny;Aegislash;62;kings-shield;shadow-ball;sacred-sword;flash-cannon
+8;Sword;Champion Cup;Champion Leon Scorbunny;Dragapult;62;shadow-ball;flamethrower;thunderbolt;dragon-breath
+8;Sword;Champion Cup;Champion Leon Scorbunny;Haxorus;63;poison-jab;iron-tail;outrage;earthquake
+8;Sword;Champion Cup;Champion Leon Scorbunny;Mr. Rime;64;teeter-dance;psychic;freeze-dry;thunderbolt
+8;Sword;Champion Cup;Champion Leon Scorbunny;Inteleon;64;snipe-shot;dark-pulse;mud-shot;tearful-look
+8;Sword;Champion Cup;Champion Leon Scorbunny;Charizard;65;fire-blast;air-slash;solar-beam;ancient-power
+8;Sword;Champion Cup;Champion Leon Sobble;Aegislash;62;kings-shield;shadow-ball;sacred-sword;flash-cannon
+8;Sword;Champion Cup;Champion Leon Sobble;Dragapult;62;shadow-ball;flamethrower;thunderbolt;dragon-breath
+8;Sword;Champion Cup;Champion Leon Sobble;Haxorus;63;poison-jab;iron-tail;outrage;earthquake
+8;Sword;Champion Cup;Champion Leon Sobble;Rhyperior;64;earthquake;stone-edge;megahorn;heat-crash
+8;Sword;Champion Cup;Champion Leon Sobble;Rillaboom;64;drum-beating;knock-off;high-horsepower;endeavor
+8;Sword;Champion Cup;Champion Leon Sobble;Charizard;65;fire-blast;air-slash;solar-beam;ancient-power
+8;Shield;Turffield;Milo;Gossifleur;19;magical-leaf;round;rapid-spin;
+8;Shield;Turffield;Milo;Eldegoss;20;magical-leaf;leafage;round;
+8;Shield;Hulbury;Nessa;Goldeen;22;water-pulse;whirlpool;horn-attack;agility
+8;Shield;Hulbury;Nessa;Arrokuda;23;aqua-jet;bite;whirlpool;fury-attack
+8;Shield;Hulbury;Nessa;Drednaw;24;razor-shell;water-gun;bite;headbutt
+8;Shield;Motostoke;Kabu;Ninetales;25;will-o-wisp;fire-spin;quick-attack;ember
+8;Shield;Motostoke;Kabu;Arcanine;25;will-o-wisp;flame-wheel;bite;agility
+8;Shield;Motostoke;Kabu;Centiskorch;27;flame-wheel;coil;bug-bite;smokescreen
+8;Shield;Stow-on-Side;Allister;Yamask;34;brutal-swing;hex;disable;
+8;Shield;Stow-on-Side;Allister;Mimikyu;34;shadow-sneak;baby-doll-eyes;hone-claws;slash
+8;Shield;Stow-on-Side;Allister;Cursola;35;ancient-power;curse;hex;
+8;Shield;Stow-on-Side;Allister;Gengar;36;venoshock;hex;hypnosis;payback
+8;Shield;Ballonlea;Opal;Weezing;36;sludge;fairy-wing;tackle;
+8;Shield;Ballonlea;Opal;Mawile;36;draining-kiss;crunch;iron-defense;astonish
+8;Shield;Ballonlea;Opal;Togekiss;37;air-slash;draining-kiss;ancient-power;
+8;Shield;Ballonlea;Opal;Alcremie;38;draining-kiss;acid-armor;sweet-kiss;
+8;Shield;Circhester;Melony;Frosmoth;40;icy-wind;feather-dance;bug-buzz;hail
+8;Shield;Circhester;Melony;Darmanitan;40;icicle-crash;headbutt;taunt;fire-fang
+8;Shield;Circhester;Melony;Eiscue;41;amnesia;freeze-dry;hail;icy-wind
+8;Shield;Circhester;Melony;Lapras;42;icy-wind;ice-beam;surf;sing
+8;Shield;Spikemuth;Piers;Scrafty;44;fake-out;sand-attack;brick-break;payback
+8;Shield;Spikemuth;Piers;Malamar;45;night-slash;foul-play;psycho-cut;payback
+8;Shield;Spikemuth;Piers;Skuntank;45;sucker-punch;screech;toxic;snarl
+8;Shield;Spikemuth;Piers;Obstagoon;46;obstruct;throat-chop;counter;shadow-claw
+8;Shield;Hammerlocke;Raihan;Gigalith;46;stealth-rock;sand-tomb;rock-blast;body-press
+8;Shield;Hammerlocke;Raihan;Flygon;47;thunder-punch;breaking-swipe;crunch;steel-wing
+8;Shield;Hammerlocke;Raihan;Sandaconda;46;protect;glare;fire-fang;earth-power
+8;Shield;Hammerlocke;Raihan;Duraludon;48;breaking-swipe;body-press;stone-edge;iron-head
+8;Shield;Champion Cup;Marnie;Liepard;47;fake-out;torment;nasty-plot;snarl
+8;Shield;Champion Cup;Marnie;toxicroak;47;venoshock;sucker-punch;swagger;toxic
+8;Shield;Champion Cup;Marnie;Scrafty;47;swagger;scary-face;brick-break;crunch
+8;Shield;Champion Cup;Marnie;Morpeko;48;bullet-seed;torment;spark;bite
+8;Shield;Champion Cup;Marnie;Grimmsnarl;49;spirit-break;darkest-lariat;bulk-up;torment
+8;Shield;Champion Cup;Hop Scorbunny;Dubwool;48;cotton-guard;reversal;body-slam;zen-headbutt
+8;Shield;Champion Cup;Hop Scorbunny;Corviknight;48;steel-wing;drill-peck;scary-face;swagger
+8;Shield;Champion Cup;Hop Scorbunny;Pincurchin;47;thunderbolt;poison-jab;curse;
+8;Shield;Champion Cup;Hop Scorbunny;Snorlax;47;heavy-slam;high-horsepower;hammer-arm;
+8;Shield;Champion Cup;Hop Scorbunny;Inteleon;49;snipe-shot;mud-shot;icy-wind;dark-pulse
+8;Shield;Champion Cup;Hop Sobble;Dubwool;48;cotton-guard;reversal;body-slam;zen-headbutt
+8;Shield;Champion Cup;Hop Sobble;Corviknight;48;steel-wing;drill-peck;scary-face;swagger
+8;Shield;Champion Cup;Hop Sobble;Pincurchin;47;thunderbolt;poison-jab;curse;
+8;Shield;Champion Cup;Hop Sobble;Snorlax;47;heavy-slam;high-horsepower;hammer-arm;
+8;Shield;Champion Cup;Hop Sobble;Rillaboom;49;drum-beating;high-horsepower;snarl;uproar
+8;Shield;Champion Cup;Hop Grookey;Dubwool;48;cotton-guard;reversal;body-slam;zen-headbutt
+8;Shield;Champion Cup;Hop Grookey;Corviknight;48;steel-wing;drill-peck;scary-face;swagger
+8;Shield;Champion Cup;Hop Grookey;Pincurchin;47;thunderbolt;poison-jab;curse;
+8;Shield;Champion Cup;Hop Grookey;Snorlax;47;heavy-slam;high-horsepower;hammer-arm;
+8;Shield;Champion Cup;Hop Grookey;Cinderace;49;pyro-ball;counter;gunk-shot;bounce
+8;Shield;Champion Cup;Bede;Mawile;51;play-rough;iron-head;crunch;
+8;Shield;Champion Cup;Bede;Gardevoir;51;dazzling-gleam;psychic;calm-mind;wish
+8;Shield;Champion Cup;Bede;Rapidash;52;psycho-cut;take-down;dazzling-gleam;quick-attack
+8;Shield;Champion Cup;Bede;Hatterene;53;psychic;dazzling-gleam;calm-mind;mystical-fire
+8;Shield;Champion Cup;Nessa;Golisopod;51;first-impression;liquidation;swords-dance;shadow-claw
+8;Shield;Champion Cup;Nessa;Pelipper;51;roost;air-slash;water-pulse;tailwind
+8;Shield;Champion Cup;Nessa;Barraskewda;52;liquidation;throat-chop;ice-fang;drill-run
+8;Shield;Champion Cup;Nessa;Seaking;52;smart-strike;megahorn;aqua-ring;waterfall
+8;Shield;Champion Cup;Nessa;Drednaw;53;liquidation;jaw-lock;rock-tomb;crunch
+8;Shield;Champion Cup;Allister;Dusknoir;52;shadow-punch;thunder-punch;rock-tomb;disable
+8;Shield;Champion Cup;Allister;Chandelure;52;shadow-ball;mystical-fire;will-o-wisp;
+8;Shield;Champion Cup;Allister;Cursola;53;hex;strength-sap;ancient-power;amnesia
+8;Shield;Champion Cup;Allister;Polteageist;53;shadow-ball;protect;nasty-plot;giga-drain
+8;Shield;Champion Cup;Allister;Gengar;54;shadow-ball;sludge-bomb;dark-pulse;hypnosis
+8;Shield;Champion Cup;Raihan;Torkoal;53;lava-plume;body-press;solar-beam;yawn
+8;Shield;Champion Cup;Raihan;Goodra;54;rain-dance;surf;thunder;muddy-water
+8;Shield;Champion Cup;Raihan;Turtonator;54;sunny-day;dragon-pulse;shell-trap;fire-blast
+8;Shield;Champion Cup;Raihan;Flygon;54;sandstorm;dragon-claw;earthquake;crunch
+8;Shield;Champion Cup;Raihan;Duraludon;55;dragon-claw;body-press;stone-edge;iron-head
+8;Shield;Champion Cup;Champion Leon Grookey;Aegislash;62;kings-shield;shadow-ball;sacred-sword;flash-cannon
+8;Shield;Champion Cup;Champion Leon Grookey;Dragapult;62;shadow-ball;flamethrower;thunderbolt;dragon-breath
+8;Shield;Champion Cup;Champion Leon Grookey;Haxorus;63;poison-jab;iron-tail;outrage;earthquake
+8;Shield;Champion Cup;Champion Leon Grookey;Seismitoad;64;toxic;drain-punch;liquidation;earthquake
+8;Shield;Champion Cup;Champion Leon Grookey;Cinderace;64;pyro-ball;feint;acrobatics;quick-attack
+8;Shield;Champion Cup;Champion Leon Grookey;Charizard;65;fire-blast;air-slash;solar-beam;ancient-power
+8;Shield;Champion Cup;Champion Leon Scorbunny;Aegislash;62;kings-shield;shadow-ball;sacred-sword;flash-cannon
+8;Shield;Champion Cup;Champion Leon Scorbunny;Dragapult;62;shadow-ball;flamethrower;thunderbolt;dragon-breath
+8;Shield;Champion Cup;Champion Leon Scorbunny;Haxorus;63;poison-jab;iron-tail;outrage;earthquake
+8;Shield;Champion Cup;Champion Leon Scorbunny;Mr. Rime;64;teeter-dance;psychic;freeze-dry;thunderbolt
+8;Shield;Champion Cup;Champion Leon Scorbunny;Inteleon;64;snipe-shot;dark-pulse;mud-shot;tearful-look
+8;Shield;Champion Cup;Champion Leon Scorbunny;Charizard;65;fire-blast;air-slash;solar-beam;ancient-power
+8;Shield;Champion Cup;Champion Leon Sobble;Aegislash;62;kings-shield;shadow-ball;sacred-sword;flash-cannon
+8;Shield;Champion Cup;Champion Leon Sobble;Dragapult;62;shadow-ball;flamethrower;thunderbolt;dragon-breath
+8;Shield;Champion Cup;Champion Leon Sobble;Haxorus;63;poison-jab;iron-tail;outrage;earthquake
+8;Shield;Champion Cup;Champion Leon Sobble;Rhyperior;64;earthquake;stone-edge;megahorn;heat-crash
+8;Shield;Champion Cup;Champion Leon Sobble;Rillaboom;64;drum-beating;knock-off;high-horsepower;endeavor
+8;Shield;Champion Cup;Champion Leon Sobble;Charizard;65;fire-blast;air-slash;solar-beam;ancient-power
+9;Scarlet;Cortondo;Katy;Nymble;14;struggle-bug;double-kick;;
+9;Scarlet;Cortondo;Katy;Tarountula;14;bug-bite;assurance;;
+9;Scarlet;Cortondo;Katy;Teddiursa;15;fury-cutter;fury-swipes;;
+9;Scarlet;Artazon;Brassius;Petilil;16;sleep-powder;mega-drain;;
+9;Scarlet;Artazon;Brassius;Smoliv;16;tackle;razor-leaf;;
+9;Scarlet;Artazon;Brassius;Sudowoodo;17;trailblaze;rock-throw;;
+9;Scarlet;Levincia;Iono;Wattrel;23;pluck;quick-attack;spark;
+9;Scarlet;Levincia;Iono;Bellibolt;23;water-gun;spark;;
+9;Scarlet;Levincia;Iono;Luxio;23;spark;bite;;
+9;Scarlet;Levincia;Iono;Mismagius;24;charge-beam;hex;confuse-ray;
+9;Scarlet;Cascarrafa;Kofu;Veluza;29;slash;pluck;aqua-cutter;
+9;Scarlet;Cascarrafa;Kofu;Wugtrio;29;mud-slap;water-pulse;headbutt;
+9;Scarlet;Cascarrafa;Kofu;Crabominable;30;crabhammer;rock-smash;slam;
+9;Scarlet;Medali;Larry;Komala;35;yawn;sucker-punch;slam;
+9;Scarlet;Medali;Larry;Dudunsparce;35;hyper-drill;drill-run;glare;
+9;Scarlet;Medali;Larry;Staraptor;36;facade;aerial-ace;;
+9;Scarlet;Montenevera;Ryme;Banette;41;icy-wind;sucker-punch;shadow-sneak;
+9;Scarlet;Montenevera;Ryme;Mimikyu;41;light-screen;shadow-sneak;slash;
+9;Scarlet;Montenevera;Ryme;Houndstone;41;play-rough;crunch;phantom-force;
+9;Scarlet;Montenevera;Ryme;Toxtricity;42;discharge;hex;hyper-voice;
+9;Scarlet;Alfornada;Tulip;Farigiraf;44;crunch;zen-headbutt;reflect;
+9;Scarlet;Alfornada;Tulip;Gardevoir;44;psychic;dazzling-gleam;energy-ball;
+9;Scarlet;Alfornada;Tulip;Espathra;44;psychic;quick-attack;shadow-ball;
+9;Scarlet;Alfornada;Tulip;Florges;45;psychic;moonblast;Petal blizzard;
+9;Scarlet;Glaseado;Grusha;Frosmoth;47;blizzard;bug-buzz;tailwind;
+9;Scarlet;Glaseado;Grusha;Beartic;47;aqua-jet;icicle-crash;earthquake;
+9;Scarlet;Glaseado;Grusha;Cetitan;47;ice-spinner;liquidation;ice-shard;
+9;Scarlet;Glaseado;Grusha;Altaria;48;ice-beam;dragon-pulse;moonblast;hurricane
+9;Scarlet;Elite Four;Rika;Whiscash;57;muddy-water;earth-power;blizzard;future-sight
+9;Scarlet;Elite Four;Rika;Camerupt;57;earth-power;fire-blast;flash-cannon;yawn
+9;Scarlet;Elite Four;Rika;Donphan;57;earthquake;stone-edge;iron-head;poison-jab
+9;Scarlet;Elite Four;Rika;Dugtrio;57;earthquake;rock-slide;sucker-punch;sandstorm
+9;Scarlet;Elite Four;Rika;Clodsire;58;earthquake;liquidation;toxic;protect
+9;Scarlet;Elite Four;Poppy;Copperajah;58;high-horsepower;play-rough;heavy-slam;stealth-rock
+9;Scarlet;Elite Four;Poppy;Magnezone;58;discharge;flash-cannon;light-screen;tri-attack
+9;Scarlet;Elite Four;Poppy;Bronzong;58;iron-head;zen-headbutt;rock-blast;earthquake
+9;Scarlet;Elite Four;Poppy;Corviknight;58;brave-bird;iron-head;body-press;iron-defense
+9;Scarlet;Elite Four;Larry;Tropius;59;air-slash;solar-beam;dragon-pulse;sunny-day
+9;Scarlet;Elite Four;Larry;Oricorio;59;revelation-dance;air-slash;teeter-dance;icy-wind
+9;Scarlet;Elite Four;Larry;Altaria;59;moonblast;flamethrower;ice-beam;dragon-pulse
+9;Scarlet;Elite Four;Larry;Staraptor;59;facade;brave-bird;close-combat;thief
+9;Scarlet;Elite Four;Larry;Flamigo;60;brave-bird;close-combat;throat-chop;liquidation
+9;Scarlet;Elite Four;Hassel;Noivern;60;air-slash;dragon-pulse;super-fang;hyper-voice
+9;Scarlet;Elite Four;Hassel;Haxorus;60;dragon-claw;crunch;iron-head;hyper-voice
+9;Scarlet;Elite Four;Hassel;Dragalge;60;sludge-bomb;dragon-pulse;hydro-pump;thunderbolt
+9;Scarlet;Elite Four;Hassel;Flapple;60;dragon-rush;seed-bomb;aerial-ace;leech-seed
+9;Scarlet;Elite Four;Hassel;Baxcalibur;61;icicle-crash;brick-break;glaive-rush;
+9;Scarlet;Elite Four;Champion Geeta;Espathra;61;lumina-crash;dazzling-gleam;quick-attack;reflect
+9;Scarlet;Elite Four;Champion Geeta;Gogoat;61;horn-leech;zen-headbutt;play-rough;bulk-up
+9;Scarlet;Elite Four;Champion Geeta;Veluza;61;aqua-jet;liquidation;psycho-cut;ice-fang
+9;Scarlet;Elite Four;Champion Geeta;Avalugg;61;avalanche;crunch;earthquake;body-press
+9;Scarlet;Elite Four;Champion Geeta;Kingambit;61;iron-head;kowtow-cleave;zen-headbutt;stone-edge
+9;Scarlet;Elite Four;Champion Geeta;Glimmora;62;tera-blast;sludge-wave;earth-power;dazzling-gleam
+9;Violet;Cortondo;Katy;Nymble;14;struggle-bug;double-kick;;
+9;Violet;Cortondo;Katy;Tarountula;14;bug-bite;assurance;;
+9;Violet;Cortondo;Katy;Teddiursa;15;fury-cutter;fury-swipes;;
+9;Violet;Artazon;Brassius;Petilil;16;sleep-powder;mega-drain;;
+9;Violet;Artazon;Brassius;Smoliv;16;tackle;razor-leaf;;
+9;Violet;Artazon;Brassius;Sudowoodo;17;trailblaze;rock-throw;;
+9;Violet;Levincia;Iono;Wattrel;23;pluck;quick-attack;spark;
+9;Violet;Levincia;Iono;Bellibolt;23;water-gun;spark;;
+9;Violet;Levincia;Iono;Luxio;23;spark;bite;;
+9;Violet;Levincia;Iono;Mismagius;24;charge-beam;hex;confuse-ray;
+9;Violet;Cascarrafa;Kofu;Veluza;29;slash;pluck;aqua-cutter;
+9;Violet;Cascarrafa;Kofu;Wugtrio;29;mud-slap;water-pulse;headbutt;
+9;Violet;Cascarrafa;Kofu;Crabominable;30;crabhammer;rock-smash;slam;
+9;Violet;Medali;Larry;Komala;35;yawn;sucker-punch;slam;
+9;Violet;Medali;Larry;Dudunsparce;35;hyper-drill;drill-run;glare;
+9;Violet;Medali;Larry;Staraptor;36;facade;aerial-ace;;
+9;Violet;Montenevera;Ryme;Banette;41;icy-wind;sucker-punch;shadow-sneak;
+9;Violet;Montenevera;Ryme;Mimikyu;41;light-screen;shadow-sneak;slash;
+9;Violet;Montenevera;Ryme;Houndstone;41;play-rough;crunch;phantom-force;
+9;Violet;Montenevera;Ryme;Toxtricity;42;discharge;hex;hyper-voice;
+9;Violet;Alfornada;Tulip;Farigiraf;44;crunch;zen-headbutt;reflect;
+9;Violet;Alfornada;Tulip;Gardevoir;44;psychic;dazzling-gleam;energy-ball;
+9;Violet;Alfornada;Tulip;Espathra;44;psychic;quick-attack;shadow-ball;
+9;Violet;Alfornada;Tulip;Florges;45;psychic;moonblast;Petal blizzard;
+9;Violet;Glaseado;Grusha;Frosmoth;47;blizzard;bug-buzz;tailwind;
+9;Violet;Glaseado;Grusha;Beartic;47;aqua-jet;icicle-crash;earthquake;
+9;Violet;Glaseado;Grusha;Cetitan;47;ice-spinner;liquidation;ice-shard;
+9;Violet;Glaseado;Grusha;Altaria;48;ice-beam;dragon-pulse;moonblast;hurricane
+9;Violet;Elite Four;Rika;Whiscash;57;muddy-water;earth-power;blizzard;future-sight
+9;Violet;Elite Four;Rika;Camerupt;57;earth-power;fire-blast;flash-cannon;yawn
+9;Violet;Elite Four;Rika;Donphan;57;earthquake;stone-edge;iron-head;poison-jab
+9;Violet;Elite Four;Rika;Dugtrio;57;earthquake;rock-slide;sucker-punch;sandstorm
+9;Violet;Elite Four;Rika;Clodsire;58;earthquake;liquidation;toxic;protect
+9;Violet;Elite Four;Poppy;Copperajah;58;high-horsepower;play-rough;heavy-slam;stealth-rock
+9;Violet;Elite Four;Poppy;Magnezone;58;discharge;flash-cannon;light-screen;tri-attack
+9;Violet;Elite Four;Poppy;Bronzong;58;iron-head;zen-headbutt;rock-blast;earthquake
+9;Violet;Elite Four;Poppy;Corviknight;58;brave-bird;iron-head;body-press;iron-defense
+9;Violet;Elite Four;Larry;Tropius;59;air-slash;solar-beam;dragon-pulse;sunny-day
+9;Violet;Elite Four;Larry;Oricorio;59;revelation-dance;air-slash;teeter-dance;icy-wind
+9;Violet;Elite Four;Larry;Altaria;59;moonblast;flamethrower;ice-beam;dragon-pulse
+9;Violet;Elite Four;Larry;Staraptor;59;facade;brave-bird;close-combat;thief
+9;Violet;Elite Four;Larry;Flamigo;60;brave-bird;close-combat;throat-chop;liquidation
+9;Violet;Elite Four;Hassel;Noivern;60;air-slash;dragon-pulse;super-fang;hyper-voice
+9;Violet;Elite Four;Hassel;Haxorus;60;dragon-claw;crunch;iron-head;hyper-voice
+9;Violet;Elite Four;Hassel;Dragalge;60;sludge-bomb;dragon-pulse;hydro-pump;thunderbolt
+9;Violet;Elite Four;Hassel;Flapple;60;dragon-rush;seed-bomb;aerial-ace;leech-seed
+9;Violet;Elite Four;Hassel;Baxcalibur;61;icicle-crash;brick-break;glaive-rush;
+9;Violet;Elite Four;Champion Geeta;Espathra;61;lumina-crash;dazzling-gleam;quick-attack;reflect
+9;Violet;Elite Four;Champion Geeta;Gogoat;61;horn-leech;zen-headbutt;play-rough;bulk-up
+9;Violet;Elite Four;Champion Geeta;Veluza;61;aqua-jet;liquidation;psycho-cut;ice-fang
+9;Violet;Elite Four;Champion Geeta;Avalugg;61;avalanche;crunch;earthquake;body-press
+9;Violet;Elite Four;Champion Geeta;Kingambit;61;iron-head;kowtow-cleave;zen-headbutt;stone-edge
+9;Violet;Elite Four;Champion Geeta;Glimmora;62;tera-blast;sludge-wave;earth-power;dazzling-gleam

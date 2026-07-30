@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pokémon Gauntlet — Team Builder</title>
+  <link rel="stylesheet" href="gauntlet.css">
+</head>
+<body>
+
+<div class="wrap">
+
+  <header>
+    <div class="lamp"></div>
+    <div class="titles">
+      <h1 id="pageTitle">Gauntlet</h1>
+      <p class="tag" id="pageSub">Spin your way to a team of six.</p>
+    </div>
+    <div class="hdr-btns">
+      <a class="toggle" href="index.html">← Home</a>
+      <button id="restart" class="toggle" title="Start over">↻ Start over</button>
+    </div>
+  </header>
+
+  <!-- who you'll be fighting (champion mode only) -->
+  <section id="oppPanel" hidden>
+    <button id="oppToggle" class="opp-toggle" aria-expanded="false">
+      <span class="opp-t">Who you'll face</span>
+      <span class="opp-n" id="oppCount"></span>
+      <span class="opp-chev" aria-hidden="true">▼</span>
+    </button>
+    <div class="opplist" id="oppList" hidden></div>
+  </section>
+
+  <!-- ============ 1. CHALLENGE ============ -->
+  <section id="scChallenge" class="screen">
+    <div class="panel">
+      <h2 class="hd" id="chHd">Choose your region</h2>
+      <p class="sub" id="chSub">Which Champion are you going after? You'll still draft
+         Pokémon from every generation — this only decides who you'll be fighting.</p>
+
+      <div class="chgrid" id="chgrid"></div>
+
+      <button id="toStarter" disabled>Confirm region</button>
+    </div>
+  </section>
+
+  <!-- ============ 2. STARTER ============ -->
+  <section id="scStarter" class="screen" hidden>
+    <div class="panel">
+      <h2 class="hd">Your starter</h2>
+      <p class="sub">Spin for a region, then pick one of its three starters.
+         Your first Pokémon gets a friendship bond — a
+         <b id="boostPct">10%</b> boost to every base stat.</p>
+
+      <div class="reel" id="reelStarter">
+        <div class="slot">
+          <span class="slot-lb">Region</span>
+          <span class="slot-v" id="stGen">— — —</span>
+        </div>
+      </div>
+
+      <button id="spinStarter">Spin for a region</button>
+
+      <div id="starterPick" class="starters" hidden></div>
+    </div>
+  </section>
+
+  <!-- ============ 3. BALL SPINS ============ -->
+  <section id="scBall" class="screen" hidden>
+    <div class="panel">
+      <h2 class="hd">Slot <span id="slotNo">2</span> of 6</h2>
+      <p class="sub">Throw a Poké Ball to roll a region and a type. You may take any
+         Pokémon that has the rolled type in either slot.</p>
+
+      <div class="reel" id="reelBall">
+        <div class="slot">
+          <span class="slot-lb">Region</span>
+          <span class="slot-v" id="bGen">— — —</span>
+        </div>
+        <div class="slot">
+          <span class="slot-lb">Type</span>
+          <span class="slot-v" id="bType">— — —</span>
+        </div>
+      </div>
+
+      <div class="ball-row">
+        <button id="throwBall">Throw a Poké Ball</button>
+        <div class="rerolls" id="rerolls"></div>
+      </div>
+
+      <p id="spinNote" class="note" hidden></p>
+
+      <div id="results" hidden>
+        <div class="res-head">
+          <span id="resCount" class="tag"></span>
+          <input id="resSearch" type="text" autocomplete="off"
+                 placeholder="Search these results…" aria-label="Search results">
+        </div>
+        <div class="reslist" id="reslist"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 4. DONE ============ -->
+  <section id="scDone" class="screen" hidden>
+    <div class="panel">
+      <h2 class="hd">Your team is set</h2>
+      <p class="sub" id="doneSub"></p>
+      <div class="finalgrid" id="finalgrid"></div>
+      <div class="done-btns">
+        <button id="simBtn" hidden>Run the challenge</button>
+        <button id="againBtn" class="ghost">Start over</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 6. GAUNTLET RESULTS ============ -->
+  <section id="scGauntlet" class="screen" hidden>
+    <div class="panel">
+      <div class="rec-head">
+        <div class="rec-score">
+          <span id="gW">0</span><span class="rec-dash">-</span><span id="gL">0</span>
+        </div>
+        <div class="rec-meta">
+          <h2 class="hd" id="gTitle">The Gauntlet</h2>
+          <p class="sub" id="gSub"></p>
+        </div>
+      </div>
+
+      <div class="rec-stats" id="gStats"></div>
+      <div class="regions" id="gRegions"></div>
+
+      <div class="done-btns">
+        <button id="gBack" class="ghost">Back to team</button>
+        <button id="gAgain">Draft a new team</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 5. RESULTS ============ -->
+  <section id="scResult" class="screen" hidden>
+    <div class="panel">
+      <div class="rec-head">
+        <div class="rec-score">
+          <span id="recW">0</span><span class="rec-dash">-</span><span id="recL">0</span>
+        </div>
+        <div class="rec-meta">
+          <h2 class="hd" id="recTitle">Result</h2>
+          <p class="sub" id="recSub"></p>
+        </div>
+      </div>
+
+      <div class="rec-stats" id="recStats"></div>
+      <div class="battles" id="battles"></div>
+
+      <div class="done-btns">
+        <button id="backTeam" class="ghost">Back to team</button>
+        <button id="againBtn2">Draft a new team</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- fixed team footer -->
+<footer id="teambar">
+  <div class="tb-inner">
+    <span class="tb-lb">Team</span>
+    <div class="tb-slots" id="tbSlots"></div>
+    <span class="tb-count" id="tbCount">0 / 6</span>
+  </div>
+</footer>
+
+<script src="battle.js"></script>
+<script src="gauntlet.js"></script>
+</body>
+</html>
