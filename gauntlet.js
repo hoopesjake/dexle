@@ -47,6 +47,23 @@ const rndType = not => { let t; do { t = pickOne(TYPES); }    while (t === not);
 const SPRITE = (id, shiny) =>
   `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${shiny ? "shiny/" : ""}${id}.png`;
 
+// the real Rare Candy item sprite
+const CANDY_ICON =
+  "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/rare-candy.png";
+
+const ART = (id, shiny) =>
+  `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${shiny ? "shiny/" : ""}${id}.png`;
+
+// A couple of Mega forms have no pixel sprite (Mega Zygarde). Fall back to the
+// official artwork, then to the base Pokemon, instead of showing a broken image.
+function spriteImg(mon, shiny, cls, extra) {
+  const base = mon.baseId || mon.id;
+  return `<img src="${SPRITE(mon.id, shiny)}" alt="${mon.name}" class="${cls || ""}"
+    data-dex="${mon.id}" ${extra || ""}
+    onerror="this.onerror=null;this.src='${ART(mon.id, shiny)}';
+             this.onerror=function(){this.onerror=null;this.src='${SPRITE(base, shiny)}';};">`;
+}
+
 const chip = t =>
   `<span class="type" style="background:${TYPE_COLOR[t]}">${t}</span>`;
 
@@ -87,6 +104,8 @@ let byId = {};
 let OPP = {};                    // generation -> { region, game, opponents[] }
 let MEGAS = {};                  // base dex id -> [ mega forms ]
 let selMode = null;              // null | "mega" | "candy"
+let locked  = false;             // true once a run has been simulated
+let lastScreen = null;           // which results screen to return to
 let megaIdx = -1;                // team slot currently Mega Evolved
 
 let challenge = null;          // { mode:"single", gen:n } | { mode:"gauntlet" }
@@ -514,11 +533,16 @@ function drawTeamBar() {
   $("tbSlots").innerHTML = Array.from({ length:6 }, (_, i) => {
     const m = cells[i];
     if (!m) return `<div class="tb-slot"></div>`;
-    return `<div class="tb-slot filled ${m.starter ? "starter" : ""}"
-                 title="${m.p.name}">
-      <img src="${SPRITE(m.p.id, m.shiny)}" alt="${m.p.name}">
+    const cls = ["tb-slot", "filled",
+                 m.starter ? "starter" : "",
+                 m.mega    ? "megaon"  : "",
+                 m.candy   ? "candyon" : ""].filter(Boolean).join(" ");
+    return `<div class="${cls}" title="${m.p.name}${m.mega ? " · Mega Evolved" : ""}${m.candy ? " · Rare Candy" : ""}">
+      ${spriteImg(m.p, m.shiny)}
       ${m.starter ? '<span class="tb-flag">💛</span>' : ""}
-      ${m.shiny   ? '<span class="tb-flag" style="left:-3px;right:auto">✦</span>' : ""}
+      ${m.mega    ? '<span class="tb-flag tb-mega">◈</span>' : ""}
+      ${m.candy   ? `<span class="tb-flag tb-candy"><img src="${CANDY_ICON}" alt="Rare Candy"></span>` : ""}
+      ${m.shiny   ? '<span class="tb-flag tb-shiny">✦</span>' : ""}
     </div>`;
   }).join("");
   $("tbCount").textContent = `${team.length} / 6`;
@@ -532,6 +556,7 @@ function megaFormsFor(p) {
 const megaEligible = () => team.filter(m => megaFormsFor(m.base || m.p));
 
 function setSelMode(mode) {
+  if (locked) return;            // team is final once you've run it
   selMode = mode;
   $("selHint").hidden = !mode;
   $("selHint").className = "selhint" + (mode ? " " + mode : "");
@@ -543,7 +568,7 @@ function setSelMode(mode) {
   : "";
   $("megaBtn").classList.toggle("armed", mode === "mega");
   $("candyBtn").classList.toggle("armed", mode === "candy");
-  finish();                                   // repaint the cards
+  renderDone();                               // repaint without scrolling
 }
 
 // who may eat the candy: not the starter, not a legendary, not the Mega
@@ -554,7 +579,8 @@ function applyMega(slot, form) {
   const m = team[slot];
   delete m.candy;                             // a Mega can't also be candied
   m.base = m.base || m.p;                     // remember what it was
-  m.p    = { ...form, legend: m.base.legend, gen: m.base.gen, region: m.base.region };
+  m.p    = { ...form, legend: m.base.legend, gen: m.base.gen,
+             region: m.base.region, baseId: m.base.id };
   m.mega = form.name;
   megaIdx = slot;
   setSelMode(null);
@@ -596,7 +622,8 @@ function openMegaChooser(slot, forms) {
     <div class="megaopts">
       ${forms.map((f, i) => `
         <button class="megaopt" data-i="${i}">
-          <img src="${ART(f.id, false)}" alt="${f.name}">
+          <img src="${ART(f.id, false)}" alt="${f.name}"
+               onerror="this.onerror=null;this.src='${SPRITE(f.id, false)}';">
           <b>${f.name}</b>
           <div>${[f.t1, f.t2].filter(Boolean).map(chip).join(" ")}</div>
           <div class="mo-bst">${sumStats(before.s)} → <i>${sumStats(f.s)}</i></div>
@@ -621,7 +648,14 @@ function statDiff(from, to) {
 /* ---------- 4. done ---------- */
 function finish() {
   show("scDone");
+  renderDone();
+}
+
+/* Repaint the team page in place. Selection modes call this instead of
+   finish(), so picking a Mega or a Candy doesn't jump you back to the top. */
+function renderDone() {
   removeShinyNote();
+  drawTeamBar();          // Mega / Candy changes have to reach the footer too
 
   const total   = team.reduce((a, m) => a + teamBst(m), 0);
   const shinies = team.filter(m => m.shiny).length;
@@ -634,11 +668,12 @@ function finish() {
     (shinies ? ` · ${shinies} shiny` : "") + ".";
 
   $("simBtn").hidden = false;
-  $("simBtn").textContent = MODE === "gauntlet"
-    ? "Run the Gauntlet · 121 battles"
-    : "Run the challenge";
+  $("simBtn").textContent = locked
+    ? "See results"
+    : MODE === "gauntlet" ? "Run the Gauntlet · 121 battles"
+                          : "Run the challenge";
 
-  const canUse = MODE === "gauntlet" || challenge.mode === "single";
+  const canUse = !locked && (MODE === "gauntlet" || challenge.mode === "single");
   const elig   = megaEligible();
   $("megaBtn").hidden  = !canUse;
   $("candyBtn").hidden = !canUse;
@@ -655,9 +690,10 @@ function finish() {
   $("candyBtn").title = cOk.length
     ? `${cOk.length} of your team can take the candy`
     : "Nobody eligible - the candy can't go to your starter, a legendary, or the Mega";
+  const cIcon = `<span class="cb-candy"><img src="${CANDY_ICON}" alt=""></span>`;
   $("candyBtn").innerHTML = fed
-    ? `<span class="cb-candy">\ud83c\udf6c</span> Candy: ${fed.p.name}`
-    : `<span class="cb-candy">\ud83c\udf6c</span> Rare Candy`;
+    ? `${cIcon} Candy: ${fed.p.name}`
+    : `${cIcon} Rare Candy`;
   $("megaBtn").classList.toggle("done", megaIdx >= 0);
   $("candyBtn").classList.toggle("done", !!fed);
 
@@ -679,14 +715,14 @@ function finish() {
            ${pick.startsWith("pickable") ? `data-slot="${slot}" role="button" tabindex="0"` : ""}>
         ${m.starter ? '<span class="fin-flag" title="Friendship bond">💛</span>' : ""}
         ${m.shiny   ? '<span class="fin-flag" style="left:8px;right:auto">✦</span>' : ""}
-        <img src="${SPRITE(p.id, m.shiny)}" alt="${p.name}">
+        ${spriteImg(p, m.shiny)}
         <b>${p.name}</b>
         <div>${[p.t1,p.t2].filter(Boolean).map(chip).join(" ")}</div>
         ${m.from ? `<div class="fin-from">from ${byId[m.from].name}</div>` : ""}
         <div class="fin-bst">${t}${m.starter ? " (bonded)" : m.candy ? " (candied)" : ""}</div>
         <div class="fin-badges">
           ${m.mega   ? '<span class="badge mega">Mega Evolved</span>' : ""}
-          ${m.candy  ? `<span class="badge candy">Rare Candy +${Math.round((CANDY_BOOST-1)*100)}%</span>` : ""}
+          ${m.candy  ? `<span class="badge candy"><img src="${CANDY_ICON}" alt="">Rare Candy +${Math.round((CANDY_BOOST-1)*100)}%</span>` : ""}
         </div>
       </div>`;
   }).join("");
@@ -708,9 +744,9 @@ function rankBadge(rk, wins, total) {
     <div class="rankwrap ${rk.key}${rk.perfect ? " perfect" : ""}">
       <span class="rankball" style="--rc:${rk.hex}"></span>
       <div class="rankmeta">
-        <b>${rk.perfect ? "Flawless · " : ""}${rk.name} Tier</b>
+        <b>${rk.key === "oak" ? rk.name : rk.name + " Tier"}</b>
         <span>${wins} of ${total} · ${Math.round(rk.pct * 100)}%${
-          need ? ` · ${need - wins} more for ${rk.next.name}` : ""}</span>
+          need ? ` · ${need - wins} more for ${rk.next.name}` : " · perfect run"}</span>
       </div>
     </div>`;
 }
@@ -719,6 +755,8 @@ function rankBadge(rk, wins, total) {
 function runGauntlet() {
   const roster = team.map(m => ({ p: m.p, stats: statsFor(m) }));
 
+  locked = true;
+  lastScreen = "scGauntlet";
   $("gSub").textContent = "Simulating 121 battles…";
   show("scGauntlet");
 
@@ -743,14 +781,17 @@ function runGauntlet() {
         `<b>${res.hardest[0].name}</b> (${Math.round(res.hardest[0].rate * 100)}%).`;
 
     $("gStats").innerHTML = `
-      <div class="rstat"><b>Average wins</b><span>${res.expected}</span></div>
-      <div class="rstat"><b>121-0 chance</b><span>${(res.perfectOdds * 100).toFixed(2)}%</span></div>
-      <div class="rstat"><b>Favoured in</b><span>${res.favoured}/${res.total}</span></div>
-      <div class="rstat"><b>Types covered</b><span>${coverage()}/18</span></div>
-      <div class="rstat"><b>Team base stats</b><span>${roster.reduce((a, m) => a + m.stats.reduce((x, y) => x + y, 0), 0)}</span></div>`;
+      <div class="rstat"><b>Team base stats</b><span>${roster.reduce((a, m) => a + m.stats.reduce((x, y) => x + y, 0), 0)}</span></div>
+      <div class="rstat"><b>Types covered</b><span>${coverage()}/18</span></div>`;
 
     $("gRegions").innerHTML = res.regions.map(r => {
       const clean = r.record[1] === 0;
+      // the region record decides how many L badges appear, so the rows and the
+      // header can never disagree: the weakest matchups are the losses
+      const lossIds = new Set([...r.battles]
+        .sort((a, b) => a.rate - b.rate)
+        .slice(0, r.record[1])
+        .map(b => b.name + "|" + b.role));
       return `
       <div class="reg ${clean ? "clean" : ""}">
         <button class="reg-head" aria-expanded="false">
@@ -767,7 +808,7 @@ function runGauntlet() {
         <div class="reg-body" hidden>
           ${r.battles.map(b => {
             const pct = Math.round(b.rate * 100);
-            const st  = b.rate >= 0.5 ? "w" : "l";
+            const st  = lossIds.has(b.name + "|" + b.role) ? "l" : "w";
             return `
             <div class="gbtl ${st}">
               <span class="gbtl-res">${st === "w" ? "W" : "L"}</span>
@@ -814,6 +855,9 @@ function runChallenge() {
   // starters carry their friendship bonus into the fight
   const roster = team.map(m => ({ p: m.p, stats: statsFor(m) }));
 
+  locked = true;
+  lastScreen = "scResult";
+
   const res = simRun(roster, g.opponents);
   const [w, l] = res.record;
 
@@ -834,14 +878,14 @@ function runChallenge() {
       ` Damage carries between battles, so early scrapes cost you later.`;
 
   $("recStats").innerHTML = `
-    <div class="rstat"><b>Average wins</b><span>${res.expected}</span></div>
-    <div class="rstat"><b>Clean-run odds</b><span>${(res.perfectOdds * 100).toFixed(1)}%</span></div>
     <div class="rstat"><b>Team base stats</b><span>${roster.reduce((a, m) => a + m.stats.reduce((x, y) => x + y, 0), 0)}</span></div>
-    <div class="rstat"><b>Types covered</b><span>${coverage()}/18</span></div>
-    <div class="rstat"><b>Level</b><span>100</span></div>`;
+    <div class="rstat"><b>Types covered</b><span>${coverage()}/18</span></div>`;
 
+
+    const lossSet = new Set([...res.battles]
+    .sort((a, b) => a.rate - b.rate).slice(0, l).map(b => b.name));
   $("battles").innerHTML = res.battles.map((b, i) => {
-    const state = b.rate >= 0.5 ? "w" : "l";
+    const state = lossSet.has(b.name) ? "l" : "w";
     const pct = Math.round(b.rate * 100);
     return `
       <div class="btl ${state}">
@@ -941,6 +985,8 @@ function startOver() {
   starterSpins = 0;
   starterGen   = null;
   selMode      = null;
+  locked       = false;
+  lastScreen   = null;
   megaIdx      = -1;
   $("selHint").hidden  = true;
   $("megaModal").hidden = true;
@@ -973,6 +1019,37 @@ function startOver() {
 }
 
 /* =========================================================
+   DEBUG - skip the draft. Delete this block and the #debugTeam
+   button in gauntlet.html before shipping.
+   ========================================================= */
+function debugTeam() {
+  const NAMES = ["Sceptile", "Charizard", "Mewtwo", "Lucario", "Tyranitar", "Gengar"];
+
+  team = NAMES.map((n, i) => {
+    const p = DEX.find(x => x.name === n);
+    if (!p) { console.warn("debug: no Pokémon named", n); return null; }
+    // Sceptile leads as the bonded starter, so the +10% path gets tested too
+    return { p, starter: i === 0, from: i === 0 ? p.id - 2 : null, shiny: false };
+  }).filter(Boolean);
+
+  // a mode needs a challenge set before the team page will render
+  if (!challenge) {
+    challenge = MODE === "gauntlet" ? { mode:"gauntlet" }
+                                    : { mode:"single", gen:1 };
+  }
+
+  locked     = false;
+  lastScreen = null;
+  selMode    = null;
+  megaIdx    = -1;
+  spinning   = false;
+
+  drawCoverage();
+  drawOpponents();
+  finish();
+}
+
+/* =========================================================
    bindings
    ========================================================= */
 $("toStarter").onclick   = startStarter;
@@ -986,7 +1063,10 @@ $("covToggle").onclick   = () => {
   $("covToggle").setAttribute("aria-expanded", open);
   $("covToggle").classList.toggle("open", open);
 };
-$("simBtn").onclick      = () => MODE === "gauntlet" ? runGauntlet() : runChallenge();
+$("simBtn").onclick      = () => {
+  if (locked && lastScreen) return show(lastScreen);   // don't re-roll a run
+  return MODE === "gauntlet" ? runGauntlet() : runChallenge();
+};
 $("gAgain").onclick      = startOver;
 $("gBack").onclick       = () => show("scDone");
 $("megaBtn").onclick     = () => {
@@ -1002,6 +1082,7 @@ $("megaModal").onclick   = e => {
 $("againBtn2").onclick   = startOver;
 $("backTeam").onclick    = () => show("scDone");
 $("restart").onclick     = startOver;
+$("debugTeam").onclick = debugTeam;
 
 $("resSearch").addEventListener("input", () => {
   if (spin) renderResults(eligible(spin.gen, spin.type));

@@ -16,7 +16,7 @@ body{
   font-family:'Segoe UI', system-ui, sans-serif; font-size:15px; line-height:1.5;
   background-image:radial-gradient(900px 500px at 50% -10%, #1E2745 0%, transparent 70%);
 }
-.wrap{ max-width:1080px; margin:0 auto; padding:24px 18px 128px }
+.wrap{ max-width:1080px; margin:0 auto; padding:24px 18px 150px }
 
 /* ---------- header ---------- */
 header{ display:flex; align-items:center; gap:14px; margin-bottom:22px }
@@ -355,7 +355,8 @@ button:disabled{ opacity:.4; cursor:not-allowed; filter:none }
 .fin-flag{
   position:absolute; top:8px; right:8px; font-size:13px;
 }
-.done-btns{ display:flex; gap:10px; flex-wrap:wrap }
+.done-btns{ display:flex; gap:10px; flex-wrap:wrap; align-items:center }
+.done-btns #againBtn{ margin-left:auto }
 
 /* ---------- fixed team footer ---------- */
 #teambar{
@@ -364,7 +365,7 @@ button:disabled{ opacity:.4; cursor:not-allowed; filter:none }
   border-top:1px solid var(--line);
 }
 .tb-inner{
-  max-width:1080px; margin:0 auto; padding:14px 18px;
+  max-width:1080px; margin:0 auto; padding:15px 18px 15px;
   display:flex; align-items:center; gap:18px;
 }
 .tb-lb{
@@ -372,21 +373,27 @@ button:disabled{ opacity:.4; cursor:not-allowed; filter:none }
   color:var(--ink-dim); flex:none;
 }
 .tb-slots{
-  display:flex; flex-wrap:nowrap; gap:10px;
-  overflow-x:auto; scrollbar-width:none;
+  display:flex; flex-wrap:nowrap; gap:13px;
+  padding:14px 12px;          /* room for the glow to fade out */
+  margin:-14px -12px;         /* ...without making the bar taller */
 }
-.tb-slots::-webkit-scrollbar{ display:none }
 .tb-slot{
   width:76px; height:76px; border-radius:50%; flex:none; position:relative;
   background:var(--panel-2); border:2px dashed var(--line);
   display:flex; align-items:center; justify-content:center;
 }
-.tb-slot.filled{ border-style:solid; border-color:var(--line); background:#101728 }
+.tb-slot.filled{
+  border-style:solid; border-color:var(--line); background:#101728;
+  background-clip:padding-box;
+}
 .tb-slot img{ width:68px; height:68px; image-rendering:pixelated }
 .tb-slot.starter{ border-color:var(--gold); box-shadow:0 0 14px rgba(232,195,61,.35) }
 .tb-flag{
-  position:absolute; bottom:-2px; right:-2px; font-size:15px;
-  background:var(--ground); border-radius:50%; padding:1px 2px; line-height:1;
+  position:absolute; width:22px; height:22px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; line-height:1; padding:0;
+  background:var(--ground); border:1px solid var(--line);
+  bottom:-3px; right:-3px;                 /* starter sits bottom-right */
 }
 .tb-count{
   margin-left:auto; font-family:ui-monospace, monospace; font-size:13px;
@@ -399,7 +406,7 @@ button:disabled{ opacity:.4; cursor:not-allowed; filter:none }
 }
 @media (max-width:560px){
   h1{ font-size:20px }
-  .wrap{ padding-bottom:104px }
+  .wrap{ padding-bottom:128px }
   .finalgrid{ gap:8px }
   .fin{ padding:10px }
   .fin img{ width:64px; height:64px }
@@ -647,8 +654,8 @@ button:disabled{ opacity:.4; cursor:not-allowed; filter:none }
   border:1px solid rgba(226,120,206,.45);
 }
 .selhint.candy{
-  color:#F5C67A; background:rgba(232,150,45,.10);
-  border:1px solid rgba(232,150,45,.45);
+  color:#A9CFFF; background:rgba(62,123,214,.12);
+  border:1px solid rgba(62,123,214,.5);
 }
 
 /* ---------- Mega Evolve button ---------- */
@@ -673,10 +680,10 @@ button:disabled{ opacity:.4; cursor:not-allowed; filter:none }
 
 /* ---------- Rare Candy button ---------- */
 .candy-btn{
-  position:relative; color:#2A1A05;
-  background:linear-gradient(160deg,#FFE3A0,#E8962D 55%,#C86F14);
-  border:1px solid rgba(255,214,138,.65);
-  box-shadow:0 0 16px rgba(232,150,45,.35);
+  position:relative; color:#fff;
+  background:linear-gradient(160deg,#5FA8F5,#2E6FD6 55%,#1B4CA8);
+  border:1px solid rgba(140,196,255,.7);
+  box-shadow:0 0 16px rgba(62,123,214,.4);
   display:inline-flex; align-items:center; gap:8px;
 }
 .candy-btn:hover{ filter:brightness(1.08) }
@@ -684,14 +691,21 @@ button:disabled{ opacity:.4; cursor:not-allowed; filter:none }
   background:var(--panel-2); border-color:var(--line); color:var(--ink-dim);
   box-shadow:none; opacity:.5;
 }
-.cb-candy{ font-size:15px; animation:wiggle 2.8s ease-in-out infinite }
+.cb-candy{
+  display:inline-flex; align-items:center; line-height:1;
+  animation:wiggle 2.8s ease-in-out infinite;
+}
+.cb-candy img{
+  width:20px; height:20px; image-rendering:pixelated; display:block;
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,.5));
+}
 @keyframes wiggle{
   0%,100%{ transform:rotate(0) scale(1) }
   35%    { transform:rotate(-12deg) scale(1.12) }
   65%    { transform:rotate(9deg) scale(1.05) }
 }
-.candy-btn.armed{ box-shadow:0 0 0 3px rgba(232,150,45,.5), 0 0 24px rgba(232,150,45,.55) }
-.candy-btn.done{ background:linear-gradient(160deg,#FFF0C4,#E8A33D 55%,#B9720F) }
+.candy-btn.armed{ box-shadow:0 0 0 3px rgba(62,123,214,.55), 0 0 24px rgba(62,123,214,.6) }
+.candy-btn.done{ background:linear-gradient(160deg,#8CC4FF,#3E7BD6 55%,#1B4CA8) }
 
 /* ---------- card states ---------- */
 .fin.pickable{ cursor:pointer; transition:transform .14s, box-shadow .14s }
@@ -700,7 +714,7 @@ button:disabled{ opacity:.4; cursor:not-allowed; filter:none }
   border-color:#E278CE; box-shadow:0 0 0 1px #E278CE, 0 0 22px rgba(226,120,206,.35);
 }
 .fin.pickable.candy{
-  border-color:#E8962D; box-shadow:0 0 0 1px #E8962D, 0 0 22px rgba(232,150,45,.35);
+  border-color:#3E7BD6; box-shadow:0 0 0 1px #3E7BD6, 0 0 22px rgba(62,123,214,.4);
 }
 .fin.dimmed{ opacity:.3 }
 
@@ -710,8 +724,9 @@ button:disabled{ opacity:.4; cursor:not-allowed; filter:none }
   background:linear-gradient(180deg, rgba(226,120,206,.10), transparent 60%), var(--panel-2);
 }
 .fin.candyon{
-  border-color:#E8962D;
-  background:linear-gradient(180deg, rgba(232,150,45,.10), transparent 60%), var(--panel-2);
+  border-color:#3E7BD6;
+  box-shadow:0 0 0 2px rgba(62,123,214,.55), 0 0 22px rgba(62,123,214,.3);
+  background:linear-gradient(180deg, rgba(62,123,214,.14), transparent 60%), var(--panel-2);
 }
 
 .fin-badges{ display:flex; flex-wrap:wrap; gap:4px; justify-content:center; margin-top:8px }
@@ -720,7 +735,11 @@ button:disabled{ opacity:.4; cursor:not-allowed; filter:none }
   padding:3px 8px; border-radius:999px;
 }
 .badge.mega  { background:#E278CE; color:#2B0A24 }
-.badge.candy { background:#E8962D; color:#2A1A05 }
+.badge.candy {
+  background:#3E7BD6; color:#fff;
+  display:inline-flex; align-items:center; gap:4px;
+}
+.badge.candy img{ width:12px; height:12px; image-rendering:pixelated }
 
 /* ---------- Mega form chooser ---------- */
 #megaModal{
@@ -800,21 +819,38 @@ button:disabled{ opacity:.4; cursor:not-allowed; filter:none }
 }
 .rankmeta span{ color:var(--ink-dim); font-size:11.5px }
 
-.rankwrap.master  b{ color:#C99BE8 }
-.rankwrap.ultra   b{ color:#E8C33D }
-.rankwrap.great   b{ color:#7FB0EE }
-.rankwrap.poke    b{ color:#F2A199 }
+.rankwrap.oak    b{ color:#7FF0C6 }
+.rankwrap.master b{ color:#C99BE8 }
+.rankwrap.ultra  b{ color:#F5D45A }
+.rankwrap.great  b{ color:#7FB0EE }
+.rankwrap.poke   b{ color:#F2A199 }
+
+/* Ultra Ball is black-topped with a yellow band */
+.rankwrap.ultra .rankball{
+  background:linear-gradient(180deg,#2B2B2B 0 40%, var(--rc) 40% 52%, #F2F4FA 52%);
+}
+/* Professor Oak gets its own treatment */
+.rankwrap.oak .rankball{
+  background:conic-gradient(from 210deg,#5FE3B0,#E8C33D,#E278CE,#5FA8F5,#5FE3B0);
+  animation:oakspin 6s linear infinite;
+}
+@keyframes oakspin{ to{ transform:rotate(360deg) } }
+.rankwrap.oak{
+  border-color:#5FE3B0;
+  background:linear-gradient(100deg, rgba(95,227,176,.16), var(--panel-2));
+  box-shadow:0 0 30px rgba(95,227,176,.22);
+}
 
 .rankwrap.master{
   border-color:#B061D6;
   background:linear-gradient(100deg, rgba(176,97,214,.16), var(--panel-2));
 }
-.rankwrap.perfect{
+.rankwrap.perfect:not(.oak){
   border-color:var(--gold);
   background:linear-gradient(100deg, rgba(232,195,61,.18), var(--panel-2));
   box-shadow:0 0 26px rgba(232,195,61,.2);
 }
-.rankwrap.perfect b{ color:var(--gold) }
+.rankwrap.perfect:not(.oak) b{ color:var(--gold) }
 
 /* ---------- team-page header row: tools sit up beside the title ---------- */
 .done-head{
@@ -832,4 +868,38 @@ button:disabled{ opacity:.4; cursor:not-allowed; filter:none }
 @media (max-width:640px){
   .done-tools{ margin-left:0; width:100% }
   .done-tools button{ flex:1 }
+}
+
+/* ---------- footer: Mega and Rare Candy markers ---------- */
+.tb-slot.megaon{
+  border-color:#E278CE;
+  box-shadow:0 0 0 2px rgba(226,120,206,.55), 0 0 16px rgba(226,120,206,.45);
+}
+.tb-slot.candyon{
+  border-color:#3E7BD6;
+  box-shadow:0 0 0 2px rgba(62,123,214,.6), 0 0 16px rgba(62,123,214,.45);
+}
+.tb-slot.megaon.candyon{
+  box-shadow:0 0 0 2px rgba(226,120,206,.55), inset 0 0 0 2px rgba(62,123,214,.7);
+}
+/* top-left: Mega   ·   top-right: Rare Candy   ·   bottom-right: starter */
+.tb-flag.tb-mega{
+  top:-3px; left:-3px; bottom:auto; right:auto;
+  color:#F5B8E8; font-size:12px;
+  background:#2A1030; border-color:#E278CE;
+  text-shadow:0 0 6px rgba(226,120,206,.9);
+}
+.tb-flag.tb-candy{
+  top:-3px; right:-3px; bottom:auto; left:auto;
+  background:#0F1E38; border-color:#3E7BD6; padding:0;
+}
+.tb-flag.tb-candy img{
+  width:15px; height:15px; image-rendering:pixelated; display:block;
+}
+
+@media (prefers-reduced-motion:reduce){ .rankwrap.oak .rankball{ animation:none } }
+
+.tb-flag.tb-shiny{
+  bottom:-3px; left:-3px; top:auto; right:auto;
+  color:var(--gold); border-color:rgba(232,195,61,.6);
 }

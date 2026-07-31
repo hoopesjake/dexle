@@ -153,25 +153,48 @@ function recover(raw, survivor, fainted) {
 /* ---------- rank tiers ----------
    Scored on the share of battles won, so it works for a 13-battle region
    and the 121-battle Gauntlet alike. */
-const RANKS = [
-  { key:"master", name:"Master Ball", at:0.76, hex:"#B061D6" },  // 92+/121, 10+/13
-  { key:"ultra",  name:"Ultra Ball",  at:0.62, hex:"#E8C33D" },  // 75+/121,  8+/13
-  { key:"great",  name:"Great Ball",  at:0.45, hex:"#3E7BD6" },  // 54+/121,  6+/13
-  { key:"poke",   name:"Poké Ball",   at:0.00, hex:"#E0483C" },
-];
+/* ---------- rank tiers ----------
+   Hard-coded cut-offs, no proportional guessing. Each entry is the minimum
+   number of wins for that tier. Highest listed first. */
+const TIERS = {
+  121: [
+    { key:"oak",    name:"Professor Oak", min:121, hex:"#5FE3B0" },
+    { key:"master", name:"Master Ball",   min:116, hex:"#B061D6" },
+    { key:"ultra",  name:"Ultra Ball",    min:91,  hex:"#F0C020" },
+    { key:"great",  name:"Great Ball",    min:71,  hex:"#3E7BD6" },
+    { key:"poke",   name:"Poké Ball",     min:0,   hex:"#E0483C" },
+  ],
+  13: [
+    { key:"oak",    name:"Professor Oak", min:13, hex:"#5FE3B0" },
+    { key:"master", name:"Master Ball",   min:12, hex:"#B061D6" },
+    { key:"ultra",  name:"Ultra Ball",    min:10, hex:"#F0C020" },
+    { key:"great",  name:"Great Ball",    min:7,  hex:"#3E7BD6" },
+    { key:"poke",   name:"Poké Ball",     min:0,  hex:"#E0483C" },
+  ],
+};
 
-// Thresholds round to the nearest whole battle, so a 13-battle region and a
-// 121-battle Gauntlet both land on sensible cut-offs.
-const rankCut = (r, total) => Math.round(r.at * total);
+// any other length scales off the 121 table
+function tableFor(total) {
+  if (TIERS[total]) return TIERS[total];
+  const k = total / 121;
+  return TIERS[121].map((t, i) => ({
+    ...t,
+    min: i === 0 ? total : Math.max(0, Math.round(t.min * k)),
+  }));
+}
+
+const RANKS = TIERS[121];
 
 function rankFor(wins, total) {
-  const pct  = total ? wins / total : 0;
-  const tier = RANKS.find(r => wins >= rankCut(r, total)) || RANKS[RANKS.length - 1];
-  const next = RANKS[RANKS.indexOf(tier) - 1] || null;
+  const table = tableFor(total);
+  const idx   = table.findIndex(t => wins >= t.min);
+  const tier  = table[idx === -1 ? table.length - 1 : idx];
+  const next  = idx > 0 ? table[idx - 1] : null;
   return {
-    ...tier, pct,
+    ...tier,
+    pct: total ? wins / total : 0,
     perfect: total > 0 && wins === total,
-    next, nextAt: next ? rankCut(next, total) : null,
+    next, nextAt: next ? next.min : null,
   };
 }
 
@@ -394,9 +417,12 @@ function simRun(team, opponents, runs) {
   const modal = Object.keys(records).map(Number)
                   .sort((a, b) => records[b] - records[a])[0];
 
+  const headline = Math.round(battles.reduce((a, b) => a + b.rate, 0));
+
   return {
     battles,
-    record: [modal, n - modal],
+    record: [headline, n - headline],
+    modal,
     expected: Math.round(totalWins / runs * 10) / 10,
     perfectOdds: perfect / runs,
     spread: records,
@@ -478,10 +504,17 @@ function simGauntlet(team, OPP, runs) {
           a.opp.team.length, mulberry(1)) * 100) / 100,
       });
     });
-    const w = rows.filter(x => x.rate >= 0.5).length;
     return { gen: g, region: OPP[g].region, game: OPP[g].game,
-             record: [w, rows.length - w], battles: rows };
+             expected: rows.reduce((a, b2) => a + b2.rate, 0),
+             battles: rows };
   });
+
+  // One number drives the whole screen: expected wins. The headline is that
+  // total and each region gets a share that adds back up to it exactly.
+  const expTotal = regions.reduce((a, r) => a + r.expected, 0);
+  const headline = Math.round(expTotal);
+  const per      = allocate(regions.map(r => r.expected), headline);
+  regions.forEach((r, i) => { r.record = [per[i], r.battles.length - per[i]]; });
 
   // headline is the most common outcome of a single attempt, not a count of
   // battles you happen to be favoured in
@@ -489,14 +522,29 @@ function simGauntlet(team, OPP, runs) {
                   .sort((a, b) => recs[b] - recs[a])[0];
   return {
     regions, total,
-    record: [modal, total - modal],
-    favoured: regions.reduce((s2, r) => s2 + r.record[0], 0),
+    record: [headline, total - headline],
+    modal,
+    favoured: regions.reduce((a, r) =>
+                a + r.battles.filter(x => x.rate >= 0.5).length, 0),
     expected: Math.round(totalWins / runs * 10) / 10,
     perfectOdds: perfect / runs,
     spread: recs,
     hardest: regions.flatMap(r => r.battles)
                     .sort((a, b) => a.rate - b.rate).slice(0, 5),
   };
+}
+
+/* ---------- largest-remainder allocation ----------
+   Rounds each part so the parts add up to the rounded whole. Without this the
+   region records don't sum to the headline and the screen contradicts itself. */
+function allocate(parts, total) {
+  const floors = parts.map(Math.floor);
+  let left = total - floors.reduce((a, b) => a + b, 0);
+  const order = parts.map((v, i) => ({ i, frac: v - Math.floor(v) }))
+                     .sort((a, b) => b.frac - a.frac);
+  const out = floors.slice();
+  for (let k = 0; k < order.length && left > 0; k++, left--) out[order[k].i]++;
+  return out;
 }
 
 /* ---------- normal-ish noise, Box-Muller ---------- */
