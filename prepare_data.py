@@ -8,12 +8,10 @@ import csv, json
 CSV_IN   = "pokemon_gen9.csv"
 JSON_OUT = "pokedex.json"
 
-# Generation-i -> 1, and generation -> region
-ROMAN = {"i":1, "ii":2, "iii":3, "iv":4, "v":5, "vi":6, "vii":7, "viii":8, "ix":9}
+ROMAN  = {"i":1, "ii":2, "iii":3, "iv":4, "v":5, "vi":6, "vii":7, "viii":8, "ix":9}
 REGION = {1:"Kanto", 2:"Johto", 3:"Hoenn", 4:"Sinnoh", 5:"Unova",
           6:"Kalos", 7:"Alola", 8:"Galar", 9:"Paldea"}
 
-# names the simple capitalizer gets wrong
 FIX = {"nidoran-f":"Nidoran\u2640", "nidoran-m":"Nidoran\u2642", "mr-mime":"Mr. Mime",
        "mime-jr":"Mime Jr.", "mr-rime":"Mr. Rime", "type-null":"Type: Null",
        "ho-oh":"Ho-Oh", "porygon-z":"Porygon-Z", "farfetchd":"Farfetch'd",
@@ -35,11 +33,16 @@ def pretty(name):
         return FIX[name]
     return " ".join(w.capitalize() for w in name.split("-"))
 
+def clean_text(t):
+    """Old game text uses POKeMON and hard line breaks."""
+    t = t.replace("POKeMON", "Pok\u00e9mon").replace("POK\u00e9MON", "Pok\u00e9mon")
+    return " ".join(t.split())
+
 rows = list(csv.DictReader(open(CSV_IN, encoding="utf-8")))
 print(f"Read {len(rows)} rows")
 
-# pass 1: index every pokemon by its lowercase name so we can walk evolutions
 by_name = {r["name"].lower(): r for r in rows}
+id_of   = {r["name"].lower(): int(r["id"]) for r in rows}
 
 def stage(row, depth=1):
     """Walk evolves_from up the chain. Basic = 1, first evo = 2, second = 3."""
@@ -47,21 +50,13 @@ def stage(row, depth=1):
     if not parent or parent == "None":
         return depth
     nxt = by_name.get(parent.lower())
-    if nxt is None or depth > 5:      # safety: broken link or loop
+    if nxt is None or depth > 5:
         return depth
     return stage(nxt, depth + 1)
 
-def clean_text(t):
-    """Old game text uses POKeMON and hard line breaks."""
-    t = t.replace("POKeMON", "Pokémon").replace("POKéMON", "Pokémon")
-    return " ".join(t.split())
-
-TYPES = ["normal","fire","water","electric","grass","ice","fighting","poison","ground",
-         "flying","psychic","bug","rock","ghost","dragon","dark","steel","fairy"]
-
 dex = []
 for r in rows:
-    gen = ROMAN[r["generation"].split("-")[1].lower()]
+    gen   = ROMAN[r["generation"].split("-")[1].lower()]
     types = [t.strip().lower() for t in r["types"].split(",") if t.strip()]
 
     dex.append({
@@ -77,11 +72,11 @@ for r in rows:
         "legend": r["is_legendary"] == "True" or r["is_mythical"] == "True",
         "s": [int(r["hp"]), int(r["attack"]), int(r["defense"]),
               int(r["special_attack"]), int(r["special_defense"]), int(r["speed"])],
-        "desc":  clean_text(r["description"]),
-        "cat":   r["category"].replace("Pokemon", "Pokémon"),
-        "abil":  [a.strip() for a in r["abilities"].split(",") if a.strip()],
-        # damage multiplier taken FROM each attacking type
-        "vs": {t: float(r["against_" + t]) for t in TYPES},
+        "desc":   clean_text(r["description"]),
+        "cat":    r["category"].replace("Pokemon", "Pok\u00e9mon"),
+        "abil":   [a.strip() for a in r["abilities"].split(",") if a.strip()],
+        # dex number this evolves FROM, or None if it's a base form
+        "from":   id_of.get((r["evolves_from"] or "").lower()),
     })
 
 dex.sort(key=lambda p: p["id"])
@@ -89,4 +84,8 @@ with open(JSON_OUT, "w", encoding="utf-8") as f:
     json.dump(dex, f, ensure_ascii=False, separators=(",", ":"))
 
 print(f"Wrote {JSON_OUT}  ({len(dex)} pokemon)")
-print("Spot check:", json.dumps(dex[24], ensure_ascii=False))
+
+missing = [k for k in ("desc","cat","abil") if k not in dex[0]]
+print("Missing fields:", missing if missing else "none - all good")
+g = next(p for p in dex if p["name"] == "Gothita")
+print("Gothita ->", json.dumps(g, ensure_ascii=False)[:230])

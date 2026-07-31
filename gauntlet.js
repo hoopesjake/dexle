@@ -40,6 +40,10 @@ const bst  = p  => p.s.reduce((a, b) => a + b, 0);
 const rnd  = n  => Math.floor(Math.random() * n);
 const pickOne = a => a[rnd(a.length)];
 
+// a reroll that hands back what you already had isn't a reroll
+const rndGen  = not => { let g; do { g = 1 + rnd(9); }        while (g === not); return g; };
+const rndType = not => { let t; do { t = pickOne(TYPES); }    while (t === not); return t; };
+
 const SPRITE = (id, shiny) =>
   `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${shiny ? "shiny/" : ""}${id}.png`;
 
@@ -48,6 +52,13 @@ const chip = t =>
 
 // stats after the starter friendship bonus
 const boosted = p => p.s.map(v => Math.round(v * BOOST));
+
+// final battle stats for a team slot: friendship bond, then Rare Candy
+function statsFor(m) {
+  let s = m.starter ? boosted(m.p) : m.p.s;
+  if (m.candy) s = s.map(v => Math.round(v * CANDY_BOOST));
+  return s;
+}
 const teamBst = m => m.starter ? boosted(m.p).reduce((a,b) => a+b, 0) : bst(m.p);
 
 /* ---------- mode, from the URL ---------- */
@@ -74,6 +85,9 @@ function lineHtml(id, shiny) {
 let DEX = [];
 let byId = {};
 let OPP = {};                    // generation -> { region, game, opponents[] }
+let MEGAS = {};                  // base dex id -> [ mega forms ]
+let selMode = null;              // null | "mega" | "candy"
+let megaIdx = -1;                // team slot currently Mega Evolved
 
 let challenge = null;          // { mode:"single", gen:n } | { mode:"gauntlet" }
 let team      = [];            // { p, shiny, starter }
@@ -81,17 +95,20 @@ let spin      = null;          // { gen, type, shiny }
 let rerollGen = true;
 let rerollType= true;
 let starterSpins = 0;            // one initial spin plus one respin
+let starterGen   = null;         // so a respin can't hand back the same region
 const STARTER_SPINS = 2;
 let spinning  = false;
 
 /* ---------- load ---------- */
 (async function init() {
-  const [dexRes, oppRes] = await Promise.all([
+  const [dexRes, oppRes, megaRes] = await Promise.all([
     fetch("pokedex.json"),
     fetch("opponents.json"),
+    fetch("megas.json"),
   ]);
-  DEX = await dexRes.json();
-  OPP = await oppRes.json();
+  DEX   = await dexRes.json();
+  OPP   = await oppRes.json();
+  MEGAS = await megaRes.json();
   DEX.forEach(p => byId[p.id] = p);
   console.log("Loaded", DEX.length, "Pokémon");
 
@@ -151,11 +168,17 @@ function selectChallenge(c) {
 /* ---------- 2. starter ---------- */
 function startStarter() {
   drawOpponents();
+  drawCoverage();
   show("scStarter");
   $("starterPick").hidden = true;
   $("starterPick").innerHTML = "";
   $("stGen").textContent = "— — —";
   starterSpins = 0;
+  starterGen   = null;
+  selMode      = null;
+  megaIdx      = -1;
+  $("selHint").hidden  = true;
+  $("megaModal").hidden = true;
   $("spinStarter").disabled = false;
   $("spinStarter").textContent = "Spin for a region";
 }
@@ -163,7 +186,8 @@ function startStarter() {
 function spinStarter() {
   if (spinning || starterSpins >= STARTER_SPINS) return;
   starterSpins++;
-  const gen = 1 + rnd(9);
+  const gen = starterGen === null ? 1 + rnd(9) : rndGen(starterGen);
+  starterGen = gen;
 
   runReel([{ el:$("stGen"), slot:reelSlot($("stGen")),
              roll:() => REGIONS[1 + rnd(9)], final:REGIONS[gen] }],
@@ -210,6 +234,75 @@ function showStarters(gen, shiny) {
       startBallPhase();
     };
   });
+}
+
+/* ---------- coverage ----------
+   Offence: the best multiplier your team can manage against each type.
+   Defence: how many of your six take super-effective damage from it.
+   In Champion mode the types you'll actually meet are flagged, because a
+   hole you never face doesn't matter. */
+function coverageData() {
+  const all = Object.keys(TYPE_CHART);
+  const off = {}, def = {};
+
+  all.forEach(t => {
+    off[t] = team.length
+      ? Math.max(...team.map(m => bestMult(m.p, { t1: t, t2: null })))
+      : 0;
+    def[t] = team.filter(m =>
+      typeMult(t, [m.p.t1, m.p.t2].filter(Boolean)) >= 2).length;
+  });
+
+  // which types are actually on the opposition in this region
+  let facing = null;
+  if (MODE === "champion" && challenge && challenge.mode === "single" && OPP[challenge.gen]) {
+    facing = new Set();
+    OPP[challenge.gen].opponents.forEach(o =>
+      o.team.forEach(m => [m.t1, m.t2].filter(Boolean).forEach(t => facing.add(t))));
+  }
+  return { all, off, def, facing };
+}
+
+function drawCoverage() {
+  if (!team.length) { $("covPanel").hidden = true; return; }
+  $("covPanel").hidden = false;
+
+  const { all, off, def, facing } = coverageData();
+  const strong = all.filter(t => off[t] >= 2);
+  const gaps   = all.filter(t => off[t] < 2);
+  const weak   = all.filter(t => def[t] > 0).sort((a, b) => def[b] - def[a]);
+
+  const liveGaps = facing ? gaps.filter(t => facing.has(t)) : gaps;
+
+  $("covCount").textContent =
+    `${strong.length}/18 covered` +
+    (facing ? ` · ${liveGaps.length} gap${liveGaps.length === 1 ? "" : "s"} you'll face` : "");
+
+  const chip2 = (t, extra, dim) =>
+    `<span class="cchip ${dim ? "dim" : ""} ${facing && facing.has(t) ? "live" : ""}"
+           style="--tc:${TYPE_COLOR[t]}">${t}${extra || ""}</span>`;
+
+  $("covBody").innerHTML = `
+    <div class="covrow">
+      <b class="covlab good">Super effective against</b>
+      <div class="cchips">${strong.length
+        ? strong.map(t => chip2(t)).join("")
+        : `<span class="covnone">nothing yet</span>`}</div>
+    </div>
+    <div class="covrow">
+      <b class="covlab bad">No super-effective answer</b>
+      <div class="cchips">${gaps.length
+        ? gaps.map(t => chip2(t, "", true)).join("")
+        : `<span class="covnone">every type covered</span>`}</div>
+    </div>
+    <div class="covrow">
+      <b class="covlab warn">Your team is weak to</b>
+      <div class="cchips">${weak.length
+        ? weak.map(t => chip2(t, `<i>×${def[t]}</i>`)).join("")
+        : `<span class="covnone">no shared weaknesses</span>`}</div>
+    </div>
+    ${facing ? `<p class="covnote">Outlined types appear on trainers in
+       ${OPP[challenge.gen].region}. Gaps you never face don't matter.</p>` : ""}`;
 }
 
 /* ---------- who you'll face ---------- */
@@ -267,14 +360,20 @@ function startBallPhase() {
   removeShinyNote();
   drawRerolls();
   drawOpponents();
+  drawCoverage();
 }
 
 function throwBall(keep) {
   if (spinning) return;
 
   // `keep` names the reel that STAYS PUT. null spins both.
-  const gen  = keep === "gen"  ? spin.gen  : 1 + rnd(9);
-  const type = keep === "type" ? spin.type : pickOne(TYPES);
+  // On a reroll the moving reel must land somewhere new.
+  const gen  = keep === "gen"  ? spin.gen
+             : keep            ? rndGen(spin.gen)
+             :                   1 + rnd(9);
+  const type = keep === "type" ? spin.type
+             : keep            ? rndType(spin.type)
+             :                   pickOne(TYPES);
 
   const reels = [];
   if (keep !== "gen")  reels.push({ el:$("bGen"),  slot:reelSlot($("bGen")),
@@ -400,6 +499,7 @@ function addToTeam(picked, shiny, starter) {
   team.push({ p, from: starter ? picked.id : null,
               shiny:!!shiny, starter:!!starter });
   drawTeamBar();
+  drawCoverage();
 }
 
 /* grid reads 0 1 2 / 3 4 5 - the starter always sits in the top-LEFT cell */
@@ -424,6 +524,100 @@ function drawTeamBar() {
   $("tbCount").textContent = `${team.length} / 6`;
 }
 
+function megaFormsFor(p) {
+  if (!p) return null;
+  const f = MEGAS[String(p.id)] || MEGAS[p.id];
+  return (Array.isArray(f) && f.length) ? f : null;
+}
+const megaEligible = () => team.filter(m => megaFormsFor(m.base || m.p));
+
+function setSelMode(mode) {
+  selMode = mode;
+  $("selHint").hidden = !mode;
+  $("selHint").className = "selhint" + (mode ? " " + mode : "");
+  $("selHint").textContent =
+    mode === "mega"  ? "Select one Pokémon to Mega Evolve."
+  : mode === "candy" ? `Select one Pokémon to feed the Rare Candy — ` +
+                       `+${Math.round((CANDY_BOOST - 1) * 100)}% to every stat. ` +
+                       `Not your starter, a legendary, or the Mega.`
+  : "";
+  $("megaBtn").classList.toggle("armed", mode === "mega");
+  $("candyBtn").classList.toggle("armed", mode === "candy");
+  finish();                                   // repaint the cards
+}
+
+// who may eat the candy: not the starter, not a legendary, not the Mega
+const candyOk = m => !m.starter && !m.p.legend && !m.mega;
+const candyEligible = () => team.filter(candyOk);
+
+function applyMega(slot, form) {
+  const m = team[slot];
+  delete m.candy;                             // a Mega can't also be candied
+  m.base = m.base || m.p;                     // remember what it was
+  m.p    = { ...form, legend: m.base.legend, gen: m.base.gen, region: m.base.region };
+  m.mega = form.name;
+  megaIdx = slot;
+  setSelMode(null);
+}
+
+function revertMega() {
+  if (megaIdx < 0) return;
+  const m = team[megaIdx];
+  if (m.base) m.p = m.base;
+  delete m.mega; delete m.base;
+  megaIdx = -1;
+}
+
+function pickForSelection(slot) {
+  if (selMode === "candy") {
+    if (!candyOk(team[slot])) return;
+    team.forEach((m, i) => m.candy = (i === slot));
+    setSelMode(null);
+    return;
+  }
+  if (selMode !== "mega") return;
+
+  const m     = team[slot];
+  const forms = megaFormsFor(m.base || m.p);
+  if (!forms) {
+    console.warn("No Mega form for", (m.base || m.p).name, (m.base || m.p).id);
+    return;
+  }
+
+  if (megaIdx >= 0 && megaIdx !== slot) revertMega();   // only one at a time
+  if (forms.length === 1) return applyMega(slot, forms[0]);
+  openMegaChooser(slot, forms);
+}
+
+function openMegaChooser(slot, forms) {
+  const before = team[slot].base || team[slot].p;
+  $("megaBody").innerHTML = `
+    <p class="mega-lead">${before.name} has ${forms.length} Mega forms.</p>
+    <div class="megaopts">
+      ${forms.map((f, i) => `
+        <button class="megaopt" data-i="${i}">
+          <img src="${ART(f.id, false)}" alt="${f.name}">
+          <b>${f.name}</b>
+          <div>${[f.t1, f.t2].filter(Boolean).map(chip).join(" ")}</div>
+          <div class="mo-bst">${sumStats(before.s)} → <i>${sumStats(f.s)}</i></div>
+          <div class="mo-diff">${statDiff(before.s, f.s)}</div>
+        </button>`).join("")}
+    </div>`;
+  $("megaModal").hidden = false;
+  $("megaBody").querySelectorAll("[data-i]").forEach(b => {
+    b.onclick = () => { $("megaModal").hidden = true; applyMega(slot, forms[+b.dataset.i]); };
+  });
+}
+
+const sumStats = a => a.reduce((x, y) => x + y, 0);
+function statDiff(from, to) {
+  return STAT_NAMES.map((n, i) => {
+    const d = to[i] - from[i];
+    if (!d) return "";
+    return `<span class="${d > 0 ? "up" : "down"}">${n} ${d > 0 ? "+" : ""}${d}</span>`;
+  }).filter(Boolean).join(" ");
+}
+
 /* ---------- 4. done ---------- */
 function finish() {
   show("scDone");
@@ -444,29 +638,86 @@ function finish() {
     ? "Run the Gauntlet · 121 battles"
     : "Run the challenge";
 
+  const canUse = MODE === "gauntlet" || challenge.mode === "single";
+  const elig   = megaEligible();
+  $("megaBtn").hidden  = !canUse;
+  $("candyBtn").hidden = !canUse;
+  $("megaBtn").disabled = !elig.length;
+  $("megaBtn").title    = elig.length
+    ? `${elig.length} of your team can Mega Evolve`
+    : "None of your Pokémon can Mega Evolve";
+  $("megaBtn").innerHTML = megaIdx >= 0
+    ? `<span class="mb-gem">\u25c8</span> ${team[megaIdx].mega}`
+    : `<span class="mb-gem">\u25c8</span> Mega Evolve`;
+  const fed  = team.find(m => m.candy);
+  const cOk  = candyEligible();
+  $("candyBtn").disabled = !cOk.length;
+  $("candyBtn").title = cOk.length
+    ? `${cOk.length} of your team can take the candy`
+    : "Nobody eligible - the candy can't go to your starter, a legendary, or the Mega";
+  $("candyBtn").innerHTML = fed
+    ? `<span class="cb-candy">\ud83c\udf6c</span> Candy: ${fed.p.name}`
+    : `<span class="cb-candy">\ud83c\udf6c</span> Rare Candy`;
+  $("megaBtn").classList.toggle("done", megaIdx >= 0);
+  $("candyBtn").classList.toggle("done", !!fed);
+
   $("finalgrid").innerHTML = layout().map(m => {
     if (!m) return `<div class="fin empty"></div>`;
-    const p = m.p;
-    const s = m.starter ? boosted(p) : p.s;
-    const t = s.reduce((a,b) => a+b, 0);
+    const p    = m.p;
+    const s    = statsFor(m);
+    const t    = s.reduce((a,b) => a+b, 0);
+    const slot = team.indexOf(m);
+
+    // selection mode: which cards can be clicked
+    let pick = "";
+    if (selMode === "mega")  pick = megaFormsFor(m.base || p) ? "pickable mega" : "dimmed";
+    if (selMode === "candy") pick = candyOk(m) ? "pickable candy" : "dimmed";
+
     return `
-      <div class="fin ${m.starter ? "starter" : ""}">
+      <div class="fin ${m.starter ? "starter" : ""} ${m.mega ? "megaon" : ""}
+                  ${m.candy ? "candyon" : ""} ${pick}"
+           ${pick.startsWith("pickable") ? `data-slot="${slot}" role="button" tabindex="0"` : ""}>
         ${m.starter ? '<span class="fin-flag" title="Friendship bond">💛</span>' : ""}
         ${m.shiny   ? '<span class="fin-flag" style="left:8px;right:auto">✦</span>' : ""}
         <img src="${SPRITE(p.id, m.shiny)}" alt="${p.name}">
         <b>${p.name}</b>
         <div>${[p.t1,p.t2].filter(Boolean).map(chip).join(" ")}</div>
         ${m.from ? `<div class="fin-from">from ${byId[m.from].name}</div>` : ""}
-        <div class="fin-bst">${t}${m.starter ? " (bonded)" : ""}</div>
+        <div class="fin-bst">${t}${m.starter ? " (bonded)" : m.candy ? " (candied)" : ""}</div>
+        <div class="fin-badges">
+          ${m.mega   ? '<span class="badge mega">Mega Evolved</span>' : ""}
+          ${m.candy  ? `<span class="badge candy">Rare Candy +${Math.round((CANDY_BOOST-1)*100)}%</span>` : ""}
+        </div>
       </div>`;
   }).join("");
+
+  $("finalgrid").querySelectorAll("[data-slot]").forEach(el => {
+    el.onclick = () => pickForSelection(+el.dataset.slot);
+    el.onkeydown = e => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault(); pickForSelection(+el.dataset.slot);
+      }
+    };
+  });
+}
+
+/* ---------- rank badge ---------- */
+function rankBadge(rk, wins, total) {
+  const need = rk.nextAt;
+  return `
+    <div class="rankwrap ${rk.key}${rk.perfect ? " perfect" : ""}">
+      <span class="rankball" style="--rc:${rk.hex}"></span>
+      <div class="rankmeta">
+        <b>${rk.perfect ? "Flawless · " : ""}${rk.name} Tier</b>
+        <span>${wins} of ${total} · ${Math.round(rk.pct * 100)}%${
+          need ? ` · ${need - wins} more for ${rk.next.name}` : ""}</span>
+      </div>
+    </div>`;
 }
 
 /* ---------- 6. the nine-region Gauntlet ---------- */
 function runGauntlet() {
-  const roster = team.map(m => ({
-    p: m.p, stats: m.starter ? boosted(m.p) : m.p.s,
-  }));
+  const roster = team.map(m => ({ p: m.p, stats: statsFor(m) }));
 
   $("gSub").textContent = "Simulating 121 battles…";
   show("scGauntlet");
@@ -476,10 +727,12 @@ function runGauntlet() {
     const res = simGauntlet(roster, OPP);
     const [w, l] = res.record;
 
+    const rk = rankFor(w, res.total);
     $("gW").textContent = w;
     $("gL").textContent = l;
     $("scGauntlet").dataset.tone =
       l === 0 ? "perfect" : w >= res.total - 4 ? "good" : "rough";
+    $("gRank").innerHTML = rankBadge(rk, w, res.total);
 
     $("gTitle").textContent = l === 0
       ? "Undisputed Champion of All Nine Regions"
@@ -509,7 +762,7 @@ function runGauntlet() {
             `<i class="${b.rate >= 0.9 ? "s4" : b.rate >= 0.65 ? "s3"
                        : b.rate >= 0.4 ? "s2" : "s1"}"
                 title="${b.name} ${Math.round(b.rate * 100)}%"></i>`).join("")}</span>
-          <span class="opp-chev" aria-hidden="true">▼</span>
+          <span class="opp-chev" aria-hidden="true">▾</span>
         </button>
         <div class="reg-body" hidden>
           ${r.battles.map(b => {
@@ -559,16 +812,15 @@ function runChallenge() {
   if (!g) return;
 
   // starters carry their friendship bonus into the fight
-  const roster = team.map(m => ({
-    p: m.p,
-    stats: m.starter ? boosted(m.p) : m.p.s,
-  }));
+  const roster = team.map(m => ({ p: m.p, stats: statsFor(m) }));
 
   const res = simRun(roster, g.opponents);
   const [w, l] = res.record;
 
+  const rk = rankFor(w, g.opponents.length);
   $("recW").textContent = w;
   $("recL").textContent = l;
+  $("recRank").innerHTML = rankBadge(rk, w, g.opponents.length);
   $("scResult").dataset.tone = l === 0 ? "perfect" : w >= g.opponents.length - 2 ? "good" : "rough";
 
   const lost = res.battles.filter(b => b.rate < 0.5).map(b => b.name);
@@ -687,6 +939,11 @@ function startOver() {
   rerollType   = true;
   spinning     = false;
   starterSpins = 0;
+  starterGen   = null;
+  selMode      = null;
+  megaIdx      = -1;
+  $("selHint").hidden  = true;
+  $("megaModal").hidden = true;
   removeShinyNote();
   drawTeamBar();
 
@@ -702,6 +959,7 @@ function startOver() {
   $("oppPanel").hidden = true;
   $("oppList").hidden  = true;
   $("oppToggle").classList.remove("open");
+  $("covPanel").hidden = true;
 
   if (MODE === "gauntlet") {
     challenge = { mode:"gauntlet" };
@@ -722,9 +980,25 @@ $("spinStarter").onclick = spinStarter;
 $("throwBall").onclick   = () => throwBall(null);
 $("againBtn").onclick    = startOver;
 $("oppToggle").onclick   = toggleOpponents;
+$("covToggle").onclick   = () => {
+  const open = $("covBody").hidden;
+  $("covBody").hidden = !open;
+  $("covToggle").setAttribute("aria-expanded", open);
+  $("covToggle").classList.toggle("open", open);
+};
 $("simBtn").onclick      = () => MODE === "gauntlet" ? runGauntlet() : runChallenge();
 $("gAgain").onclick      = startOver;
 $("gBack").onclick       = () => show("scDone");
+$("megaBtn").onclick     = () => {
+  if (selMode === "mega") return setSelMode(null);
+  if (megaIdx >= 0) { revertMega(); return setSelMode("mega"); }
+  setSelMode("mega");
+};
+$("candyBtn").onclick    = () => setSelMode(selMode === "candy" ? null : "candy");
+$("megaClose").onclick   = () => { $("megaModal").hidden = true; setSelMode(null); };
+$("megaModal").onclick   = e => {
+  if (e.target.id === "megaModal") { $("megaModal").hidden = true; setSelMode(null); }
+};
 $("againBtn2").onclick   = startOver;
 $("backTeam").onclick    = () => show("scDone");
 $("restart").onclick     = startOver;

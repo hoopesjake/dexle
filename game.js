@@ -158,7 +158,7 @@ function compare(p) {
     stage: p.stage === target.stage ? "hit" : "",
     h:     cmp(p.h, target.h),
     w:     cmp(p.w, target.w),
-    id:    cmp(p.id, target.id, 10),
+    id:    cmp(p.id, target.id, 15),
     bst:   cmp(bst(p), bst(target)),
     s:     p.s.map((v, i) => cmp(v, target.s[i])),
   };

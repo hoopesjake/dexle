@@ -42,7 +42,7 @@ h1{
   background:var(--panel); border:1px solid var(--line);
   border-radius:10px; padding:18px;
 }
-button{
+button, .toggle{
   cursor:pointer; border:none; border-radius:8px; font-weight:700;
   letter-spacing:.06em; text-transform:uppercase; padding:12px 22px;
   font-size:14px; background:var(--lamp); color:#fff; font-family:inherit;
@@ -59,8 +59,8 @@ button.ghost{ background:var(--panel-2); color:var(--ink); border:1px solid var(
 /* ---------- toggles ---------- */
 .toggle{
   background:var(--panel-2); color:var(--ink-dim);
-  border:1px solid var(--line); padding:9px 16px; font-size:12px;
-  display:flex; align-items:center; gap:7px;
+  border:1px solid var(--line); padding:9px 14px; font-size:12px;
+  text-decoration:none; display:inline-flex; align-items:center; gap:7px;
 }
 .toggle .star{ font-size:14px; line-height:1 }
 .toggle[aria-pressed="true"]{
@@ -414,22 +414,16 @@ button.ghost{ background:var(--panel-2); color:var(--ink); border:1px solid var(
   margin:14px auto 0; max-width:60ch;
   color:var(--ink-dim); font-size:12px; line-height:1.7;
 }
-
 .key-tip{
-  margin:10px auto 0;
-  max-width:60ch;
-  padding-top:10px;
+  margin:14px auto 0; max-width:60ch; padding-top:13px;
   border-top:1px solid var(--line);
-  color:var(--ink-dim);
-  font-size:12.5px;
-  line-height:1.9;
+  color:var(--ink-dim); font-size:12.5px; line-height:1.9;
 }
-
 .key-tip b{ color:var(--ink); font-weight:600 }
 
 /* tiny inline hamburger so the tip points at the real button */
 .bars-inline{
-  display:inline-flex; flex-direction:column; gap:2px; vertical-align:9px;
+  display:inline-flex; flex-direction:column; gap:2px; vertical-align:-3px;
   padding:4px 5px; margin:0 2px; border-radius:4px;
   background:var(--panel-2); border:1px solid var(--line);
 }

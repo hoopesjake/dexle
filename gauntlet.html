@@ -22,12 +22,22 @@
     </div>
   </header>
 
+  <!-- what your team covers, and what it can't answer -->
+  <section id="covPanel" hidden>
+    <button id="covToggle" class="opp-toggle open" aria-expanded="true">
+      <span class="opp-t">Your coverage</span>
+      <span class="opp-n" id="covCount"></span>
+      <span class="opp-chev" aria-hidden="true">▾</span>
+    </button>
+    <div class="covbody" id="covBody"></div>
+  </section>
+
   <!-- who you'll be fighting (champion mode only) -->
   <section id="oppPanel" hidden>
     <button id="oppToggle" class="opp-toggle" aria-expanded="false">
       <span class="opp-t">Who you'll face</span>
       <span class="opp-n" id="oppCount"></span>
-      <span class="opp-chev" aria-hidden="true">▼</span>
+      <span class="opp-chev" aria-hidden="true">▾</span>
     </button>
     <div class="opplist" id="oppList" hidden></div>
   </section>
@@ -105,9 +115,23 @@
   <!-- ============ 4. DONE ============ -->
   <section id="scDone" class="screen" hidden>
     <div class="panel">
-      <h2 class="hd">Your team is set</h2>
-      <p class="sub" id="doneSub"></p>
+      <div class="done-head">
+        <div>
+          <h2 class="hd">Your team is set</h2>
+          <p class="sub" id="doneSub"></p>
+        </div>
+        <div class="done-tools">
+          <button id="megaBtn" class="mega-btn" hidden>
+            <span class="mb-gem">◈</span> Mega Evolve
+          </button>
+          <button id="candyBtn" class="candy-btn" hidden>
+            <span class="cb-candy">🍬</span> Rare Candy
+          </button>
+        </div>
+      </div>
       <div class="finalgrid" id="finalgrid"></div>
+      <p id="selHint" class="selhint" hidden></p>
+
       <div class="done-btns">
         <button id="simBtn" hidden>Run the challenge</button>
         <button id="againBtn" class="ghost">Start over</button>
@@ -125,6 +149,7 @@
         <div class="rec-meta">
           <h2 class="hd" id="gTitle">The Gauntlet</h2>
           <p class="sub" id="gSub"></p>
+          <div id="gRank"></div>
         </div>
       </div>
 
@@ -148,6 +173,7 @@
         <div class="rec-meta">
           <h2 class="hd" id="recTitle">Result</h2>
           <p class="sub" id="recSub"></p>
+          <div id="recRank"></div>
         </div>
       </div>
 
@@ -171,6 +197,17 @@
     <span class="tb-count" id="tbCount">0 / 6</span>
   </div>
 </footer>
+
+<!-- choose between two Mega forms -->
+<div id="megaModal" hidden>
+  <div class="megacard">
+    <div class="megabar">
+      <span class="megabar-t">Choose a Mega Evolution</span>
+      <button id="megaClose" aria-label="Close">✕</button>
+    </div>
+    <div class="megabody" id="megaBody"></div>
+  </div>
+</div>
 
 <script src="battle.js"></script>
 <script src="gauntlet.js"></script>

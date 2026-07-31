@@ -6,6 +6,20 @@
    to turn luck into a win probability.
    ========================================================= */
 
+/* =========================================================
+   TUNING DIALS - everything you'd want to change lives here.
+
+   OPP_POWER      Region Champion opponent stat multiplier by role
+   G_OPP_POWER    same, for the 121-battle Gauntlet
+   SCALE_REF      base-stat total each opposing Pokemon is pulled up to
+   SCALE_ROLE     share of SCALE_REF each role gets
+   OUTNUMBER_EXP  how much a short roster is compensated. 0 = none,
+                  1 = full. Higher = two-Pokemon gyms hit much harder.
+   RANKS          Poke / Great / Ultra / Master cut-offs
+   CANDY_BOOST    Rare Candy multiplier
+   CARRY_DAMAGE   false = every battle starts from full HP
+   ========================================================= */
+
 /* ---------- type chart (Gen 6+) ----------
    TYPE_CHART[attacker][defender] = multiplier.
    Anything not listed is 1x. */
@@ -46,8 +60,8 @@ const LVL_END    = 0.98;
 // Trainers run optimised teams with items and real movesets. This scales their
 // stats by role so the Elite Four and Champions hit like they matter.
 const OPP_POWER = {
-  "Gym Leader":1.02, "Trial":1.02, "Kahuna":1.03,
-  "Elite Four":1.05, "Champion Cup":1.06, "Champion":1.09,
+  "Gym Leader":1.00, "Trial":1.00, "Kahuna":1.02,
+  "Elite Four":1.05, "Champion Cup":1.07, "Champion":1.28,
 };
 
 /* ---- GAUNTLET DIFFICULTY: "HARD" preset ----
@@ -60,8 +74,8 @@ const OPP_POWER = {
      G_HEAL_FAINTED   -> 0.78
    G_HEAL_FAINTED is by far the strongest lever - lower it to tighten further. */
 const G_OPP_POWER = {
-  "Gym Leader":1.06, "Trial":1.06, "Kahuna":1.06,
-  "Elite Four":1.10, "Champion Cup":1.10, "Champion":0.96,
+  "Gym Leader":1.00, "Trial":1.00, "Kahuna":1.00,
+  "Elite Four":1.04, "Champion Cup":1.04, "Champion":1.075,
 };
 const G_MIN_MULT = 1.00;
 
@@ -73,25 +87,35 @@ const OPP_MIN_MULT = 1;
 // 1 = always (brutal), 0 = free switching (too easy).
 const SWITCH_COST = 0.28;
 
-/* ---------- gauntlet scaling ----------
-   Every trainer is pulled up toward YOUR team's combined base stats, so a
-   two-Pokemon gym leader is no longer a rounding error. Concentrating the same
-   total into fewer bodies makes a team stronger, so the role ramp keeps the
-   progression climbing instead of Brock outgunning Cynthia. */
+/* ---------- opponent scaling ----------
+   Short rosters get pulled up to a FIXED reference, never to your own stats.
+   Scaling to your team rubber-bands the whole game: a better draft just gets
+   tougher opponents and every team lands on the same record. This way your
+   team quality actually decides the result. */
+const SCALE_REF = 500;      // reference base-stat total per opposing Pokemon
 // Each trainer's Pokemon is pulled toward this share of YOUR average Pokemon.
 // Deliberately light: it stops a two-Pokemon gym being free without making
 // Brock scarier than Cynthia.
 const SCALE_ROLE = {
-  "Gym Leader":0.78, "Trial":0.78, "Kahuna":0.84,
-  "Elite Four":0.92, "Champion Cup":0.96, "Champion":1.02,
+  "Gym Leader":0.92, "Trial":0.92, "Kahuna":0.94,
+  "Elite Four":0.96, "Champion Cup":0.97, "Champion":1.02,
 };
 const SCALE_SD    = 0.10;   // standard deviation on the target, per battle
 const SCALE_ON    = true;   // false = use raw roster stats
 
+/* You bring as many Pokemon as they do. A gym leader with two is a 2v2, not a
+   6v2 — which is the only thing that stops a stacked team auto-sweeping the
+   early badges. Your best matchups are the ones that get sent out. */
+// Tried this: it inverts the curve. Trimming to a 2-Pokemon gym makes early
+// badges the HARDEST fights, because a 2v2 is a coin flip while a 6v6 lets the
+// better team grind out a win. Left here as a switch, off by default.
+const MATCH_ROSTER = false;
+const MIN_SQUAD    = 2;     // never shrink below this many
+
 // A short roster holding the same total is far scarier, because the stats are
 // concentrated. So aim at YOUR PER-POKEMON average and only partly compensate
 // for being outnumbered. 0 = no compensation, 1 = full total-stat parity.
-const OUTNUMBER_EXP = 0.10;
+const OUTNUMBER_EXP = 0.54;
 
 // The Gauntlet is 121 battles, so per-battle attrition compounds far harder
 // than it does over a single 13-battle region. It gets its own, kinder rates.
@@ -102,10 +126,54 @@ const G_HEAL_FAINTED  = 0.62;
 const REGION_HEAL_SURVIVOR = 0.97;
 const REGION_HEAL_FAINTED  = 0.90;
 
-// Between battles you get a breather, not a full heal. This is what makes a
-// clean run hard: sloppy early wins leave you worn down for the Elite Four.
+
+/* ---------- rare candy ----------
+   One Pokemon may be fed a Rare Candy before a run for a flat stat boost.
+   Applied by gauntlet.js when it builds the roster, so the sim just sees
+   bigger numbers. Not for the starter, a legendary, or the Mega. */
+const CANDY_BOOST = 1.50;
+
+/* ---------- damage carry ----------
+   false = every battle starts from full health. Difficulty then comes from
+   type coverage and raw stats rather than from being worn down, which is
+   fairer: winning a hard gym shouldn't hand you a penalty for the next one.
+   The HEAL_* numbers below only apply when this is true. */
+const CARRY_DAMAGE = false;
+
 const HEAL_SURVIVOR = 0.86;   // survivors recover to this share of max HP
 const HEAL_FAINTED  = 0.56;   // fainted Pokemon come back at this share
+
+/* ---------- between-battle recovery ----------
+   `raw` is post-battle HP as a share of max; returns what carries forward. */
+function recover(raw, survivor, fainted) {
+  if (!CARRY_DAMAGE) return raw.map(() => 1);      // everyone back to full
+  return raw.map(f => f > 0 ? Math.min(1, f + survivor * (1 - f)) : fainted);
+}
+
+/* ---------- rank tiers ----------
+   Scored on the share of battles won, so it works for a 13-battle region
+   and the 121-battle Gauntlet alike. */
+const RANKS = [
+  { key:"master", name:"Master Ball", at:0.76, hex:"#B061D6" },  // 92+/121, 10+/13
+  { key:"ultra",  name:"Ultra Ball",  at:0.62, hex:"#E8C33D" },  // 75+/121,  8+/13
+  { key:"great",  name:"Great Ball",  at:0.45, hex:"#3E7BD6" },  // 54+/121,  6+/13
+  { key:"poke",   name:"Poké Ball",   at:0.00, hex:"#E0483C" },
+];
+
+// Thresholds round to the nearest whole battle, so a 13-battle region and a
+// 121-battle Gauntlet both land on sensible cut-offs.
+const rankCut = (r, total) => Math.round(r.at * total);
+
+function rankFor(wins, total) {
+  const pct  = total ? wins / total : 0;
+  const tier = RANKS.find(r => wins >= rankCut(r, total)) || RANKS[RANKS.length - 1];
+  const next = RANKS[RANKS.indexOf(tier) - 1] || null;
+  return {
+    ...tier, pct,
+    perfect: total > 0 && wins === total,
+    next, nextAt: next ? rankCut(next, total) : null,
+  };
+}
 
 /* ---------- effectiveness ---------- */
 // one attacking type into a defender's type combo
@@ -167,9 +235,29 @@ function chooseLead(bench, target) {
   return best;
 }
 
+/* ---------- trim your team to the size of theirs ----------
+   Keeps the best matchups: what we do to their squad minus what they do to us. */
+function squadFor(mine, theirs) {
+  if (!MATCH_ROSTER || mine.length <= theirs.length) return mine;
+  const cap = Math.max(MIN_SQUAD, theirs.length);
+  if (mine.length <= cap) return mine;
+
+  const scored = mine.map(f => {
+    let out = 0, inc = 0;
+    theirs.forEach(t => {
+      out += Math.max(bestMult(f, t), f.minMult || 0);
+      inc += Math.max(bestMult(t, f), t.minMult || 0);
+    });
+    const n = theirs.length;
+    return { f, sc: (out - inc) / n + (f.max / 400) };
+  }).sort((a, b) => b.sc - a.sc);
+
+  return scored.slice(0, cap).map(x => x.f);
+}
+
 /* ---------- a single 6v6 battle ---------- */
 function simBattle(mine, theirs, rng) {
-  const A = mine.map(f => ({ ...f }));
+  const A = squadFor(mine, theirs).map(f => ({ ...f }));
   const B = theirs.map(f => ({ ...f }));
 
   let b = B[0];
@@ -287,14 +375,9 @@ function simRun(team, opponents, runs) {
       if (res.win) { wins[i]++; won++; }
       // a loss costs you the battle but the circuit carries on
 
-      // carry HP forward as a fraction of max, with the between-battle
-      // breather already applied: survivors top up, fainted come back weak
-      carried = res.hp.map((h, k) => {
-        const frac = h / mine[k].max;
-        return frac > 0
-          ? Math.min(1, frac + HEAL_SURVIVOR * (1 - frac))
-          : HEAL_FAINTED;
-      });
+      // carry HP forward with the between-battle breather applied
+      const raw = res.hp.map((h, k) => h / mine[k].max);
+      carried = recover(raw, HEAL_SURVIVOR, HEAL_FAINTED);
     }
 
     totalWins += won;
@@ -373,11 +456,8 @@ function simGauntlet(team, OPP, runs) {
       const res = simBattle(mine, oppF, rng);
       if (res.win) { wins[b]++; won++; }
 
-      carried = res.hp.map((h, k) => {
-        const frac = h / mine[k].max;
-        return frac > 0 ? Math.min(1, frac + G_HEAL_SURVIVOR * (1 - frac))
-                        : G_HEAL_FAINTED;
-      });
+      const raw = res.hp.map((h, k) => h / mine[k].max);
+      carried = recover(raw, G_HEAL_SURVIVOR, G_HEAL_FAINTED);
     }
 
     totalWins += won;
@@ -428,11 +508,10 @@ function gauss(rng) {
 /* ---------- scale a trainer up toward your team ----------
    Returns a multiplier to apply to every stat on their roster. */
 function scaleFactor(oppSum, mySum, role, count, rng) {
-  if (!SCALE_ON || !mySum || !oppSum || !count) return 1;
-  const perMon  = mySum / 6;                        // your average Pokemon
-  const outnum  = Math.pow(6 / count, OUTNUMBER_EXP);
-  const aim     = perMon * count * (SCALE_ROLE[role] || 0.85) * outnum;
-  const target  = aim * (1 + gauss(rng) * SCALE_SD);
+  if (!SCALE_ON || !oppSum || !count) return 1;
+  const outnum = Math.pow(6 / count, OUTNUMBER_EXP);
+  const aim    = SCALE_REF * count * (SCALE_ROLE[role] || 0.85) * outnum;
+  const target = aim * (1 + gauss(rng) * SCALE_SD);
   return target > oppSum ? target / oppSum : 1;     // only ever scale up
 }
 
@@ -450,5 +529,6 @@ function mulberry(seed) {
 /* node export for testing; harmless in the browser */
 if (typeof module !== "undefined") {
   module.exports = { TYPE_CHART, typeMult, bestMult, fighter, simBattle,
-                     battleInfo, simRun, simGauntlet, myLevelFor, statAt, hpAt };
+                     battleInfo, simRun, simGauntlet, myLevelFor, statAt, hpAt,
+                     RANKS, rankFor };
 }
