@@ -39,6 +39,7 @@ let over    = false;
 
 let hintsUsed  = 0;
 let hintsTaken = [];
+let dexleSaveStarted = false;
 
 let picked  = null;        // dropdown selection
 let matches = [];
@@ -80,6 +81,7 @@ function newRound() {
 
   hintsUsed  = 0;
   hintsTaken = [];
+  dexleSaveStarted = false;
 
   $("start").style.display = "none";
   $("game").hidden = false;
@@ -344,6 +346,20 @@ function finish(won) {
   $("hintbar").innerHTML = "";
 
   if (pending) { appendRow(pending); pending = null; }
+
+  if (!dexleSaveStarted && window.DexleStats?.configured) {
+    dexleSaveStarted = true;
+    window.DexleStats.saveDexleGame({
+      won,
+      guessesUsed: guesses.length,
+      hintsUsed,
+      targetId: target.id,
+      generations: [...roundGens].sort((a, b) => a - b),
+    }).catch(err => {
+      dexleSaveStarted = false;
+      console.error("Could not save this Dexle game:", err);
+    });
+  }
 
   $("end").dataset.win = won ? "1" : "";
   $("endmsg").textContent = won ? "You Caught It!" : `It was ${target.name}`;

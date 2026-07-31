@@ -106,6 +106,7 @@ let MEGAS = {};                  // base dex id -> [ mega forms ]
 let selMode = null;              // null | "mega" | "candy"
 let locked  = false;             // true once a run has been simulated
 let lastScreen = null;           // which results screen to return to
+let runSaveStarted = false;      // prevents one result from being stored twice
 let megaIdx = -1;                // team slot currently Mega Evolved
 
 let challenge = null;          // { mode:"single", gen:n } | { mode:"gauntlet" }
@@ -751,6 +752,41 @@ function rankBadge(rk, wins, total) {
     </div>`;
 }
 
+function saveCompletedRun(res, rk, mode) {
+  if (runSaveStarted) return;
+  runSaveStarted = true;
+  if (!window.DexleStats?.configured) {
+    console.info("Run finished, but Dexle stats is not connected yet.");
+    return;
+  }
+
+  const regionRecords = mode === "gauntlet"
+    ? res.regions.map(r => ({
+        gen: r.gen,
+        region: r.region,
+        wins: r.record[0],
+        losses: r.record[1],
+      }))
+    : null;
+
+  window.DexleStats.saveRun({
+    mode,
+    region: mode === "region" ? challenge.gen : null,
+    wins: res.record[0],
+    losses: res.record[1],
+    total: res.total || (res.record[0] + res.record[1]),
+    tier: rk.key,
+    team,
+    teamBst: team.reduce((sum, member) =>
+      sum + statsFor(member).reduce((a, stat) => a + stat, 0), 0),
+    coverage: coverage(),
+    regionRecords,
+  }).catch(err => {
+    runSaveStarted = false;
+    console.error("Could not save this Dexle run:", err);
+  });
+}
+
 /* ---------- 6. the nine-region Gauntlet ---------- */
 function runGauntlet() {
   const roster = team.map(m => ({ p: m.p, stats: statsFor(m) }));
@@ -766,6 +802,7 @@ function runGauntlet() {
     const [w, l] = res.record;
 
     const rk = rankFor(w, res.total);
+    saveCompletedRun(res, rk, "gauntlet");
     $("gW").textContent = w;
     $("gL").textContent = l;
     $("scGauntlet").dataset.tone =
@@ -862,6 +899,7 @@ function runChallenge() {
   const [w, l] = res.record;
 
   const rk = rankFor(w, g.opponents.length);
+  saveCompletedRun({ ...res, total: g.opponents.length }, rk, "region");
   $("recW").textContent = w;
   $("recL").textContent = l;
   $("recRank").innerHTML = rankBadge(rk, w, g.opponents.length);
@@ -987,6 +1025,7 @@ function startOver() {
   selMode      = null;
   locked       = false;
   lastScreen   = null;
+  runSaveStarted = false;
   megaIdx      = -1;
   $("selHint").hidden  = true;
   $("megaModal").hidden = true;
@@ -1018,36 +1057,36 @@ function startOver() {
   }
 }
 
-/* =========================================================
-   DEBUG - skip the draft. Delete this block and the #debugTeam
-   button in gauntlet.html before shipping.
-   ========================================================= */
-function debugTeam() {
-  const NAMES = ["Sceptile", "Charizard", "Mewtwo", "Lucario", "Tyranitar", "Gengar"];
+// /* =========================================================
+//    DEBUG - skip the draft. Delete this block and the #debugTeam
+//    button in gauntlet.html before shipping.
+//    ========================================================= */
+// function debugTeam() {
+//   const NAMES = ["Sceptile", "Charizard", "Mewtwo", "Lucario", "Tyranitar", "Gengar"];
 
-  team = NAMES.map((n, i) => {
-    const p = DEX.find(x => x.name === n);
-    if (!p) { console.warn("debug: no Pokémon named", n); return null; }
-    // Sceptile leads as the bonded starter, so the +10% path gets tested too
-    return { p, starter: i === 0, from: i === 0 ? p.id - 2 : null, shiny: false };
-  }).filter(Boolean);
+//   team = NAMES.map((n, i) => {
+//     const p = DEX.find(x => x.name === n);
+//     if (!p) { console.warn("debug: no Pokémon named", n); return null; }
+//     // Sceptile leads as the bonded starter, so the +10% path gets tested too
+//     return { p, starter: i === 0, from: i === 0 ? p.id - 2 : null, shiny: false };
+//   }).filter(Boolean);
 
-  // a mode needs a challenge set before the team page will render
-  if (!challenge) {
-    challenge = MODE === "gauntlet" ? { mode:"gauntlet" }
-                                    : { mode:"single", gen:1 };
-  }
+//   // a mode needs a challenge set before the team page will render
+//   if (!challenge) {
+//     challenge = MODE === "gauntlet" ? { mode:"gauntlet" }
+//                                     : { mode:"single", gen:1 };
+//   }
 
-  locked     = false;
-  lastScreen = null;
-  selMode    = null;
-  megaIdx    = -1;
-  spinning   = false;
+//   locked     = false;
+//   lastScreen = null;
+//   selMode    = null;
+//   megaIdx    = -1;
+//   spinning   = false;
 
-  drawCoverage();
-  drawOpponents();
-  finish();
-}
+//   drawCoverage();
+//   drawOpponents();
+//   finish();
+// }
 
 /* =========================================================
    bindings
@@ -1082,7 +1121,7 @@ $("megaModal").onclick   = e => {
 $("againBtn2").onclick   = startOver;
 $("backTeam").onclick    = () => show("scDone");
 $("restart").onclick     = startOver;
-$("debugTeam").onclick = debugTeam;
+// $("debugTeam").onclick = debugTeam;
 
 $("resSearch").addEventListener("input", () => {
   if (spin) renderResults(eligible(spin.gen, spin.type));

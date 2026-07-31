@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dexle — Stats</title>
+  <link rel="stylesheet" href="stats.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="lamp"></div>
+    <div class="titles">
+      <h1>Trainer Stats</h1>
+      <p class="tag">Keep track of your best performances!</p>
+    </div>
+    <nav class="hdr-btns">
+      <a class="toggle" href="index.html">Home</a>
+      <a class="toggle" href="dexle.html">Dexle</a>
+      <a class="toggle" href="gauntlet.html?mode=champion">Region</a>
+      <a class="toggle" href="gauntlet.html?mode=gauntlet">Gauntlet</a>
+    </nav>
+  </header>
+
+  <div class="stats-view-toggle" aria-label="Choose statistics view">
+    <a href="stats.html">Team Stats</a>
+    <a class="on" href="dexle-stats.html">Dexle Progress</a>
+  </div>
+
+  <!-- <div id="setup" class="notice" hidden>
+    <b>Stats storage needs its final connection.</b>
+    <span>Add your Supabase Project URL and publishable key to <code>supabase-config.js</code>.</span>
+  </div>
+  <div id="error" class="notice error" hidden></div> -->
+
+  <section class="panel dexle-progress">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Guessing-game record</p>
+        <h2>Your Dexle progress</h2>
+        <p class="section-copy">Your all-time catches, failures, streaks, and guess distribution.</p>
+      </div>
+      <a class="play-dexle" href="dexle.html">Play Dexle</a>
+    </div>
+    <div class="dexle-metrics" id="dexleMetrics">
+      <div><span>Games</span><b>0</b></div>
+      <div><span>Wins</span><b>0</b></div>
+      <div><span>Fails</span><b>0</b></div>
+      <div><span>Win rate</span><b>0%</b></div>
+      <div><span>Average guesses</span><b>â€”</b></div>
+      <div><span>Current streak</span><b>0</b></div>
+      <div><span>Best streak</span><b>0</b></div>
+    </div>
+    <div class="guess-chart" id="guessChart"></div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="stats-store.js"></script>
+<script src="dexle-stats.js"></script>
+</body>
+</html>

@@ -17,10 +17,10 @@
       <p class="tag" id="pageSub">Spin your way to a team of six.</p>
     </div>
     <div class="hdr-btns">
+      <a class="toggle" href="stats.html">Stats</a>
       <a class="toggle" href="index.html">← Home</a>
       <button id="restart" class="toggle" title="Start over">↻ Start over</button>
-      <!-- DEBUG: remove before shipping -->
-      <button id="debugTeam" class="toggle" title="Skip the draft">⚡ Test team</button>
+      <!-- <button id="debugTeam" class="toggle" title="Debug: Use pre-defined team">🐛 Debug Team</button> -->
     </div>
   </header>
 
@@ -213,6 +213,9 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="stats-store.js"></script>
 <script src="battle.js"></script>
 <script src="gauntlet.js"></script>
 </body>
