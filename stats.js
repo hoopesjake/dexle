@@ -147,10 +147,10 @@
     }
     const title = run.mode === "gauntlet"
       ? "Gauntlet"
-      : `${REGIONS[run.region]} Region Challenge`;
+      : REGIONS[run.region];
     return `
-      <article class="community-best-card ${run.wins === run.total ? "flawless" : ""}">
-        <div class="community-best-meta">
+      <article class="run-card community-best-card ${run.wins === run.total ? "flawless" : ""}">
+        <div class="run-top">
           <span class="rankball ${run.tier === "oak" ? "oak-disc" : ""}" style="--tier:${TIER[run.tier]}"></span>
           <div class="run-title"><b>${title}</b>${run.username ? `<small>@${run.username}</small>` : ""}</div>
           <div class="team-metrics"><span>Stats <b>${run.team_bst.toLocaleString()}</b></span><span>Coverage <b>${run.coverage}/18</b></span></div>

@@ -142,6 +142,7 @@ select{display:block;margin-top:4px;background:var(--ground);border:1px solid va
   box-shadow:0 2px 7px rgba(0,0,0,.45),0 0 8px rgba(240,192,32,.35);
 }
 .best-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.best-grid>div{min-width:0}
 .best-grid .team{
   grid-template-columns:repeat(3,minmax(70px,1fr));width:100%;
   gap:12px 10px;
@@ -152,7 +153,7 @@ select{display:block;margin-top:4px;background:var(--ground);border:1px solid va
 .filter-spacer{width:122px;height:45px;display:block}
 .section-copy{margin:-8px 0 16px;color:var(--dim);font-size:13px}
 .history-toggle{margin-left:auto;display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);color:var(--ink);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;cursor:pointer}.history-toggle i{font-style:normal;transition:transform .18s}.history-toggle[aria-expanded="true"] i{transform:rotate(180deg)}#historyTabs[hidden],#historyFilters[hidden],#history[hidden]{display:none}
-.community-best-card{border:1px solid var(--line);border-radius:12px;background:var(--panel2);padding:16px}
+.community-best-card{width:100%;max-width:100%}
 .community-best-meta{display:flex;align-items:center;gap:12px;margin-bottom:13px;flex-wrap:nowrap}
 .community-best-meta .team-metrics{margin-left:auto}
 .community-best-meta .team-metrics+.record{margin-left:-6px}
