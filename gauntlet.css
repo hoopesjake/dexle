@@ -313,6 +313,7 @@ button:disabled{ opacity:.4; cursor:not-allowed; filter:none }
   color:var(--gold); margin-left:7px;
 }
 .shiny-tag{ color:var(--gold); font-size:12px; margin-left:5px }
+.owned-shiny{display:inline-block;width:10px;height:10px;margin-left:5px;vertical-align:middle;border:1px solid #0D1120;border-radius:50%;background:linear-gradient(#E0483C 0 43%,#151827 44% 56%,#F7F7F7 57%);box-shadow:0 0 0 1px rgba(255,255,255,.2)}
 
 /* ---------- draft pick preview ---------- */
 #pickModal{

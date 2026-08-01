@@ -112,6 +112,7 @@ let byId = {};
 let OPP = {};                    // generation -> { region, game, opponents[] }
 let MEGAS = {};                  // base dex id -> [ mega forms ]
 let FORMS = {};                  // base dex id -> meaningful alternate forms
+let ownedShinyIds = new Set();   // shiny forms already saved for this Trainer
 let selMode = null;              // null | "mega" | "type" | "candy"
 let locked  = false;             // true once a run has been simulated
 let lastScreen = null;           // which results screen to return to
@@ -152,13 +153,21 @@ let spinning  = false;
 async function loadShinyAchievement() {
   if (!window.DexleStats?.configured) return;
   try {
-    if (await DexleStats.shinyCharmUnlocked()) {
+    const [unlocked, collected] = await Promise.all([
+      DexleStats.shinyCharmUnlocked(), DexleStats.shinyDex(),
+    ]);
+    ownedShinyIds = new Set(collected.map(entry => +entry.pokemon_id));
+    if (unlocked) {
       SHINY_ODDS = CHARM_SHINY_ODDS;
     }
   } catch (error) {
     console.warn("Could not check the Shiny odds achievement:", error);
   }
 }
+
+const ownedShinyMark = (id, shiny) => shiny && ownedShinyIds.has(+id)
+  ? '<span class="owned-shiny" title="Already in your Shiny Dex" aria-label="Already in your Shiny Dex"></span>'
+  : "";
 
 /* the hub already chose the mode, so skip straight past it for the Gauntlet */
 function applyMode() {
@@ -254,7 +263,7 @@ function showStarters(gen, shiny) {
     const b   = boosted(fin);
     return `
       <button class="st" data-id="${p.id}" data-shiny="${shiny ? 1 : 0}">
-        <b>${p.name}${shiny ? ' <span class="shiny-tag">\u2726</span>' : ""}</b>
+        <b>${p.name}${shiny ? ' <span class="shiny-tag">\u2726</span>' : ""}${ownedShinyMark(fin.id, shiny)}</b>
         <div>${[p.t1, p.t2].filter(Boolean).map(chip).join(" ")}</div>
         ${lineHtml(p.id, shiny)}
         <div class="st-becomes">joins as <b>${fin.name}</b></div>
@@ -502,6 +511,7 @@ function renderResults(list) {
       <div class="rr-mid">
         <span class="rr-id">#${String(p.id).padStart(4,"0")}</span>
         <div class="rr-name">${p.name}
+          ${ownedShinyMark(p.id, spin.shiny)}
           ${p.legend ? '<span class="legend-tag">legendary</span>' : ""}
           ${locked ? '<span class="lock-tag">1 legend max</span>' : ""}
         </div>
@@ -531,7 +541,7 @@ function openPickPreview(p) {
     <div class="pick-identity">
       ${spriteImg(p, shiny, "pick-sprite")}
       <span class="rr-id">#${String(p.id).padStart(4,"0")}</span>
-      <h2 id="pickName">${p.name}${shiny ? '<span class="pick-shiny">&#10022; Shiny</span>' : ""}${canMega ? '<span class="pick-mega-gem" title="Mega Evolvable" aria-label="Mega Evolvable">&#9672;</span>' : ""}</h2>
+      <h2 id="pickName">${p.name}${shiny ? '<span class="pick-shiny">&#10022; Shiny</span>' : ""}${ownedShinyMark(p.id, shiny)}${canMega ? '<span class="pick-mega-gem" title="Mega Evolvable" aria-label="Mega Evolvable">&#9672;</span>' : ""}</h2>
       <div class="pick-types">${[p.t1,p.t2].filter(Boolean).map(chip).join("")}</div>
     </div>
     <div class="pick-stats">
@@ -908,6 +918,8 @@ function saveCompletedRun(res, rk, mode) {
       sum + statsFor(member).reduce((a, stat) => a + stat, 0), 0),
     coverage: coverage(),
     regionRecords,
+  }).then(() => {
+    team.filter(member => member.shiny).forEach(member => ownedShinyIds.add(+member.p.id));
   }).catch(err => {
     runSaveStarted = false;
     console.error("Could not save this Dexle run:", err);

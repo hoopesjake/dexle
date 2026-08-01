@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Dexle — Trainer Friends</title>
   <link rel="stylesheet" href="stats.css?v=20260801-18">
-  <link rel="stylesheet" href="account.css?v=20260801-19">
+  <link rel="stylesheet" href="account.css?v=20260801-20">
   <link rel="stylesheet" href="trainer-menu.css?v=20260801-5">
 </head>
 <body>
@@ -25,15 +25,14 @@
   </div>
 
   <div id="friendProfile" hidden>
-    <section class="friend-viewing"><button id="friendBack" type="button">&larr; Back to Friends</button><div><p class="eyebrow">Friend profile</p><h2>Trainer <span id="friendProfileName"></span></h2><p>Read-only Hall of Fame and Shiny Dex</p></div></section>
-    <section class="panel"><div class="section-head"><div><p class="eyebrow">Achievements</p><h2 id="friendHallTitle">Hall of Fame</h2></div><div class="seg" id="friendHallTabs"><button class="on" data-mode="region">Region</button><button data-mode="gauntlet">Gauntlet</button></div></div><div id="friendBadges" class="badge-grid"></div><div id="friendHallTeams" class="hall-list" hidden></div></section>
+    <section class="panel"><div class="section-head"><div><button id="friendBack" class="profile-back" type="button">&larr; Friends</button><p class="eyebrow">Achievements</p><h2 id="friendHallTitle">Hall of Fame</h2></div><div class="seg" id="friendHallTabs"><button class="on" data-mode="region">Region</button><button data-mode="gauntlet">Gauntlet</button></div></div><div id="friendBadges" class="badge-grid"></div><div id="friendHallDetail" hidden><div class="hall-detail-head"><button id="friendBadgeBack" class="hall-back" aria-label="Back to badges">&larr;</button><h3 id="friendBadgeTitle">Region teams</h3></div><div id="friendHallTeams" class="hall-list"></div></div></section>
     <section class="panel"><div class="section-head"><div><p class="eyebrow">Collection</p><h2 id="friendDexTitle">Shiny Dex</h2></div><label>Sort<select id="friendShinySort"><option value="recent">Most recent</option><option value="dex">Dex number</option></select></label></div><div class="dex-progress"><b id="friendShinyCount">0 / 1025</b><span>base Pokémon</span><i><span id="friendShinyBar"></span></i><b id="friendFormCount">0 bonus forms</b></div><div id="friendShinyGrid" class="shiny-grid"></div><button id="friendShinyMore" class="shiny-more" hidden>See more&hellip;</button></section>
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script src="stats-store.js?v=20260801-10"></script>
-<script src="friends.js?v=20260801-1"></script>
+<script src="friends.js?v=20260801-2"></script>
 <script src="trainer-menu.js?v=20260801-7"></script>
 </body>
 </html>

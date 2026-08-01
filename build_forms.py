@@ -17,6 +17,10 @@ for r in load("pokemon_types"):
     ptypes.setdefault(int(r["pokemon_id"]), {})[int(r["slot"])] = types[r["type_id"]]
 
 def form_name(identifier):
+    if identifier == "calyrex-ice":
+        return "Calyrex Ice Rider"
+    if identifier == "calyrex-shadow":
+        return "Calyrex Shadow Rider"
     words = identifier.replace("-", " ").title()
     return words.replace("Galar ", "Galarian ").replace("Alola ", "Alolan ").replace("Hisui ", "Hisuian ").replace("Paldea ", "Paldean ")
 

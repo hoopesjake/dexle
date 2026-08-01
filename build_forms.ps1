@@ -13,6 +13,8 @@ $types = @{}; foreach ($r in (Import-Csv pokemon_types.csv)) {
   $types[$pokeId][[int]$r.slot] = $typeNames[$r.type_id]
 }
 function FormName([string]$id) {
+  if ($id -eq 'calyrex-ice') { return 'Calyrex Ice Rider' }
+  if ($id -eq 'calyrex-shadow') { return 'Calyrex Shadow Rider' }
   $name = (Get-Culture).TextInfo.ToTitleCase($id.Replace('-', ' '))
   return $name.Replace('Galar ', 'Galarian ').Replace('Alola ', 'Alolan ').Replace('Hisui ', 'Hisuian ').Replace('Paldea ', 'Paldean ')
 }
