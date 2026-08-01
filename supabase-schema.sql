@@ -139,7 +139,19 @@ as $$
   from public.runs;
 $$;
 
+-- Public trainer names used by community records and account pages.
+create table if not exists public.profiles (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  username text not null,
+  created_at timestamptz not null default now(),
+  constraint username_length check (char_length(username) between 3 and 20),
+  constraint username_format check (username ~ '^[A-Za-z0-9_]+$')
+);
+create unique index if not exists profiles_username_lower_idx
+  on public.profiles (lower(username));
+
 drop function if exists public.community_best_team();
+drop function if exists public.community_best_team(text, smallint);
 
 create or replace function public.community_best_team(
   p_mode text,
@@ -155,6 +167,7 @@ returns table (
   team jsonb,
   team_bst integer,
   coverage smallint,
+  username text,
   created_at timestamptz
 )
 language sql
@@ -164,8 +177,10 @@ set search_path = ''
 as $$
   select
     r.mode, r.region, r.wins, r.losses, r.total, r.tier,
-    r.team, r.team_bst, r.coverage, r.created_at
+    r.team, r.team_bst, r.coverage,
+    coalesce(p.username, 'Trainer') as username, r.created_at
   from public.runs r
+  left join public.profiles p on p.user_id = r.user_id
   where r.team_bst is not null
     and r.mode = p_mode
     and (p_region is null or r.region = p_region)
@@ -248,3 +263,143 @@ revoke execute on function public.community_best_team(text, smallint) from publi
 grant execute on function public.community_best_team(text, smallint) to authenticated;
 revoke execute on function public.personal_dexle_summary() from public, anon;
 grant execute on function public.personal_dexle_summary() to authenticated;
+
+-- =========================================================
+-- Accounts, Hall of Fame, and Shiny Dex
+-- Run this whole file again after adding these features.
+-- =========================================================
+
+create table if not exists public.profiles (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  username text not null,
+  created_at timestamptz not null default now(),
+  constraint username_length check (char_length(username) between 3 and 20),
+  constraint username_format check (username ~ '^[A-Za-z0-9_]+$')
+);
+create unique index if not exists profiles_username_lower_idx
+  on public.profiles (lower(username));
+
+alter table public.profiles enable row level security;
+drop policy if exists "Profiles are publicly readable" on public.profiles;
+create policy "Profiles are publicly readable" on public.profiles
+  for select to authenticated using (true);
+drop policy if exists "Players can create their profile" on public.profiles;
+create policy "Players can create their profile" on public.profiles
+  for insert to authenticated with check ((select auth.uid()) = user_id);
+drop policy if exists "Players can update their profile" on public.profiles;
+create policy "Players can update their profile" on public.profiles
+  for update to authenticated using ((select auth.uid()) = user_id)
+  with check ((select auth.uid()) = user_id);
+
+create table if not exists public.shiny_dex (
+  user_id uuid not null references auth.users(id) on delete cascade,
+  form_key text not null,
+  pokemon_id integer not null,
+  base_id integer not null check (base_id between 1 and 1025),
+  pokemon_name text not null,
+  is_mega boolean not null default false,
+  first_seen_at timestamptz not null default now(),
+  last_seen_at timestamptz not null default now(),
+  times_seen integer not null default 1 check (times_seen > 0),
+  primary key (user_id, form_key)
+);
+create index if not exists shiny_dex_user_recent_idx
+  on public.shiny_dex (user_id, last_seen_at desc);
+
+alter table public.shiny_dex enable row level security;
+drop policy if exists "Players can read their Shiny Dex" on public.shiny_dex;
+create policy "Players can read their Shiny Dex" on public.shiny_dex
+  for select to authenticated using ((select auth.uid()) = user_id);
+
+create or replace function public.collect_run_shinies()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare member jsonb;
+declare v_id integer;
+declare v_base integer;
+declare v_mega boolean;
+declare v_key text;
+begin
+  for member in select value from jsonb_array_elements(new.team)
+  loop
+    if coalesce((member->>'shiny')::boolean, false) then
+      v_id := (member->>'id')::integer;
+      v_base := coalesce((member->>'base_id')::integer, v_id);
+      v_mega := coalesce((member->>'mega')::boolean, false);
+      v_key := case
+        when v_mega then 'mega:' || v_id
+        when v_id <> v_base then 'form:' || v_id
+        else 'base:' || v_base
+      end;
+      insert into public.shiny_dex
+        (user_id, form_key, pokemon_id, base_id, pokemon_name, is_mega,
+         first_seen_at, last_seen_at, times_seen)
+      values
+        (new.user_id, v_key, v_id, v_base, member->>'name', v_mega,
+         new.created_at, new.created_at, 1)
+      on conflict (user_id, form_key) do update set
+        last_seen_at = greatest(public.shiny_dex.last_seen_at, excluded.last_seen_at),
+        times_seen = public.shiny_dex.times_seen + 1,
+        pokemon_name = excluded.pokemon_name;
+    end if;
+  end loop;
+  return new;
+end;
+$$;
+
+drop trigger if exists runs_collect_shinies on public.runs;
+create trigger runs_collect_shinies
+after insert on public.runs
+for each row execute function public.collect_run_shinies();
+
+-- Backfill shinies already saved in existing completed runs.
+insert into public.shiny_dex
+  (user_id, form_key, pokemon_id, base_id, pokemon_name, is_mega,
+   first_seen_at, last_seen_at, times_seen)
+select r.user_id,
+  case
+    when coalesce((m->>'mega')::boolean, false) then 'mega:' || (m->>'id')
+    when (m->>'id')::integer <> coalesce((m->>'base_id')::integer, (m->>'id')::integer)
+      then 'form:' || (m->>'id')
+    else 'base:' || coalesce(m->>'base_id', m->>'id')
+  end,
+  (m->>'id')::integer,
+  coalesce((m->>'base_id')::integer, (m->>'id')::integer),
+  m->>'name', coalesce((m->>'mega')::boolean, false),
+  min(r.created_at), max(r.created_at), count(*)::integer
+from public.runs r cross join lateral jsonb_array_elements(r.team) m
+where coalesce((m->>'shiny')::boolean, false)
+group by 1,2,3,4,5,6
+on conflict (user_id, form_key) do nothing;
+
+create or replace function public.community_hall_of_fame(
+  p_mode text,
+  p_region smallint default null,
+  p_limit integer default 100
+)
+returns table (
+  id uuid, mode text, region smallint, wins smallint, losses smallint,
+  total smallint, team jsonb, team_bst integer, coverage smallint,
+  username text, created_at timestamptz
+)
+language sql stable security definer set search_path = ''
+as $$
+  select r.id, r.mode, r.region, r.wins, r.losses, r.total, r.team,
+    r.team_bst, r.coverage, coalesce(p.username, 'Trainer'), r.created_at
+  from public.runs r
+  left join public.profiles p on p.user_id = r.user_id
+  where r.wins = r.total and r.mode = p_mode
+    and (p_region is null or r.region = p_region)
+  order by r.created_at desc
+  limit least(greatest(p_limit, 1), 250);
+$$;
+
+revoke all on table public.profiles from anon;
+grant select, insert, update on table public.profiles to authenticated;
+revoke all on table public.shiny_dex from anon;
+grant select on table public.shiny_dex to authenticated;
+revoke execute on function public.community_hall_of_fame(text, smallint, integer) from public, anon;
+grant execute on function public.community_hall_of_fame(text, smallint, integer) to authenticated;

@@ -7,6 +7,17 @@
   let client = null;
   let userPromise = null;
 
+  function getClient() {
+    if (!configured || !window.supabase) {
+      throw new Error("Dexle stats is not connected to Supabase yet.");
+    }
+    if (!client) {
+      client = window.supabase.createClient(cfg.url, cfg.publishableKey);
+      client.auth.onAuthStateChange(() => { userPromise = null; });
+    }
+    return client;
+  }
+
   function uuid() {
     if (crypto.randomUUID) return crypto.randomUUID();
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
@@ -16,10 +27,7 @@
   }
 
   async function user() {
-    if (!configured || !window.supabase) {
-      throw new Error("Dexle stats is not connected to Supabase yet.");
-    }
-    if (!client) client = window.supabase.createClient(cfg.url, cfg.publishableKey);
+    getClient();
     if (!userPromise) {
       userPromise = (async () => {
         const { data: sessionData } = await client.auth.getSession();
@@ -41,7 +49,7 @@
       const base = member.base || p;
       return {
         id: p.id,
-        base_id: base.id,
+        base_id: p.baseId || base.id,
         name: p.name,
         base_name: base.name,
         gen: base.gen,
@@ -115,6 +123,62 @@
     return data?.[0] || null;
   }
 
+  async function account() {
+    const current = await user();
+    const { data: profile } = await client.from("profiles")
+      .select("username").eq("user_id", current.id).maybeSingle();
+    return { user: current, profile, anonymous: !!current.is_anonymous };
+  }
+
+  async function createAccount(email, password, username) {
+    const current = await user();
+    if (!current.is_anonymous) throw new Error("This device is already signed in.");
+    const clean = String(username || "").trim();
+    const { data, error } = await client.auth.updateUser({
+      email: String(email || "").trim(), password,
+      data: { username: clean },
+    });
+    if (error) throw error;
+    const id = data.user?.id || current.id;
+    const { error: profileError } = await client.from("profiles")
+      .upsert({ user_id:id, username:clean }, { onConflict:"user_id" });
+    if (profileError) throw profileError;
+    userPromise = Promise.resolve(data.user || current);
+    return data.user || current;
+  }
+
+  async function signIn(email, password) {
+    getClient();
+    const { data, error } = await client.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    userPromise = Promise.resolve(data.user);
+    return data.user;
+  }
+
+  async function signOut() {
+    getClient();
+    const { error } = await client.auth.signOut();
+    if (error) throw error;
+    userPromise = null;
+  }
+
+  async function hallOfFame(mode, region) {
+    await user();
+    const { data, error } = await client.rpc("community_hall_of_fame", {
+      p_mode: mode, p_region: region || null, p_limit: 100,
+    });
+    if (error) throw error;
+    return data || [];
+  }
+
+  async function shinyDex() {
+    const current = await user();
+    const { data, error } = await client.from("shiny_dex").select("*")
+      .eq("user_id", current.id).order("base_id", { ascending:true });
+    if (error) throw error;
+    return data || [];
+  }
+
   async function saveDexleGame(input) {
     const current = await user();
     const { error } = await client.from("dexle_games").insert({
@@ -143,6 +207,12 @@
     communityTop,
     communitySummary,
     communityBestTeam,
+    account,
+    createAccount,
+    signIn,
+    signOut,
+    hallOfFame,
+    shinyDex,
     saveDexleGame,
     personalDexleSummary,
   };

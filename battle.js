@@ -48,7 +48,10 @@ const TYPE_CHART = {
 };
 
 const POWER      = 70;      // stand-in move power - we have no move data
-const MISS       = 0.07;    // whiff chance, keeps close fights from being decided
+// Less battle noise makes favourites win more consistently in both directions:
+// elite teams lose fewer perfect runs to a stray miss, while weaker teams steal
+// fewer top-tier records through lucky misses and critical hits.
+const MISS       = 0.04;
 const RUNS       = 300;     // simulations per battle
 // Everything fights at level 100, both sides. Battles come down to base stats
 // and type coverage, not level gaps. Set FLAT_LEVEL to 0 to go back to the
@@ -102,6 +105,23 @@ const SCALE_ROLE = {
 };
 const SCALE_SD    = 0.10;   // standard deviation on the target, per battle
 const SCALE_ON    = true;   // false = use raw roster stats
+
+/* ---------- team quality curve ----------
+   Widen the difference between merely good teams and exceptional drafts.
+   Average final stats include the starter bond, Mega form, and Rare Candy.
+   Teams near 620 average stats (3,720 for a full team) are neutral. The curve
+   is deliberately gentle and capped at +/-4%, so a strong 3,700-3,800 draft
+   is rewarded without letting raw stats alone guarantee a perfect record. */
+const TEAM_CURVE_PIVOT = 620;
+const TEAM_CURVE_RATE  = 0.0025;
+const TEAM_CURVE_MIN   = 0.96;
+const TEAM_CURVE_MAX   = 1.04;
+
+function teamCurve(mySum, count) {
+  const avg = count ? mySum / count : 0;
+  return Math.max(TEAM_CURVE_MIN,
+    Math.min(TEAM_CURVE_MAX, 1 + (avg - TEAM_CURVE_PIVOT) * TEAM_CURVE_RATE));
+}
 
 /* You bring as many Pokemon as they do. A gym leader with two is a 2v2, not a
    6v2 — which is the only thing that stops a stacked team auto-sweeping the
@@ -159,7 +179,7 @@ function recover(raw, survivor, fainted) {
 const TIERS = {
   121: [
     { key:"oak",    name:"Professor Oak", min:121, hex:"#5FE3B0" },
-    { key:"master", name:"Master Ball",   min:116, hex:"#B061D6" },
+    { key:"master", name:"Master Ball",   min:118, hex:"#B061D6" },
     { key:"ultra",  name:"Ultra Ball",    min:91,  hex:"#F0C020" },
     { key:"great",  name:"Great Ball",    min:71,  hex:"#3E7BD6" },
     { key:"poke",   name:"Poké Ball",     min:0,   hex:"#E0483C" },
@@ -239,8 +259,8 @@ function damage(a, d, mult, rng) {
   const def = physical ? d.def : d.spd;
 
   const base = Math.floor(((2 * a.lvl / 5 + 2) * POWER * atk / def) / 50) + 2;
-  const luck = 0.85 + rng() * 0.15;            // the usual damage spread
-  const crit = rng() < 0.0625 ? 1.5 : 1;
+  const luck = 0.90 + rng() * 0.10;
+  const crit = rng() < 0.04 ? 1.5 : 1;
   return Math.max(1, Math.floor(base * mult * luck * crit));
 }
 
@@ -386,7 +406,8 @@ function simRun(team, opponents, runs) {
       const scale = scaleFactor(oSum, mySum, opp.role, opp.team.length, rng);
 
       const mine = team.map((m, k) => {
-        const f = fighter(m.p, lvl, m.stats);
+        const curved = m.stats.map(v => v * teamCurve(mySum, team.length));
+        const f = fighter(m.p, lvl, curved);
         if (carried) f.hp = Math.max(1, Math.round(f.max * carried[k]));
         return f;
       });
@@ -471,7 +492,8 @@ function simGauntlet(team, OPP, runs) {
       const scale = scaleFactor(oSum, mySum, opp.role, opp.team.length, rng);
 
       const mine = team.map((m, k) => {
-        const f = fighter(m.p, lvl, m.stats);
+        const curved = m.stats.map(v => v * teamCurve(mySum, team.length));
+        const f = fighter(m.p, lvl, curved);
         if (carried) f.hp = Math.max(1, Math.round(f.max * carried[k]));
         return f;
       });

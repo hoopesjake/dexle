@@ -142,7 +142,7 @@
       <article class="community-best-card">
         <div class="community-best-meta">
           <span class="rankball" style="--tier:${TIER[run.tier]}"></span>
-          <div class="run-title"><b>${title}</b><small>${run.tier === "oak" ? "Professor Oak" : run.tier + " ball"} tier</small></div>
+          <div class="run-title"><b>${title}</b><small>${run.username ? `@${run.username} · ` : ""}${run.tier === "oak" ? "Professor Oak" : run.tier + " ball"} tier</small></div>
           <div class="best-metric"><span>Effective stats</span><b>${run.team_bst.toLocaleString()}</b></div>
           <div class="best-metric"><span>Type coverage</span><b>${run.coverage}/18</b></div>
           <span class="record"><span class="wins">${run.wins}</span><i>&ndash;</i><span class="losses">${run.losses}</span></span>

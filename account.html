@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dexle — Trainer Account</title>
+  <link rel="stylesheet" href="stats.css">
+  <link rel="stylesheet" href="account.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="lamp"></div>
+    <div class="titles"><h1>Trainer Account</h1><p class="tag">Your identity, flawless runs, and Shiny Dex.</p></div>
+    <nav class="hdr-btns">
+      <a class="toggle" href="index.html">Home</a>
+      <a class="toggle" href="stats.html">Stats</a>
+      <a class="toggle" href="gauntlet.html?mode=champion">Region</a>
+      <a class="toggle" href="gauntlet.html?mode=gauntlet">Gauntlet</a>
+    </nav>
+  </header>
+
+  <div id="accountError" class="account-message error" hidden></div>
+  <div id="accountMessage" class="account-message" hidden></div>
+
+  <section class="panel account-panel">
+    <div id="signedOut">
+      <p class="eyebrow">Trainer login</p>
+      <h2 id="authTitle">Create your account</h2>
+      <p class="section-copy" id="authCopy">Your runs already saved on this device will stay with you.</p>
+      <div class="seg auth-tabs" id="authTabs">
+        <button class="on" data-auth="create">Create account</button>
+        <button data-auth="login">Sign in</button>
+      </div>
+      <form id="authForm" class="auth-form">
+        <label id="usernameWrap">Username
+          <input id="authUsername" maxlength="20" pattern="[A-Za-z0-9_]{3,20}" autocomplete="username" placeholder="Trainer name">
+        </label>
+        <label>Email
+          <input id="authEmail" type="email" autocomplete="email" required placeholder="you@example.com">
+        </label>
+        <label>Password
+          <input id="authPassword" type="password" minlength="6" autocomplete="new-password" required placeholder="At least 6 characters">
+        </label>
+        <button id="authSubmit" type="submit">Create Account</button>
+      </form>
+    </div>
+    <div id="signedIn" hidden>
+      <p class="eyebrow">Signed in</p>
+      <div class="profile-row">
+        <div><h2 id="profileName">Trainer</h2><p id="profileEmail" class="section-copy"></p></div>
+        <button id="signOut" class="secondary">Sign out</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="section-head">
+      <div><p class="eyebrow">Community legends</p><h2>Hall of Fame</h2><p class="section-copy">Every flawless Region Champion and Gauntlet run.</p></div>
+      <div class="seg" id="hallTabs">
+        <button class="on" data-mode="region">Region</button>
+        <button data-mode="gauntlet">Gauntlet</button>
+      </div>
+    </div>
+    <div class="filters" id="hallFilters"><label>Region<select id="hallRegion"></select></label></div>
+    <div id="hallList" class="hall-list"><p class="empty">Loading flawless runs…</p></div>
+  </section>
+
+  <section class="panel">
+    <div class="section-head">
+      <div><p class="eyebrow">Personal collection</p><h2>Shiny Dex</h2><p class="section-copy">A shiny unlocks when it appears on your completed final team. Mega shinies are collected separately.</p></div>
+      <label>Sort
+        <select id="shinySort"><option value="dex">Dex number</option><option value="recent">Most recent</option></select>
+      </label>
+    </div>
+    <div class="dex-progress"><b id="shinyCount">0 / 1025</b><span>base Pokémon</span><i><span id="shinyBar"></span></i><b id="formCount">0 bonus forms</b></div>
+    <div id="shinyGrid" class="shiny-grid"><p class="empty">Loading your collection…</p></div>
+  </section>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="stats-store.js"></script>
+<script src="account.js"></script>
+</body>
+</html>
