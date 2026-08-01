@@ -5,7 +5,9 @@
 
 /* ---------- config ---------- */
 const BOOST      = 1.10;   // starter friendship bonus on every base stat
-const SHINY_ODDS = 20;     // 1 in N per spin
+const BASE_SHINY_ODDS = 20; // 1 in N per spin
+const CHARM_SHINY_ODDS = 10;
+let SHINY_ODDS = BASE_SHINY_ODDS;
 const SPIN_MS    = 1500;   // reel duration
 const MAX_LEGEND = 1;      // legendaries allowed on a team
 
@@ -46,6 +48,12 @@ const rndType = not => { let t; do { t = pickOne(TYPES); }    while (t === not);
 
 const SPRITE = (id, shiny) =>
   `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${shiny ? "shiny/" : ""}${id}.png`;
+const SPRITE_ROOT = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/";
+
+function spriteUrl(mon, shiny) {
+  const custom = shiny ? mon.shinySprite : mon.sprite;
+  return custom ? SPRITE_ROOT + custom : SPRITE(mon.id, shiny);
+}
 
 // the real Rare Candy item sprite
 const CANDY_ICON =
@@ -58,7 +66,7 @@ const ART = (id, shiny) =>
 // official artwork, then to the base Pokemon, instead of showing a broken image.
 function spriteImg(mon, shiny, cls, extra) {
   const base = mon.baseId || mon.id;
-  return `<img src="${SPRITE(mon.id, shiny)}" alt="${mon.name}" class="${cls || ""}"
+  return `<img src="${spriteUrl(mon, shiny)}" alt="${mon.name}" class="${cls || ""}"
     data-dex="${mon.id}" ${extra || ""}
     onerror="this.onerror=null;this.src='${ART(mon.id, shiny)}';
              this.onerror=function(){this.onerror=null;this.src='${SPRITE(base, shiny)}';};">`;
@@ -103,7 +111,8 @@ let DEX = [];
 let byId = {};
 let OPP = {};                    // generation -> { region, game, opponents[] }
 let MEGAS = {};                  // base dex id -> [ mega forms ]
-let selMode = null;              // null | "mega" | "candy"
+let FORMS = {};                  // base dex id -> meaningful alternate forms
+let selMode = null;              // null | "mega" | "type" | "candy"
 let locked  = false;             // true once a run has been simulated
 let lastScreen = null;           // which results screen to return to
 let runSaveStarted = false;      // prevents one result from being stored twice
@@ -121,21 +130,35 @@ let spinning  = false;
 
 /* ---------- load ---------- */
 (async function init() {
-  const [dexRes, oppRes, megaRes] = await Promise.all([
+  const [dexRes, oppRes, megaRes, formRes] = await Promise.all([
     fetch("pokedex.json"),
     fetch("opponents.json"),
     fetch("megas.json"),
+    fetch("forms.json"),
   ]);
   DEX   = await dexRes.json();
   OPP   = await oppRes.json();
   MEGAS = await megaRes.json();
+  FORMS = await formRes.json();
   DEX.forEach(p => byId[p.id] = p);
+  await loadShinyAchievement();
   console.log("Loaded", DEX.length, "Pokémon");
 
   $("boostPct").textContent = Math.round((BOOST - 1) * 100) + "%";
   drawTeamBar();
   applyMode();
 })();
+
+async function loadShinyAchievement() {
+  if (!window.DexleStats?.configured) return;
+  try {
+    if (await DexleStats.shinyCharmUnlocked()) {
+      SHINY_ODDS = CHARM_SHINY_ODDS;
+    }
+  } catch (error) {
+    console.warn("Could not check the Shiny odds achievement:", error);
+  }
+}
 
 /* the hub already chose the mode, so skip straight past it for the Gauntlet */
 function applyMode() {
@@ -530,6 +553,11 @@ function openPickPreview(p) {
     removeShinyNote();
     if (team.length >= 6) return finish();
     startBallPhase(false);
+    // The coverage panel can be tall; bring the newly reset reels back to the
+    // visual centre so the next spin is immediately in view.
+    requestAnimationFrame(() => $("reelBall").scrollIntoView({
+      behavior:"smooth", block:"center", inline:"nearest",
+    }));
   };
 }
 
@@ -579,11 +607,13 @@ function drawTeamBar() {
     const cls = ["tb-slot", "filled",
                  m.starter ? "starter" : "",
                  m.mega    ? "megaon"  : "",
+                 m.typeForm ? "typeon" : "",
                  m.candy   ? "candyon" : ""].filter(Boolean).join(" ");
     return `<div class="${cls}" title="${m.p.name}${m.mega ? " · Mega Evolved" : ""}${m.candy ? " · Rare Candy" : ""}">
       ${spriteImg(m.p, m.shiny)}
       ${m.starter ? '<span class="tb-flag">💛</span>' : ""}
       ${m.mega    ? '<span class="tb-flag tb-mega">◈</span>' : ""}
+      ${m.typeForm ? '<span class="tb-flag tb-type">◇</span>' : ""}
       ${m.candy   ? `<span class="tb-flag tb-candy"><img src="${CANDY_ICON}" alt="Rare Candy"></span>` : ""}
       ${m.shiny   ? '<span class="tb-flag tb-shiny">✦</span>' : ""}
     </div>`;
@@ -591,12 +621,22 @@ function drawTeamBar() {
   $("tbCount").textContent = `${team.length} / 6`;
 }
 
+function formCatalog(p, cost) {
+  if (!p) return [];
+  return (FORMS[String(p.id)] || FORMS[p.id] || []).filter(f => f.cost === cost);
+}
 function megaFormsFor(p) {
   if (!p) return null;
-  const f = MEGAS[String(p.id)] || MEGAS[p.id];
-  return (Array.isArray(f) && f.length) ? f : null;
+  const megas = (MEGAS[String(p.id)] || MEGAS[p.id] || []).map(f => ({
+    ...f, cost:"power", kind:/primal/i.test(f.name) ? "Primal Reversion" : "Mega Evolution",
+  }));
+  const forms = [...megas, ...formCatalog(p, "power")];
+  return forms.length ? forms : null;
 }
-const megaEligible = () => team.filter(m => megaFormsFor(m.base || m.p));
+function originalPokemon(m) { return m.base || m.typeBase || m.p; }
+const megaEligible = () => team.filter(m => megaFormsFor(originalPokemon(m)));
+const typeFormsFor = p => formCatalog(p, "free");
+const typeEligible = () => team.filter(m => !m.mega && typeFormsFor(originalPokemon(m)).length);
 
 function setSelMode(mode) {
   if (locked) return;            // team is final once you've run it
@@ -604,12 +644,14 @@ function setSelMode(mode) {
   $("selHint").hidden = !mode;
   $("selHint").className = "selhint" + (mode ? " " + mode : "");
   $("selHint").textContent =
-    mode === "mega"  ? "Select one Pokémon to Mega Evolve."
+    mode === "mega"  ? "Select one Pokémon to Mega Evolve or power-change its form."
+  : mode === "type"  ? "Select a Pokémon to change its type. This does not use your power transformation."
   : mode === "candy" ? `Select one Pokémon to feed the Rare Candy — ` +
                        `+${Math.round((CANDY_BOOST - 1) * 100)}% to every stat. ` +
                        `Not your starter, a legendary, or the Mega.`
   : "";
   $("megaBtn").classList.toggle("armed", mode === "mega");
+  $("typeBtn").classList.toggle("armed", mode === "type");
   $("candyBtn").classList.toggle("armed", mode === "candy");
   renderDone();                               // repaint without scrolling
 }
@@ -621,11 +663,29 @@ const candyEligible = () => team.filter(candyOk);
 function applyMega(slot, form) {
   const m = team[slot];
   delete m.candy;                             // a Mega can't also be candied
-  m.base = m.base || m.p;                     // remember what it was
+  m.base = originalPokemon(m);                // remember the true original
+  delete m.typeBase; delete m.typeForm;
   m.p    = { ...form, legend: m.base.legend, gen: m.base.gen,
              region: m.base.region, baseId: m.base.id };
   m.mega = form.name;
   megaIdx = slot;
+  setSelMode(null);
+}
+
+function applyTypeForm(slot, form) {
+  const m = team[slot];
+  if (m.mega) return;
+  m.typeBase = m.typeBase || m.p;
+  m.p = { ...form, legend:m.typeBase.legend, gen:m.typeBase.gen,
+          region:m.typeBase.region, baseId:m.typeBase.id };
+  m.typeForm = form.name;
+  setSelMode(null);
+}
+
+function revertTypeForm(slot) {
+  const m = team[slot];
+  if (m.typeBase) m.p = m.typeBase;
+  delete m.typeBase; delete m.typeForm;
   setSelMode(null);
 }
 
@@ -644,10 +704,17 @@ function pickForSelection(slot) {
     setSelMode(null);
     return;
   }
+  if (selMode === "type") {
+    const m = team[slot];
+    const forms = !m.mega && typeFormsFor(originalPokemon(m));
+    if (!forms || !forms.length) return;
+    openMegaChooser(slot, forms, "type");
+    return;
+  }
   if (selMode !== "mega") return;
 
   const m     = team[slot];
-  const forms = megaFormsFor(m.base || m.p);
+  const forms = megaFormsFor(originalPokemon(m));
   if (!forms) {
     console.warn("No Mega form for", (m.base || m.p).name, (m.base || m.p).id);
     return;
@@ -655,28 +722,37 @@ function pickForSelection(slot) {
 
   if (megaIdx >= 0 && megaIdx !== slot) revertMega();   // only one at a time
   if (forms.length === 1) return applyMega(slot, forms[0]);
-  openMegaChooser(slot, forms);
+  openMegaChooser(slot, forms, "power");
 }
 
-function openMegaChooser(slot, forms) {
-  const before = team[slot].base || team[slot].p;
+function openMegaChooser(slot, forms, mode) {
+  const before = originalPokemon(team[slot]);
+  const isType = mode === "type";
+  $("formModalTitle").textContent = isType ? "Choose a Type Form" : "Choose a Power Form";
   $("megaBody").innerHTML = `
-    <p class="mega-lead">${before.name} has ${forms.length} Mega forms.</p>
+    <p class="mega-lead">${before.name} has ${forms.length} ${isType ? "type choices. These are free and do not change its stats." : "powered forms. One powered form may be active per team."}</p>
     <div class="megaopts">
+      ${isType && team[slot].typeForm ? `<button class="megaopt" data-original="1">
+        ${spriteImg(before, team[slot].shiny)}<b>Original ${before.name}</b>
+        <div>${[before.t1,before.t2].filter(Boolean).map(chip).join(" ")}</div>
+        <div class="mo-bst">Restore original typing</div></button>` : ""}
       ${forms.map((f, i) => `
         <button class="megaopt" data-i="${i}">
-          <img src="${ART(f.id, false)}" alt="${f.name}"
-               onerror="this.onerror=null;this.src='${SPRITE(f.id, false)}';">
+          ${spriteImg(f, team[slot].shiny)}
           <b>${f.name}</b>
+          <small class="form-kind">${f.kind}</small>
           <div>${[f.t1, f.t2].filter(Boolean).map(chip).join(" ")}</div>
-          <div class="mo-bst">${sumStats(before.s)} → <i>${sumStats(f.s)}</i></div>
-          <div class="mo-diff">${statDiff(before.s, f.s)}</div>
+          <div class="mo-bst">${isType ? `${sumStats(f.s)} total stats` : `${sumStats(before.s)} → <i>${sumStats(f.s)}</i>`}</div>
+          ${isType ? "" : `<div class="mo-diff">${statDiff(before.s, f.s)}</div>`}
         </button>`).join("")}
     </div>`;
   $("megaModal").hidden = false;
   $("megaBody").querySelectorAll("[data-i]").forEach(b => {
-    b.onclick = () => { $("megaModal").hidden = true; applyMega(slot, forms[+b.dataset.i]); };
+    b.onclick = () => { $("megaModal").hidden = true;
+      (isType ? applyTypeForm : applyMega)(slot, forms[+b.dataset.i]); };
   });
+  const original = $("megaBody").querySelector("[data-original]");
+  if (original) original.onclick = () => { $("megaModal").hidden = true; revertTypeForm(slot); };
 }
 
 const sumStats = a => a.reduce((x, y) => x + y, 0);
@@ -721,15 +797,18 @@ function renderDone() {
 
   const canUse = !locked && (MODE === "gauntlet" || challenge.mode === "single");
   const elig   = megaEligible();
+  const typeElig = typeEligible();
   $("megaBtn").hidden  = !canUse;
+  $("typeBtn").hidden  = !canUse || !typeElig.length;
   $("candyBtn").hidden = !canUse;
   $("megaBtn").disabled = !elig.length;
   $("megaBtn").title    = elig.length
-    ? `${elig.length} of your team can Mega Evolve`
-    : "None of your Pokémon can Mega Evolve";
+    ? `${elig.length} of your team can Mega Evolve or power-change form`
+    : "None of your Pokémon has a powered form";
   $("megaBtn").innerHTML = megaIdx >= 0
     ? `<span class="mb-gem">\u25c8</span> ${team[megaIdx].mega}`
-    : `<span class="mb-gem">\u25c8</span> Mega Evolve`;
+    : `<span class="mb-gem">\u25c8</span> Mega / Form`;
+  $("typeBtn").title = `${typeElig.length} of your team can change type for free`;
   const fed  = team.find(m => m.candy);
   const cOk  = candyEligible();
   $("candyBtn").disabled = !cOk.length;
@@ -741,6 +820,7 @@ function renderDone() {
     ? `${cIcon} Candy: ${fed.p.name}`
     : `${cIcon} Rare Candy`;
   $("megaBtn").classList.toggle("done", megaIdx >= 0);
+  $("typeBtn").classList.toggle("done", team.some(m => m.typeForm));
   $("candyBtn").classList.toggle("done", !!fed);
 
   $("finalgrid").innerHTML = layout().map(m => {
@@ -752,12 +832,13 @@ function renderDone() {
 
     // selection mode: which cards can be clicked
     let pick = "";
-    if (selMode === "mega")  pick = megaFormsFor(m.base || p) ? "pickable mega" : "dimmed";
+    if (selMode === "mega")  pick = megaFormsFor(originalPokemon(m)) ? "pickable mega" : "dimmed";
+    if (selMode === "type")  pick = !m.mega && typeFormsFor(originalPokemon(m)).length ? "pickable typeform" : "dimmed";
     if (selMode === "candy") pick = candyOk(m) ? "pickable candy" : "dimmed";
 
     return `
       <div class="fin ${m.starter ? "starter" : ""} ${m.mega ? "megaon" : ""}
-                  ${m.candy ? "candyon" : ""} ${pick}"
+                  ${m.candy ? "candyon" : ""} ${m.typeForm ? "typeon" : ""} ${pick}"
            ${pick.startsWith("pickable") ? `data-slot="${slot}" role="button" tabindex="0"` : ""}>
         ${m.starter ? '<span class="fin-flag" title="Friendship bond">💛</span>' : ""}
         ${m.shiny   ? '<span class="fin-flag" style="left:8px;right:auto">✦</span>' : ""}
@@ -768,6 +849,7 @@ function renderDone() {
         <div class="fin-bst">${t}${m.starter ? " (bonded)" : m.candy ? " (candied)" : ""}</div>
         <div class="fin-badges">
           ${m.mega   ? '<span class="badge mega">Mega Evolved</span>' : ""}
+          ${m.typeForm ? '<span class="badge typeform">Change Type</span>' : ""}
           ${m.candy  ? `<span class="badge candy"><img src="${CANDY_ICON}" alt="">Rare Candy +${Math.round((CANDY_BOOST-1)*100)}%</span>` : ""}
         </div>
       </div>`;
@@ -926,6 +1008,7 @@ function runGauntlet() {
         btn.classList.toggle("open", open);
       };
     });
+    requestAnimationFrame(() => $("scGauntlet").scrollIntoView({ block:"start" }));
   }, 60);
 }
 
@@ -967,7 +1050,7 @@ function runChallenge() {
 
     const lossSet = new Set([...res.battles]
     .sort((a, b) => a.rate - b.rate).slice(0, l).map(b => b.name));
-  $("battles").innerHTML = res.battles.map((b, i) => {
+  const battleRows = res.battles.map((b, i) => {
     const state = lossSet.has(b.name) ? "l" : "w";
     const pct = Math.round(b.rate * 100);
     return `
@@ -993,7 +1076,29 @@ function runChallenge() {
       </div>`;
   }).join("");
 
+  $("battles").innerHTML = `
+    <div class="reg ${l === 0 ? "clean" : ""}">
+      <button class="reg-head" aria-expanded="false">
+        <span class="reg-gen">Gen ${challenge.gen}</span>
+        <b>${g.region}</b>
+        <span class="reg-game">${g.game}</span>
+        <span class="reg-rec ${l === 0 ? "ok" : ""}">${w}-${l}</span>
+        <span class="opp-chev" aria-hidden="true">&#9662;</span>
+      </button>
+      <div class="reg-body region-battles" hidden>${battleRows}</div>
+    </div>`;
+
+  const regionHead = $("battles").querySelector(".reg-head");
+  regionHead.onclick = () => {
+    const body = regionHead.nextElementSibling;
+    const open = body.hidden;
+    body.hidden = !open;
+    regionHead.setAttribute("aria-expanded", open);
+    regionHead.classList.toggle("open", open);
+  };
+
   show("scResult");
+  requestAnimationFrame(() => $("scResult").scrollIntoView({ block:"start" }));
 }
 
 // how many of the 18 types your team can hit for super-effective damage
@@ -1092,6 +1197,9 @@ function startOver() {
   $("oppList").hidden  = true;
   $("oppToggle").classList.remove("open");
   $("covPanel").hidden = true;
+  $("covBody").hidden = true;
+  $("covToggle").setAttribute("aria-expanded", "false");
+  $("covToggle").classList.remove("open");
 
   if (MODE === "gauntlet") {
     challenge = { mode:"gauntlet" };
@@ -1159,6 +1267,7 @@ $("megaBtn").onclick     = () => {
   if (megaIdx >= 0) { revertMega(); return setSelMode("mega"); }
   setSelMode("mega");
 };
+$("typeBtn").onclick     = () => setSelMode(selMode === "type" ? null : "type");
 $("candyBtn").onclick    = () => setSelMode(selMode === "candy" ? null : "candy");
 $("pickClose").onclick   = closePickPreview;
 $("pickModal").onclick   = e => { if (e.target.id === "pickModal") closePickPreview(); };

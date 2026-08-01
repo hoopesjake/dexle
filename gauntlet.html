@@ -4,20 +4,21 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pokémon Gauntlet — Team Builder</title>
-  <link rel="stylesheet" href="gauntlet.css">
+  <link rel="stylesheet" href="gauntlet.css?v=20260801-14">
+  <link rel="stylesheet" href="trainer-menu.css?v=20260801-5">
 </head>
 <body>
 
 <div class="wrap">
 
   <header>
-    <div class="lamp"></div>
+    <a class="lamp home-lamp" href="index.html" aria-label="Dexle home" title="Dexle home"></a>
     <div class="titles">
       <h1 id="pageTitle">Gauntlet</h1>
       <p class="tag" id="pageSub">Spin your way to a team of six.</p>
     </div>
     <div class="hdr-btns">
-      <a class="toggle" href="stats.html">Stats</a>
+      <a class="toggle desktop-stats" href="stats.html">Stats</a>
       <a class="toggle" href="index.html">← Home</a>
       <button id="restart" class="toggle" title="Start over">↻ Start over</button>
       <!-- <button id="debugTeam" class="toggle" title="Debug: Use pre-defined team">🐛 Debug Team</button> -->
@@ -26,12 +27,12 @@
 
   <!-- what your team covers, and what it can't answer -->
   <section id="covPanel" hidden>
-    <button id="covToggle" class="opp-toggle open" aria-expanded="true">
+    <button id="covToggle" class="opp-toggle" aria-expanded="false">
       <span class="opp-t">Your coverage</span>
       <span class="opp-n" id="covCount"></span>
       <span class="opp-chev" aria-hidden="true">▾</span>
     </button>
-    <div class="covbody" id="covBody"></div>
+    <div class="covbody" id="covBody" hidden></div>
   </section>
 
   <!-- who you'll be fighting (champion mode only) -->
@@ -127,7 +128,10 @@
         </div>
         <div class="done-tools">
           <button id="megaBtn" class="mega-btn" hidden>
-            <span class="mb-gem">◈</span> Mega Evolve
+            <span class="mb-gem">◈</span> Mega / Form
+          </button>
+          <button id="typeBtn" class="type-form-btn" hidden>
+            <span>◇</span> Change Type
           </button>
           <button id="candyBtn" class="candy-btn" hidden>
             <span class="cb-candy"><img
@@ -184,7 +188,7 @@
       </div>
 
       <div class="rec-stats" id="recStats"></div>
-      <div class="battles" id="battles"></div>
+      <div class="regions" id="battles"></div>
 
       <div class="done-btns">
         <button id="backTeam" class="result-back" aria-label="Back to team" title="Back to team">&larr;</button>
@@ -212,11 +216,11 @@
   </div>
 </div>
 
-<!-- choose between two Mega forms -->
+<!-- choose a Mega, powered form, or free type form -->
 <div id="megaModal" hidden>
   <div class="megacard">
     <div class="megabar">
-      <span class="megabar-t">Choose a Mega Evolution</span>
+      <span class="megabar-t" id="formModalTitle">Choose a Power Form</span>
       <button id="megaClose" aria-label="Close">✕</button>
     </div>
     <div class="megabody" id="megaBody"></div>
@@ -225,8 +229,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
-<script src="stats-store.js?v=20260801-2"></script>
-<script src="battle.js"></script>
-<script src="gauntlet.js"></script>
+<script src="stats-store.js?v=20260801-9"></script>
+<script src="battle.js?v=20260801-1"></script>
+<script src="gauntlet.js?v=20260801-11"></script>
+<script src="trainer-menu.js?v=20260801-7"></script>
 </body>
 </html>

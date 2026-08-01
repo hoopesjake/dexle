@@ -17,6 +17,7 @@ header{display:flex;align-items:center;gap:14px;margin-bottom:34px}
   content:"";position:absolute;top:7px;left:8px;width:12px;height:9px;
   border-radius:50%;background:rgba(255,255,255,.6);filter:blur(1px);
 }
+.home-lamp{display:block;cursor:pointer;text-decoration:none}
 .titles{margin-right:20px}
 h1,h2,h3,p{margin-top:0} h1{margin:0;font-size:30px;letter-spacing:.16em;text-transform:uppercase}
 .tag{color:var(--dim);font-size:13.5px;margin:0}
@@ -70,6 +71,7 @@ button,select{font:inherit;color:var(--ink)}
 .seg button{border:0;background:transparent;border-radius:999px;padding:7px 12px;cursor:pointer;color:var(--dim)}
 .seg button.on{background:var(--panel2);color:var(--ink)}
 .filters{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.filter-seg{margin-top:4px}.filter-seg button{font-size:10px;text-transform:none;letter-spacing:0}
 label{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em}
 select{display:block;margin-top:4px;background:var(--ground);border:1px solid var(--line);border-radius:8px;padding:7px 30px 7px 9px}
 .leaderboard{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -83,8 +85,19 @@ select{display:block;margin-top:4px;background:var(--ground);border:1px solid va
 .run-title b,.run-title small{display:block}.run-title small{color:var(--dim)}
 .record{margin-left:auto;display:flex;align-items:baseline;gap:3px;font-weight:900;font-size:20px;font-family:ui-monospace,Consolas,monospace}
 .record .wins{color:var(--green)}.record .losses{color:var(--red)}.record i{color:var(--dim);font-style:normal}
-.rankball{width:26px;height:26px;border-radius:50%;
+.rankball{width:26px;height:26px;border-radius:50%;position:relative;overflow:hidden;
   background:linear-gradient(to bottom,var(--tier) 0 45%,#151827 46% 55%,#F7F7F7 56%);border:2px solid #101321;flex:none}
+.rankball.oak-disc{border:2px solid #45D8C8;background:#45D8C8;box-shadow:0 0 12px rgba(69,216,200,.6)}
+.rankball.oak-disc::before{content:"";position:absolute;inset:34%;border-radius:50%;background:#17232F;border:1px solid rgba(255,255,255,.7);z-index:1}
+.rankball.oak-disc::after{content:"";position:absolute;top:-50%;left:-85%;width:45%;height:200%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.85),transparent);transform:rotate(24deg);animation:hm-glint 3.2s ease-in-out infinite}
+@keyframes hm-glint{0%,62%{left:-85%}88%,100%{left:145%}}
+.run-card.flawless,.community-best-card.flawless{border-color:#5FE3D0;box-shadow:0 0 0 1px rgba(95,227,208,.3),0 0 22px rgba(95,227,208,.2)}
+.team-metrics{display:flex;gap:4px;flex:none;margin-left:3px}
+.team-metrics span{padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--ground);color:var(--dim);font-size:7.5px;line-height:1.2;text-transform:uppercase;letter-spacing:.02em;white-space:nowrap}
+.team-metrics b{color:var(--ink);font-size:10px;margin-left:2px}
+.run-top>.team-metrics{margin-left:auto}
+.run-top>.team-metrics+.record{margin-left:0}
+.community-best-meta .team-metrics+.record{margin-left:auto}
 .team{
   display:grid;grid-template-columns:repeat(3,minmax(70px,1fr));
   align-items:center;justify-items:center;gap:12px 16px;
@@ -115,6 +128,13 @@ select{display:block;margin-top:4px;background:var(--ground);border:1px solid va
   line-height:20px;text-indent:0;text-shadow:0 0 6px rgba(226,120,206,.9);
   box-shadow:0 2px 7px rgba(0,0,0,.45);
 }
+.type-form-mark{
+  position:absolute;z-index:2;top:-5px;left:-5px;width:20px;height:20px;
+  display:grid;place-items:center;border:1px solid #fff;border-radius:50%;
+  background:#202433;color:#fff;font-size:11px;font-weight:900;
+  box-shadow:0 2px 7px rgba(0,0,0,.45),0 0 8px rgba(255,255,255,.22);
+}
+.mon.type-form{border-color:rgba(255,255,255,.72);box-shadow:0 0 12px rgba(255,255,255,.18)}
 .shiny-mark{
   position:absolute;z-index:2;left:-4px;bottom:-4px;width:18px;height:18px;
   display:grid;place-items:center;border:1px solid #D6B52E;border-radius:50%;
@@ -131,13 +151,15 @@ select{display:block;margin-top:4px;background:var(--ground);border:1px solid va
 .best-title-row label{text-align:left}.best-title-row select{margin-top:3px}
 .filter-spacer{width:122px;height:45px;display:block}
 .section-copy{margin:-8px 0 16px;color:var(--dim);font-size:13px}
+.history-toggle{margin-left:auto;display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);color:var(--ink);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;cursor:pointer}.history-toggle i{font-style:normal;transition:transform .18s}.history-toggle[aria-expanded="true"] i{transform:rotate(180deg)}#historyTabs[hidden],#historyFilters[hidden],#history[hidden]{display:none}
 .community-best-card{border:1px solid var(--line);border-radius:12px;background:var(--panel2);padding:16px}
-.community-best-meta{display:flex;align-items:center;gap:12px;margin-bottom:13px;flex-wrap:wrap}
-.community-best-meta .record{margin-left:0}
+.community-best-meta{display:flex;align-items:center;gap:12px;margin-bottom:13px;flex-wrap:nowrap}
+.community-best-meta .team-metrics{margin-left:auto}
+.community-best-meta .team-metrics+.record{margin-left:-6px}
 .best-metric{padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--ground)}
 .best-metric span{display:block;color:var(--dim);font-size:9px;letter-spacing:.1em;text-transform:uppercase}
 .best-metric b{font-size:16px}
-.community-best-meta .record{margin-left:auto}
+.community-best-meta .record{margin-left:0}
 .empty{color:var(--dim);padding:16px 0;margin:0}
 @media(max-width:760px){
   .wrap{padding:20px 12px 50px;overflow-x:hidden}

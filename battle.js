@@ -67,9 +67,10 @@ const OPP_POWER = {
   "Elite Four":1.05, "Champion Cup":1.07, "Champion":1.28,
 };
 
-/* ---- GAUNTLET DIFFICULTY: "HARD" preset ----
+/* ---- GAUNTLET DIFFICULTY: adjusted HARD preset ----
    These five constants are the only dials that matter for the Gauntlet.
-   Current values are the HARD preset. To go back to the original:
+   Opponent power is currently 5% below the prior HARD preset. To go back to
+   the original pre-HARD settings:
      G_OPP_POWER      -> 0.98 / 0.98 / 0.98 / 0.98 / 0.98 / 0.96
      G_MIN_MULT       -> 0.85
      SCALE_ROLE       -> 0.62 / 0.62 / 0.70 / 0.80 / 0.84 / 0.92
@@ -77,8 +78,10 @@ const OPP_POWER = {
      G_HEAL_FAINTED   -> 0.78
    G_HEAL_FAINTED is by far the strongest lever - lower it to tighten further. */
 const G_OPP_POWER = {
-  "Gym Leader":1.00, "Trial":1.00, "Kahuna":1.00,
-  "Elite Four":1.04, "Champion Cup":1.04, "Champion":1.075,
+  // 5% easier across the entire Gauntlet: every final opponent stat multiplier
+  // is the previous value x 0.95. Region Challenge OPP_POWER is untouched.
+  "Gym Leader":0.95, "Trial":0.95, "Kahuna":0.95,
+  "Elite Four":0.988, "Champion Cup":0.988, "Champion":1.02125,
 };
 const G_MIN_MULT = 1.00;
 

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Dexle — Trainer Friends</title>
+  <link rel="stylesheet" href="stats.css?v=20260801-18">
+  <link rel="stylesheet" href="account.css?v=20260801-19">
+  <link rel="stylesheet" href="trainer-menu.css?v=20260801-5">
+</head>
+<body>
+<div class="wrap">
+  <header><a class="lamp home-lamp" href="index.html" aria-label="Dexle home"></a><div class="titles"><h1>Trainer Friends</h1><p class="tag">Find Trainers and share your achievements.</p></div></header>
+
+  <div id="friendMessage" class="account-message" hidden></div>
+  <section id="accountNeeded" class="panel" hidden><h2>Trainer account required</h2><p class="section-copy">Create or sign in to an account before adding friends.</p><a class="toggle" href="account.html">Open Account</a></section>
+
+  <div id="friendHome" hidden>
+    <section class="panel friends-panel">
+      <div class="section-head"><div><p class="eyebrow">Trainer network</p><h2>Find Friends</h2><p class="section-copy">Search by username. Requests must be accepted before profiles are visible.</p></div></div>
+      <form id="friendSearch" class="friend-search"><input id="friendQuery" minlength="2" maxlength="20" required autocomplete="off" placeholder="Search usernames…" aria-label="Search usernames"><button type="submit">Search</button></form>
+      <div id="friendResults"></div>
+      <div class="friend-columns"><div><h3>Requests</h3><div id="friendRequests"></div></div><div><h3>Your Friends</h3><div id="friendList"></div></div></div>
+    </section>
+  </div>
+
+  <div id="friendProfile" hidden>
+    <section class="friend-viewing"><button id="friendBack" type="button">&larr; Back to Friends</button><div><p class="eyebrow">Friend profile</p><h2>Trainer <span id="friendProfileName"></span></h2><p>Read-only Hall of Fame and Shiny Dex</p></div></section>
+    <section class="panel"><div class="section-head"><div><p class="eyebrow">Achievements</p><h2 id="friendHallTitle">Hall of Fame</h2></div><div class="seg" id="friendHallTabs"><button class="on" data-mode="region">Region</button><button data-mode="gauntlet">Gauntlet</button></div></div><div id="friendBadges" class="badge-grid"></div><div id="friendHallTeams" class="hall-list" hidden></div></section>
+    <section class="panel"><div class="section-head"><div><p class="eyebrow">Collection</p><h2 id="friendDexTitle">Shiny Dex</h2></div><label>Sort<select id="friendShinySort"><option value="recent">Most recent</option><option value="dex">Dex number</option></select></label></div><div class="dex-progress"><b id="friendShinyCount">0 / 1025</b><span>base Pokémon</span><i><span id="friendShinyBar"></span></i><b id="friendFormCount">0 bonus forms</b></div><div id="friendShinyGrid" class="shiny-grid"></div><button id="friendShinyMore" class="shiny-more" hidden>See more&hellip;</button></section>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="stats-store.js?v=20260801-10"></script>
+<script src="friends.js?v=20260801-1"></script>
+<script src="trainer-menu.js?v=20260801-7"></script>
+</body>
+</html>

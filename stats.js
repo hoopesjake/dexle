@@ -12,11 +12,22 @@
     `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${shiny ? "shiny/" : ""}${id}.png`;
   const CANDY_ICON =
     "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/rare-candy.png";
+  const STARTER_SPECIES = new Set([
+    [1,9],[152,160],[252,260],[387,395],[495,503],
+    [650,658],[722,730],[810,818],[906,914],
+  ].flatMap(([first,last]) => Array.from({length:last-first+1},(_,i) => first+i)));
   const localSprite = (id, shiny) =>
     id === 10301 && !shiny ? "assets/megas/mega-zygarde.png" : sprite(id, shiny);
+  const savedSprite = mon => {
+    const custom = mon.shiny ? mon.shiny_sprite : mon.sprite;
+    return custom
+      ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${custom}`
+      : localSprite(mon.id, mon.shiny);
+  };
   let runs = [];
   let scope = "personal";
   let historyMode = "region";
+  let showStarters = false;
 
   function pokemonGeneration(mon) {
     if (mon.gen) return +mon.gen;
@@ -32,28 +43,30 @@
   }
 
   function monImg(mon) {
-    return `<img src="${localSprite(mon.id, mon.shiny)}" alt="${mon.name}" loading="lazy"
+    return `<img src="${savedSprite(mon)}" alt="${mon.name}" loading="lazy"
       onerror="this.onerror=null;this.src='${sprite(mon.base_id || mon.id, mon.shiny)}'">`;
   }
 
   function teamHtml(team) {
     return `<div class="team">${team.map(m => `
-      <span class="mon ${m.mega ? "mega" : ""} ${m.shiny ? "shiny" : ""} ${m.candy ? "candy" : ""}"
+      <span class="mon ${m.mega ? "mega" : ""} ${m.type_form ? "type-form" : ""} ${m.shiny ? "shiny" : ""} ${m.candy ? "candy" : ""}"
         title="${m.name}${m.mega ? " · Mega" : ""}${m.shiny ? " · Shiny" : ""}${m.candy ? " · Rare Candy" : ""}">
         ${monImg(m)}
         ${m.candy ? `<span class="candy-mark"><img src="${CANDY_ICON}" alt="Rare Candy"></span>` : ""}
         ${m.mega ? `<span class="mega-mark" aria-label="Mega Evolved">◈</span>` : ""}
+        ${m.type_form ? `<span class="type-form-mark" aria-label="Changed Type">◇</span>` : ""}
         ${m.shiny ? `<span class="shiny-mark" aria-label="Shiny">✦</span>` : ""}
       </span>`).join("")}</div>`;
   }
 
   function runCard(run) {
-    const title = run.mode === "gauntlet" ? "Nine-region Gauntlet" : REGIONS[run.region];
+    const title = run.mode === "gauntlet" ? "Gauntlet" : REGIONS[run.region];
     const date = new Date(run.created_at).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"});
-    return `<article class="run-card">
+    return `<article class="run-card ${run.wins === run.total ? "flawless" : ""}">
       <div class="run-top">
-        <span class="rankball" style="--tier:${TIER[run.tier]}"></span>
-        <div class="run-title"><b>${title}</b><small>${date} · ${run.tier === "oak" ? "Professor Oak" : run.tier + " ball"} tier</small></div>
+        <span class="rankball ${run.tier === "oak" ? "oak-disc" : ""}" style="--tier:${TIER[run.tier]}"></span>
+        <div class="run-title"><b>${title}</b><small>${date}</small></div>
+        <div class="team-metrics"><span>Stats <b>${Number(run.team_bst||0).toLocaleString()}</b></span><span>Coverage <b>${run.coverage??0}/18</b></span></div>
         <span class="record"><span class="wins">${run.wins}</span><i>&ndash;</i><span class="losses">${run.losses}</span></span>
       </div>
       ${teamHtml(run.team)}
@@ -68,11 +81,11 @@
     )[0] || null;
   }
 
-  function personalTop(mode, region, generation) {
-    const filtered = runs.filter(r =>
-      (!mode || r.mode === mode) && (!region || r.region === +region));
+  function personalTop(mode, generation) {
+    const filtered = runs.filter(r => !mode || r.mode === mode);
     const counts = new Map();
     filtered.forEach(r => r.team
+      .filter(m => STARTER_SPECIES.has(+(m.base_id || m.id)) === showStarters)
       .filter(m => !generation || pokemonGeneration(m) === +generation)
       .forEach(m => {
       const key = `${m.id}|${!!m.mega}`;
@@ -99,17 +112,14 @@
 
   async function refreshLeaderboard() {
     const mode = $("usageMode").value;
-    const region = $("usageRegion").value;
     const generation = $("usageGeneration").value;
-    $("usageRegionWrap").hidden = mode === "gauntlet";
-    if (mode === "gauntlet" && region) $("usageRegion").value = "";
     $("leaderboard").innerHTML = '<p class="empty">Loading rankings…</p>';
     if (scope === "personal") {
-      return drawLeaders(personalTop(mode, mode === "gauntlet" ? null : region, generation));
+      return drawLeaders(personalTop(mode, generation));
     }
     try {
       drawLeaders(await DexleStats.communityTop(
-        mode, mode === "gauntlet" ? null : (+region || null), +generation || null, 10
+        mode, +generation || null, showStarters, 10
       ));
     } catch (err) { showError(err); }
   }
@@ -136,15 +146,14 @@
       return '<p class="empty">The first qualifying team will claim this spot.</p>';
     }
     const title = run.mode === "gauntlet"
-      ? "Nine-region Gauntlet"
+      ? "Gauntlet"
       : `${REGIONS[run.region]} Region Challenge`;
     return `
-      <article class="community-best-card">
+      <article class="community-best-card ${run.wins === run.total ? "flawless" : ""}">
         <div class="community-best-meta">
-          <span class="rankball" style="--tier:${TIER[run.tier]}"></span>
-          <div class="run-title"><b>${title}</b><small>${run.username ? `@${run.username} · ` : ""}${run.tier === "oak" ? "Professor Oak" : run.tier + " ball"} tier</small></div>
-          <div class="best-metric"><span>Effective stats</span><b>${run.team_bst.toLocaleString()}</b></div>
-          <div class="best-metric"><span>Type coverage</span><b>${run.coverage}/18</b></div>
+          <span class="rankball ${run.tier === "oak" ? "oak-disc" : ""}" style="--tier:${TIER[run.tier]}"></span>
+          <div class="run-title"><b>${title}</b>${run.username ? `<small>@${run.username}</small>` : ""}</div>
+          <div class="team-metrics"><span>Stats <b>${run.team_bst.toLocaleString()}</b></span><span>Coverage <b>${run.coverage}/18</b></span></div>
           <span class="record"><span class="wins">${run.wins}</span><i>&ndash;</i><span class="losses">${run.losses}</span></span>
         </div>
         ${teamHtml(run.team)}
@@ -207,7 +216,22 @@
   }
 
   async function init() {
-    ["usageRegion","historyRegion","bestRegion","communityBestRegion"]
+    $("summary").after($("personalPanel"), $("usagePanel"), $("communityPanel"), $("historyPanel"));
+    const historyToggle = document.createElement("button");
+    historyToggle.className = "history-toggle";
+    historyToggle.type = "button";
+    historyToggle.setAttribute("aria-expanded", "false");
+    historyToggle.innerHTML = '<span>View teams</span><i aria-hidden="true">&#9662;</i>';
+    $("historyPanel").querySelector(".section-head").appendChild(historyToggle);
+    const historyParts = [$("historyTabs"), $("historyFilters"), $("history")];
+    historyParts.forEach(part => part.hidden = true);
+    historyToggle.onclick = () => {
+      const open = historyToggle.getAttribute("aria-expanded") !== "true";
+      historyToggle.setAttribute("aria-expanded", String(open));
+      historyToggle.querySelector("span").textContent = open ? "Close teams" : "View teams";
+      historyParts.forEach(part => part.hidden = !open);
+    };
+    ["historyRegion","bestRegion","communityBestRegion"]
       .forEach(id => $(id).innerHTML = regionOptions("All regions"));
     $("usageGeneration").innerHTML = '<option value="">All generations</option>' +
       Array.from({length:9},(_,i) => `<option value="${i+1}">Generation ${i+1}</option>`).join("");
@@ -248,8 +272,13 @@
     drawHistory();
   };
   $("usageMode").onchange = refreshLeaderboard;
-  $("usageRegion").onchange = refreshLeaderboard;
   $("usageGeneration").onchange = refreshLeaderboard;
+  $("usageStarterTabs").onclick = e => {
+    const b = e.target.closest("[data-starters]"); if (!b) return;
+    showStarters = b.dataset.starters === "true";
+    [...$("usageStarterTabs").children].forEach(x => x.classList.toggle("on", x === b));
+    refreshLeaderboard();
+  };
   $("historyRegion").onchange = drawHistory;
   $("bestRegion").onchange = drawBests;
   $("communityBestRegion").onchange = refreshCommunityBests;

@@ -4,14 +4,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dexle — Gotta Guess 'Em All!</title>
-  <link rel="stylesheet" href="dexle.css">
+  <link rel="stylesheet" href="dexle.css?v=20260801-10">
+  <link rel="stylesheet" href="trainer-menu.css?v=20260801-5">
 </head>
 <body>
 
 <div class="wrap">
 
   <header>
-    <div class="lamp"></div>
+    <a class="lamp home-lamp" href="index.html" aria-label="Dexle home" title="Dexle home"></a>
 
     <div class="titles">
       <h1>Dexle</h1>
@@ -34,7 +35,7 @@
   <section id="start" class="panel">
     <h2>Ready when you are</h2>
     <p>A random Pokémon is waiting. Every guess tells you what you got right.</p>
-    <button id="play" disabled>Start round</button>
+    <button id="play" disabled>Enter the Tall Grass</button>
   </section>
 
   <!-- the game itself, hidden until Start is clicked -->
@@ -93,11 +94,11 @@
       within 10% on height, weight or stats · within 15 of the Dex number
     </p>
 
-    <p class="key-tip">
+    <!-- <p class="key-tip">
       Want a smaller pool? Pick your generations in the
       <span class="bars-inline" aria-hidden="true"><i></i><i></i><i></i></span>
       menu at the top right, then hit <b>Enter the tall grass</b>.
-    </p>
+    </p> -->
   </fieldset>
 
 </div>
@@ -139,8 +140,7 @@
 
     <p class="poolcount"><span id="pooln">0</span> Pokémon in play</p>
 
-    <button id="grass">Enter the tall grass</button>
-    <button id="reset" class="ghost">Back to start screen</button>
+    <button id="grass">Confirm Regions</button>
 
     <p id="pending" class="drawer-note pending" hidden>
       Your current round is still using the generations it started with.
@@ -151,6 +151,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script src="stats-store.js?v=20260801-2"></script>
-<script src="game.js"></script>
+<script src="game.js?v=20260801-1"></script>
+<script src="trainer-menu.js?v=20260801-7"></script>
 </body>
 </html>

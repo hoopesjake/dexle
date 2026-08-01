@@ -4,26 +4,33 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dexle — Trainer Account</title>
-  <link rel="stylesheet" href="stats.css">
-  <link rel="stylesheet" href="account.css?v=20260801-4">
+  <link rel="stylesheet" href="stats.css?v=20260801-18">
+  <link rel="stylesheet" href="account.css?v=20260801-19">
+  <link rel="stylesheet" href="trainer-menu.css?v=20260801-5">
 </head>
 <body>
 <div class="wrap">
   <header>
-    <div class="lamp"></div>
+    <a class="lamp home-lamp" href="index.html" aria-label="Dexle home" title="Dexle home"></a>
     <div class="titles"><h1>Trainer Account</h1><p class="tag">Your identity, flawless runs, and Shiny Dex.</p></div>
     <nav class="hdr-btns">
       <a class="toggle" href="index.html">Home</a>
-      <a class="toggle" href="stats.html">Stats</a>
+      <a class="toggle" href="dexle.html">Dexle</a>
       <a class="toggle" href="gauntlet.html?mode=champion">Region</a>
       <a class="toggle" href="gauntlet.html?mode=gauntlet">Gauntlet</a>
     </nav>
   </header>
 
+  <div class="stats-view-toggle" aria-label="Choose statistics view">
+    <a href="stats.html">Team Stats</a>
+    <a href="dexle-stats.html">Dexle Progress</a>
+    <a class="on" href="account.html">Account</a>
+  </div>
+
   <!-- <div id="accountError" class="account-message error" hidden></div>
   <div id="accountMessage" class="account-message" hidden></div> -->
 
-  <section class="panel account-panel">
+  <section class="panel account-panel" id="accountPanel">
     <div id="signedOut">
       <p class="eyebrow">Trainer login</p>
       <h2 id="authTitle">Create your account</h2>
@@ -61,32 +68,52 @@
     </div>
   </section>
 
-  <section class="panel">
+  <section class="panel" id="hallPanel">
     <div class="section-head">
-      <div><p class="eyebrow">Community legends</p><h2>Hall of Fame</h2><p class="section-copy">Every flawless Region Champion and Gauntlet run.</p></div>
+      <div><p class="eyebrow">Personal achievements</p><h2 id="hallTitle">Your Hall of Fame</h2><p class="section-copy">Flawless Region Champion and Gauntlet runs.</p></div>
       <div class="seg" id="hallTabs">
         <button class="on" data-mode="region">Region</button>
         <button data-mode="gauntlet">Gauntlet</button>
       </div>
     </div>
-    <div class="filters" id="hallFilters"><label>Region<select id="hallRegion"></select></label></div>
-    <div id="hallList" class="hall-list"><p class="empty">Loading flawless runs…</p></div>
+    <div id="hallBadgeView"><div id="badgeGrid" class="badge-grid"><p class="empty">Loading badges…</p></div></div>
+    <div id="hallTeamsView" hidden>
+      <div class="hall-detail-head"><button id="hallBack" class="hall-back" aria-label="Back to badges">&larr;</button><h3 id="hallDetailTitle">Region teams</h3></div>
+      <div id="hallList" class="hall-list"></div>
+    </div>
   </section>
 
-  <section class="panel">
+  <section class="panel shiny-dex-panel" id="dexPanel">
+    <button id="shinyCharm" class="shiny-charm locked" type="button" aria-label="Shiny Charm locked. View requirements.">
+      <span class="charm-spark spark-a">&#10022;</span><span class="charm-spark spark-b">&#10022;</span>
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/shiny-charm.png" alt="Shiny Charm">
+      <span><b>Shiny Charm</b><small id="shinyCharmStatus">Locked</small></span>
+    </button>
     <div class="section-head">
-      <div><p class="eyebrow">Personal collection</p><h2>Shiny Dex</h2><p class="section-copy">A shiny unlocks when it appears on your completed final team. Mega shinies are collected separately.</p></div>
+      <div><p class="eyebrow">Personal collection</p><h2 id="dexTitle">Shiny Dex</h2><p class="section-copy">A shiny unlocks when it appears on a completed final team. Mega shinies are collected separately.</p></div>
       <label>Sort
         <select id="shinySort"><option value="recent">Most recent</option><option value="dex">Dex number</option></select>
       </label>
     </div>
     <div class="dex-progress"><b id="shinyCount">0 / 1025</b><span>base Pokémon</span><i><span id="shinyBar"></span></i><b id="formCount">0 bonus forms</b></div>
     <div id="shinyGrid" class="shiny-grid"><p class="empty">Loading your collection…</p></div>
+    <button id="shinyMore" class="shiny-more" type="button" hidden>See more&hellip;</button>
   </section>
+</div>
+<div id="charmModal" class="charm-modal" hidden>
+  <div class="charm-requirements" role="dialog" aria-modal="true" aria-labelledby="charmModalTitle">
+    <button id="charmModalClose" class="charm-modal-close" type="button" aria-label="Close">&times;</button>
+    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/shiny-charm.png" alt="Shiny Charm">
+    <p class="eyebrow">Special achievement</p>
+    <h2 id="charmModalTitle">Unlock the Shiny Charm</h2>
+    <p>Earn increased shiny odds by going flawless in every Region Challenge and completing the Gauntlet flawlessly at least once.</p>
+    <b>Reward: shiny odds increase from 5% to 10%.</b>
+  </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
-<script src="stats-store.js?v=20260801-4"></script>
-<script src="account.js?v=20260801-5"></script>
+<script src="stats-store.js?v=20260801-10"></script>
+<script src="account.js?v=20260801-22"></script>
+<script src="trainer-menu.js?v=20260801-7"></script>
 </body>
 </html>

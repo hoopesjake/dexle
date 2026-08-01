@@ -46,7 +46,7 @@
   function teamSnapshot(team) {
     return team.map(member => {
       const p = member.p;
-      const base = member.base || p;
+      const base = member.base || member.typeBase || p;
       return {
         id: p.id,
         base_id: p.baseId || base.id,
@@ -55,6 +55,10 @@
         gen: base.gen,
         mega: !!member.mega,
         mega_name: member.mega || null,
+        form_name: member.typeForm || member.mega || null,
+        type_form: !!member.typeForm,
+        sprite: p.sprite || null,
+        shiny_sprite: p.shinySprite || null,
         shiny: !!member.shiny,
         starter: !!member.starter,
         candy: !!member.candy,
@@ -94,12 +98,13 @@
     return data || [];
   }
 
-  async function communityTop(mode, region, generation, limit) {
+  async function communityTop(mode, generation, starters, limit) {
     await user();
     const { data, error } = await client.rpc("community_top_pokemon", {
       p_mode: mode || null,
-      p_region: region || null,
+      p_region: null,
       p_generation: generation || null,
+      p_starters: !!starters,
       p_limit: limit || 10,
     });
     if (error) throw error;
@@ -171,12 +176,23 @@
   }
 
   async function hallOfFame(mode, region) {
+    // Read through the runs table's RLS policy instead of a community RPC.
+    // Supabase therefore enforces user_id = auth.uid() before data reaches JS.
     await user();
-    const { data, error } = await client.rpc("community_hall_of_fame", {
-      p_mode: mode, p_region: region || null, p_limit: 100,
-    });
+    let query = client.from("runs").select("*")
+      .eq("mode", mode).order("created_at", { ascending:false }).limit(500);
+    if (region) query = query.eq("region", region);
+    const { data, error } = await query;
     if (error) throw error;
-    return data || [];
+    return (data || []).filter(run => run.wins === run.total);
+  }
+
+  async function shinyCharmUnlocked() {
+    const [regions, gauntlets] = await Promise.all([
+      hallOfFame("region", null), hallOfFame("gauntlet", null),
+    ]);
+    return new Set(regions.map(run => +run.region).filter(Boolean)).size === 9 &&
+      gauntlets.length > 0;
   }
 
   async function shinyDex() {
@@ -185,6 +201,61 @@
       .eq("user_id", current.id).order("base_id", { ascending:true });
     if (error) throw error;
     return data || [];
+  }
+
+  async function searchTrainers(query) {
+    const current = await user();
+    const clean = String(query || "").trim().replace(/[%_]/g, "");
+    if (clean.length < 2) return [];
+    const { data, error } = await client.from("profiles").select("user_id,username")
+      .ilike("username", `%${clean}%`).neq("user_id", current.id).limit(10);
+    if (error) throw error;
+    return data || [];
+  }
+
+  async function friendConnections() {
+    const current = await user();
+    const { data, error } = await client.from("friend_requests").select("*")
+      .order("updated_at", { ascending:false });
+    if (error) throw error;
+    const rows = data || [];
+    const ids = [...new Set(rows.flatMap(r => [r.requester_id,r.addressee_id]))]
+      .filter(id => id !== current.id);
+    let profiles = [];
+    if (ids.length) {
+      const result = await client.from("profiles").select("user_id,username").in("user_id",ids);
+      if (result.error) throw result.error;
+      profiles = result.data || [];
+    }
+    const names = new Map(profiles.map(p => [p.user_id,p.username]));
+    return rows.map(r => ({ ...r,
+      other_id:r.requester_id===current.id?r.addressee_id:r.requester_id,
+      username:names.get(r.requester_id===current.id?r.addressee_id:r.requester_id)||"Trainer",
+      incoming:r.addressee_id===current.id,
+    }));
+  }
+
+  async function sendFriendRequest(addresseeId) {
+    const current = await user();
+    const { error } = await client.from("friend_requests").insert({
+      requester_id:current.id, addressee_id:addresseeId,
+    });
+    if (error) throw error.code === "23505" ? new Error("A friend request already exists between you two.") : error;
+  }
+
+  async function acceptFriendRequest(id) {
+    const { error } = await client.rpc("accept_friend_request", {p_request_id:id});
+    if (error) throw error;
+  }
+  async function removeFriendConnection(id) {
+    const { error } = await client.from("friend_requests").delete().eq("id",id);
+    if (error) throw error;
+  }
+  async function friendProfile(userId) {
+    await user();
+    const { data, error } = await client.rpc("friend_profile", {p_user_id:userId});
+    if (error) throw error;
+    return data;
   }
 
   async function saveDexleGame(input) {
@@ -220,7 +291,14 @@
     signIn,
     signOut,
     hallOfFame,
+    shinyCharmUnlocked,
     shinyDex,
+    searchTrainers,
+    friendConnections,
+    sendFriendRequest,
+    acceptFriendRequest,
+    removeFriendConnection,
+    friendProfile,
     saveDexleGame,
     personalDexleSummary,
   };

@@ -74,11 +74,14 @@ create policy "Players can save their own runs"
 -- Community totals only. This function deliberately returns no user IDs,
 -- timestamps, records, or complete team combinations.
 drop function if exists public.community_top_pokemon(text, smallint, integer);
+drop function if exists public.community_top_pokemon(text, smallint, smallint, integer);
+drop function if exists public.community_top_pokemon(text, smallint, smallint, boolean, integer);
 
 create or replace function public.community_top_pokemon(
   p_mode text default null,
   p_region smallint default null,
   p_generation smallint default null,
+  p_starters boolean default false,
   p_limit integer default 10
 )
 returns table (
@@ -103,6 +106,19 @@ as $$
   cross join lateral jsonb_array_elements(r.team) member
   where (p_mode is null or r.mode = p_mode)
     and (p_region is null or r.region = p_region)
+    and (
+      coalesce((member->>'base_id')::integer, (member->>'id')::integer) = any(array[
+        1,2,3,4,5,6,7,8,9,
+        152,153,154,155,156,157,158,159,160,
+        252,253,254,255,256,257,258,259,260,
+        387,388,389,390,391,392,393,394,395,
+        495,496,497,498,499,500,501,502,503,
+        650,651,652,653,654,655,656,657,658,
+        722,723,724,725,726,727,728,729,730,
+        810,811,812,813,814,815,816,817,818,
+        906,907,908,909,910,911,912,913,914
+      ]::integer[])
+    ) = p_starters
     and (
       p_generation is null
       or p_generation = coalesce(
@@ -255,8 +271,8 @@ grant select, insert on table public.runs to authenticated;
 revoke all on table public.dexle_games from anon;
 grant select, insert on table public.dexle_games to authenticated;
 
-revoke execute on function public.community_top_pokemon(text, smallint, smallint, integer) from public, anon;
-grant execute on function public.community_top_pokemon(text, smallint, smallint, integer) to authenticated;
+revoke execute on function public.community_top_pokemon(text, smallint, smallint, boolean, integer) from public, anon;
+grant execute on function public.community_top_pokemon(text, smallint, smallint, boolean, integer) to authenticated;
 revoke execute on function public.community_summary() from public, anon;
 grant execute on function public.community_summary() to authenticated;
 revoke execute on function public.community_best_team(text, smallint) from public, anon;
@@ -396,7 +412,8 @@ as $$
     r.team_bst, r.coverage, coalesce(p.username, 'Trainer'), r.created_at
   from public.runs r
   left join public.profiles p on p.user_id = r.user_id
-  where r.wins = r.total and r.mode = p_mode
+  where r.user_id = auth.uid()
+    and r.wins = r.total and r.mode = p_mode
     and (p_region is null or r.region = p_region)
   order by r.created_at desc
   limit least(greatest(p_limit, 1), 250);
@@ -408,3 +425,65 @@ revoke all on table public.shiny_dex from anon;
 grant select on table public.shiny_dex to authenticated;
 revoke execute on function public.community_hall_of_fame(text, smallint, integer) from public, anon;
 grant execute on function public.community_hall_of_fame(text, smallint, integer) to authenticated;
+
+-- =========================================================
+-- Trainer friends and private friend profiles
+-- =========================================================
+create table if not exists public.friend_requests (
+  id uuid primary key default gen_random_uuid(),
+  requester_id uuid not null references auth.users(id) on delete cascade,
+  addressee_id uuid not null references auth.users(id) on delete cascade,
+  status text not null default 'pending' check (status in ('pending','accepted')),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  check (requester_id <> addressee_id)
+);
+create unique index if not exists friend_pair_unique_idx on public.friend_requests
+  (least(requester_id,addressee_id), greatest(requester_id,addressee_id));
+alter table public.friend_requests enable row level security;
+drop policy if exists "Friends can see their connections" on public.friend_requests;
+create policy "Friends can see their connections" on public.friend_requests for select to authenticated
+  using ((select auth.uid()) in (requester_id,addressee_id));
+drop policy if exists "Players can send friend requests" on public.friend_requests;
+create policy "Players can send friend requests" on public.friend_requests for insert to authenticated
+  with check ((select auth.uid())=requester_id and status='pending');
+drop policy if exists "Players can answer friend requests" on public.friend_requests;
+drop policy if exists "Players can remove friend connections" on public.friend_requests;
+create policy "Players can remove friend connections" on public.friend_requests for delete to authenticated
+  using ((select auth.uid()) in (requester_id,addressee_id));
+
+create or replace function public.friend_profile(p_user_id uuid)
+returns jsonb language plpgsql stable security definer set search_path=''
+as $$
+declare result jsonb;
+begin
+  if p_user_id=auth.uid() or not exists (
+    select 1 from public.friend_requests f where f.status='accepted'
+      and ((f.requester_id=auth.uid() and f.addressee_id=p_user_id)
+        or (f.addressee_id=auth.uid() and f.requester_id=p_user_id))
+  ) then raise exception 'You must be friends to view this Trainer profile.'; end if;
+  select jsonb_build_object(
+    'user_id',p_user_id,'username',p.username,
+    'hall',coalesce((select jsonb_agg(to_jsonb(r) order by r.created_at desc)
+      from public.runs r where r.user_id=p_user_id and r.wins=r.total),'[]'::jsonb),
+    'shinies',coalesce((select jsonb_agg(to_jsonb(s) order by s.last_seen_at desc)
+      from public.shiny_dex s where s.user_id=p_user_id),'[]'::jsonb)
+  ) into result from public.profiles p where p.user_id=p_user_id;
+  return result;
+end; $$;
+
+create or replace function public.accept_friend_request(p_request_id uuid)
+returns void language plpgsql security definer set search_path=''
+as $$ begin
+  update public.friend_requests set status='accepted',updated_at=now()
+  where id=p_request_id and addressee_id=auth.uid() and status='pending';
+  if not found then raise exception 'Friend request was not found.'; end if;
+end; $$;
+
+revoke all on table public.friend_requests from anon;
+revoke update on table public.friend_requests from authenticated;
+grant select,insert,delete on table public.friend_requests to authenticated;
+revoke execute on function public.friend_profile(uuid) from public,anon;
+grant execute on function public.friend_profile(uuid) to authenticated;
+revoke execute on function public.accept_friend_request(uuid) from public,anon;
+grant execute on function public.accept_friend_request(uuid) to authenticated;

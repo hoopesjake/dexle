@@ -55,6 +55,8 @@ button.ghost{ background:var(--panel-2); color:var(--ink); border:1px solid var(
 #start{ text-align:center; padding:46px 20px }
 #start h2{ margin:0; letter-spacing:.1em; text-transform:uppercase }
 #start p{ color:var(--ink-dim); max-width:52ch; margin:10px auto 24px }
+.dexle-generation-choice{display:flex!important;width:max-content;margin:0 auto 10px}
+#play{background:var(--hit)}
 
 /* ---------- toggles ---------- */
 .toggle{
@@ -469,3 +471,4 @@ button.ghost{ background:var(--panel-2); color:var(--ink); border:1px solid var(
   padding:9px 11px; border-radius:8px;
   background:rgba(232,195,61,.09); border:1px solid rgba(232,195,61,.35);
 }
+.home-lamp{display:block;cursor:pointer;text-decoration:none}

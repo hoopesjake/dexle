@@ -497,9 +497,7 @@ function drawGens() {
   const changed = live && (roundGens.size !== GENS.size
                            || [...GENS].some(g => !roundGens.has(g)));
   $("pending").hidden    = !changed;
-  $("grass").textContent = live && guesses.length
-    ? "Restart in these generations"
-    : "Enter the tall grass";
+  $("grass").textContent = "Confirm Regions";
 
   try { localStorage.setItem("dexle-gens", JSON.stringify([...GENS])); } catch (e) {}
 }
@@ -556,8 +554,7 @@ $("drawerclose").onclick = closeDrawer;
 $("scrim").onclick       = closeDrawer;
 $("genall").onclick  = () => { GENS = new Set([1,2,3,4,5,6,7,8,9]); drawGens(); };
 $("gennone").onclick = () => { GENS = new Set([1]); drawGens(); };
-$("grass").onclick   = () => { closeDrawer(); newRound(); };
-$("reset").onclick   = backToStart;
+$("grass").onclick   = closeDrawer;
 
 $("shiny").onclick = () => {
   SHINY = !SHINY;

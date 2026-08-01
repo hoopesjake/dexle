@@ -213,6 +213,7 @@ button:disabled{ opacity:.4; cursor:not-allowed; filter:none }
   display:flex; justify-content:flex-end; gap:8px; flex-wrap:wrap;
   margin:0 0 8px auto;
 }
+.home-lamp{display:block;cursor:pointer;text-decoration:none}
 .rr{
   background:#2B2447; border:1px solid #4B3F7A; color:#C9BEF5;
   width:auto; padding:8px 14px; font-size:11.5px; text-transform:none; letter-spacing:.02em;
@@ -508,7 +509,7 @@ button:disabled{ opacity:.4; cursor:not-allowed; filter:none }
   h1{ font-size:20px }
   header{ flex-wrap:wrap; align-items:center }
   .titles{ min-width:0; flex:1; margin-right:0 }
-  .hdr-btns{ width:100%; margin-left:0; display:grid; grid-template-columns:repeat(3,1fr) }
+  .hdr-btns{ width:auto; margin-left:auto; display:flex }
   .hdr-btns .toggle{ justify-content:center; min-width:0; padding:9px 5px; font-size:10px }
   .wrap{ padding-bottom:128px }
   .finalgrid{ gap:8px }
@@ -697,6 +698,7 @@ button:disabled{ opacity:.4; cursor:not-allowed; filter:none }
 
 .reg-body{ border-top:1px solid var(--line) }
 .reg-body[hidden]{ display:none }
+.region-battles{ background:#151C31; overflow:hidden }
 
 /* ---------- gauntlet battle rows: flex, so they can never squeeze ---------- */
 .gbtl{
@@ -947,10 +949,19 @@ button:disabled{ opacity:.4; cursor:not-allowed; filter:none }
 }
 /* Professor Oak gets its own treatment */
 .rankwrap.oak .rankball{
-  background:conic-gradient(from 210deg,#5FE3B0,#E8C33D,#E278CE,#5FA8F5,#5FE3B0);
-  animation:oakspin 6s linear infinite;
+  overflow:hidden; border:2px solid #45D8C8; background:#45D8C8;
+  box-shadow:0 0 0 2px #10162A,0 0 18px rgba(69,216,200,.65);
 }
-@keyframes oakspin{ to{ transform:rotate(360deg) } }
+.rankwrap.oak .rankball::before{
+  content:""; position:absolute; inset:34%; z-index:2; border-radius:50%;
+  background:#17232F; border:1px solid rgba(255,255,255,.7);
+}
+.rankwrap.oak .rankball::after{
+  content:""; position:absolute; top:-50%; left:-85%; width:42%; height:200%; margin:0;
+  border:0; border-radius:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,.85),transparent);
+  transform:rotate(24deg); animation:hm-glint 3.2s ease-in-out infinite;
+}
+@keyframes hm-glint{0%,62%{left:-85%}88%,100%{left:145%}}
 .rankwrap.oak{
   border-color:#5FE3B0;
   background:linear-gradient(100deg, rgba(95,227,176,.16), var(--panel-2));
@@ -1019,3 +1030,22 @@ button:disabled{ opacity:.4; cursor:not-allowed; filter:none }
   bottom:-3px; left:-3px; top:auto; right:auto;
   color:var(--gold); border-color:rgba(232,195,61,.6);
 }
+#scResult[data-tone="perfect"] .panel,
+#scGauntlet[data-tone="perfect"] .panel{
+  border-color:#5FE3D0;
+  box-shadow:0 0 0 1px rgba(95,227,208,.3),0 0 30px rgba(95,227,208,.2);
+}
+
+/* Free type forms: a white treatment distinguishes them from powered forms. */
+.selhint.type{color:#fff;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.55)}
+.type-form-btn{color:#fff;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.72);box-shadow:0 0 14px rgba(255,255,255,.12);display:inline-flex;align-items:center;gap:7px}
+.type-form-btn[hidden]{display:none}
+.type-form-btn:hover{background:rgba(255,255,255,.13);filter:none}
+.type-form-btn.armed{box-shadow:0 0 0 3px rgba(255,255,255,.2),0 0 22px rgba(255,255,255,.22)}
+.type-form-btn.done{background:rgba(255,255,255,.16)}
+.fin.pickable.typeform{border-color:#fff;box-shadow:0 0 0 1px #fff,0 0 20px rgba(255,255,255,.22)}
+.fin.typeon{border-color:rgba(255,255,255,.78);box-shadow:0 0 18px rgba(255,255,255,.16)}
+.badge.typeform{color:#fff;border:1px solid rgba(255,255,255,.75);background:transparent}
+.form-kind{display:block;color:var(--ink-dim);margin:-3px 0 7px;font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+.tb-slot.typeon{border-color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.45),0 0 14px rgba(255,255,255,.2)}
+.tb-flag.tb-type{top:-3px;left:-3px;bottom:auto;right:auto;color:#fff;background:#202433;border-color:#fff;font-size:12px}

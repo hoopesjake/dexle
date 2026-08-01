@@ -4,12 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dexle — Trainer Stats</title>
-  <link rel="stylesheet" href="stats.css">
+  <link rel="stylesheet" href="stats.css?v=20260801-18">
+  <link rel="stylesheet" href="trainer-menu.css?v=20260801-5">
 </head>
 <body>
 <div class="wrap">
   <header>
-    <div class="lamp"></div>
+    <a class="lamp home-lamp" href="index.html" aria-label="Dexle home" title="Dexle home"></a>
     <div class="titles">
       <h1>Trainer Stats</h1>
       <p class="tag">Keep track of your best performances!</p>
@@ -42,7 +43,7 @@
     <div><span>Community runs</span><b>—</b></div>
   </section>
 
-  <section class="panel">
+  <section class="panel" id="usagePanel">
     <div class="section-head">
       <div>
         <p class="eyebrow">Usage leaderboard</p>
@@ -61,8 +62,11 @@
           <option value="gauntlet">Gauntlet</option>
         </select>
       </label>
-      <label id="usageRegionWrap">Region challenge
-        <select id="usageRegion"></select>
+      <label>Team role
+        <span class="seg filter-seg" id="usageStarterTabs">
+          <button class="on" data-starters="false">Pok&eacute;mon</button>
+          <button data-starters="true">Starters</button>
+        </span>
       </label>
       <label>Pokémon generation
         <select id="usageGeneration"></select>
@@ -73,7 +77,7 @@
     </div>
   </section>
 
-  <section class="panel">
+  <section class="panel" id="historyPanel">
     <div class="section-head">
       <div>
         <p class="eyebrow">Recent history</p>
@@ -92,7 +96,7 @@
     <div class="run-list" id="history"></div>
   </section>
 
-  <section class="panel">
+  <section class="panel" id="personalPanel">
     <div class="section-head">
       <div>
         <p class="eyebrow">Personal bests</p>
@@ -119,7 +123,7 @@
     </div>
   </section>
 
-  <section class="panel community-best">
+  <section class="panel community-best" id="communityPanel">
     <div class="section-head">
       <div>
         <p class="eyebrow">Community record</p>
@@ -150,7 +154,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
-<script src="stats-store.js?v=20260801-2"></script>
-<script src="stats.js"></script>
+<script src="stats-store.js?v=20260801-3"></script>
+<script src="stats.js?v=20260801-21"></script>
+<script src="trainer-menu.js?v=20260801-7"></script>
 </body>
 </html>
