@@ -655,7 +655,7 @@ function setSelMode(mode) {
   $("selHint").className = "selhint" + (mode ? " " + mode : "");
   $("selHint").textContent =
     mode === "mega"  ? "Select one Pokémon to Mega Evolve or power-change its form."
-  : mode === "type"  ? "Select a Pokémon to change its type. This does not use your power transformation."
+  : mode === "type"  ? "Select a Pokémon to change its type or equipped Drive. This does not use your power transformation."
   : mode === "candy" ? `Select one Pokémon to feed the Rare Candy — ` +
                        `+${Math.round((CANDY_BOOST - 1) * 100)}% to every stat. ` +
                        `Not your starter, a legendary, or the Mega.`
@@ -738,9 +738,10 @@ function pickForSelection(slot) {
 function openMegaChooser(slot, forms, mode) {
   const before = originalPokemon(team[slot]);
   const isType = mode === "type";
-  $("formModalTitle").textContent = isType ? "Choose a Type Form" : "Choose a Power Form";
+  const isDrive = isType && forms.every(f => f.drive);
+  $("formModalTitle").textContent = isDrive ? "Choose a Drive" : isType ? "Choose a Type Form" : "Choose a Power Form";
   $("megaBody").innerHTML = `
-    <p class="mega-lead">${before.name} has ${forms.length} ${isType ? "type choices. These are free and do not change its stats." : "powered forms. One powered form may be active per team."}</p>
+    <p class="mega-lead">${before.name} has ${forms.length} ${isDrive ? "Drive choices. These are free and only change Techno Blast's offensive type." : isType ? "type choices. These are free and do not change its stats." : "powered forms. One powered form may be active per team."}</p>
     <div class="megaopts">
       ${isType && team[slot].typeForm ? `<button class="megaopt" data-original="1">
         ${spriteImg(before, team[slot].shiny)}<b>Original ${before.name}</b>
@@ -752,6 +753,7 @@ function openMegaChooser(slot, forms, mode) {
           <b>${f.name}</b>
           <small class="form-kind">${f.kind}</small>
           <div>${[f.t1, f.t2].filter(Boolean).map(chip).join(" ")}</div>
+          ${f.attackType ? `<div class="drive-attack">Techno Blast: ${chip(f.attackType)}</div>` : ""}
           <div class="mo-bst">${isType ? `${sumStats(f.s)} total stats` : `${sumStats(before.s)} → <i>${sumStats(f.s)}</i>`}</div>
           ${isType ? "" : `<div class="mo-diff">${statDiff(before.s, f.s)}</div>`}
         </button>`).join("")}
@@ -808,6 +810,8 @@ function renderDone() {
   const canUse = !locked && (MODE === "gauntlet" || challenge.mode === "single");
   const elig   = megaEligible();
   const typeElig = typeEligible();
+  const hasDrive = typeElig.some(m => typeFormsFor(originalPokemon(m)).some(f => f.drive));
+  const hasTypeForm = typeElig.some(m => typeFormsFor(originalPokemon(m)).some(f => !f.drive));
   $("megaBtn").hidden  = !canUse;
   $("typeBtn").hidden  = !canUse || !typeElig.length;
   $("candyBtn").hidden = !canUse;
@@ -819,6 +823,7 @@ function renderDone() {
     ? `<span class="mb-gem">\u25c8</span> ${team[megaIdx].mega}`
     : `<span class="mb-gem">\u25c8</span> Mega / Form`;
   $("typeBtn").title = `${typeElig.length} of your team can change type for free`;
+  $("typeBtn").innerHTML = `<span>◇</span> ${hasDrive && !hasTypeForm ? "Change Drive" : hasDrive ? "Type / Drive" : "Change Type"}`;
   const fed  = team.find(m => m.candy);
   const cOk  = candyEligible();
   $("candyBtn").disabled = !cOk.length;
@@ -859,7 +864,7 @@ function renderDone() {
         <div class="fin-bst">${t}${m.starter ? " (bonded)" : m.candy ? " (candied)" : ""}</div>
         <div class="fin-badges">
           ${m.mega   ? '<span class="badge mega">Mega Evolved</span>' : ""}
-          ${m.typeForm ? '<span class="badge typeform">Change Type</span>' : ""}
+          ${m.typeForm ? `<span class="badge typeform">${m.p.driveName || "Change Type"}</span>` : ""}
           ${m.candy  ? `<span class="badge candy"><img src="${CANDY_ICON}" alt="">Rare Candy +${Math.round((CANDY_BOOST-1)*100)}%</span>` : ""}
         </div>
       </div>`;
@@ -1118,7 +1123,7 @@ function coverage() {
   const hit = new Set();
   const TYPES18 = Object.keys(TYPE_CHART);
   team.forEach(m => {
-    [m.p.t1, m.p.t2].filter(Boolean).forEach(t => {
+    [m.p.t1, m.p.t2, m.p.attackType].filter(Boolean).forEach(t => {
       TYPES18.forEach(d => { if ((TYPE_CHART[t] || {})[d] === 2) hit.add(d); });
     });
   });

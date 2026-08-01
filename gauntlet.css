@@ -1048,5 +1048,6 @@ button:disabled{ opacity:.4; cursor:not-allowed; filter:none }
 .fin.typeon{border-color:rgba(255,255,255,.78);box-shadow:0 0 18px rgba(255,255,255,.16)}
 .badge.typeform{color:#fff;border:1px solid rgba(255,255,255,.75);background:transparent}
 .form-kind{display:block;color:var(--ink-dim);margin:-3px 0 7px;font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+.drive-attack{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:8px;color:var(--ink-dim);font-size:10px}
 .tb-slot.typeon{border-color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.45),0 0 14px rgba(255,255,255,.2)}
 .tb-flag.tb-type{top:-3px;left:-3px;bottom:auto;right:auto;color:#fff;background:#202433;border-color:#fff;font-size:12px}

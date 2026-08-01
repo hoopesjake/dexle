@@ -228,9 +228,11 @@ function typeMult(atk, defTypes) {
   return defTypes.reduce((m, d) => m * (d && row[d] !== undefined ? row[d] : 1), 1);
 }
 
-// best multiplier this attacker can manage, using its own types as its moves
+// best multiplier this attacker can manage, using its own types as its moves.
+// attackType is an extra offensive-only option (currently Genesect's Drive);
+// it never changes the Pokemon's defensive typing.
 function bestMult(mon, target) {
-  const mine  = [mon.t1, mon.t2].filter(Boolean);
+  const mine  = [mon.t1, mon.t2, mon.attackType].filter(Boolean);
   const theirs = [target.t1, target.t2].filter(Boolean);
   return Math.max(...mine.map(t => typeMult(t, theirs)));
 }
@@ -245,7 +247,8 @@ function fighter(mon, lvl, stats, power, minMult) {
   const k = power || 1;
   const s = (stats || mon.s).map(v => v * k);
   return {
-    name: mon.name, id: mon.id, t1: mon.t1, t2: mon.t2, lvl,
+    name: mon.name, id: mon.id, t1: mon.t1, t2: mon.t2,
+    attackType: mon.attackType || null, lvl,
     minMult: minMult || 0,
     hp:  hpAt(s[0], lvl), max: hpAt(s[0], lvl),
     atk: statAt(s[1], lvl), def: statAt(s[2], lvl),

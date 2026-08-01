@@ -38,5 +38,15 @@ foreach ($entry in @(@(493,'Arceus'),@(773,'Silvally'))) {
   foreach ($type in $allTypes) { if ($type -ne $types[$species][1]) { $list += [ordered]@{id=$species;name="$name ($((Get-Culture).TextInfo.ToTitleCase($type)))";t1=$type;t2=$null;s=$stats[$species];cost='free';kind='Change Type';sprite="$species-$type.png";shinySprite="shiny/$species-$type.png"} } }
   $forms[[string]$species]=$list
 }
+# Genesect's Drives do not alter its stats or Bug/Steel defensive typing.
+# They only give Techno Blast an additional offensive attack type.
+$genesectDrives = @(
+  @('douse','Douse','water'), @('shock','Shock','electric'),
+  @('burn','Burn','fire'), @('chill','Chill','ice')
+)
+$forms['649'] = @($genesectDrives | ForEach-Object {
+  $slug=$_[0]; $label=$_[1]; $attack=$_[2]
+  [ordered]@{id=649;name="Genesect $label Drive";t1='bug';t2='steel';s=$stats[649];cost='free';kind='Change Drive';drive=$true;driveName="$label Drive";attackType=$attack;sprite="other/home/649-$slug.png";shinySprite="other/home/shiny/649-$slug.png"}
+})
 $forms | ConvertTo-Json -Depth 8 -Compress | Set-Content -LiteralPath forms.json -Encoding utf8
 Write-Output "Wrote forms.json: $($forms.Count) Pokemon"

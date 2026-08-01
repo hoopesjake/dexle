@@ -58,6 +58,16 @@ for species, name in ((493, "Arceus"), (773, "Silvally")):
         for t in all_types if t != ptypes[species].get(1)
     ]
 
+forms["649"] = [
+    {"id": 649, "name": f"Genesect {label} Drive", "t1": "bug", "t2": "steel",
+     "s": stats[649], "cost": "free", "kind": "Change Drive", "drive": True,
+     "driveName": f"{label} Drive", "attackType": attack,
+     "sprite": f"other/home/649-{slug}.png",
+     "shinySprite": f"other/home/shiny/649-{slug}.png"}
+    for slug, label, attack in (("douse","Douse","water"), ("shock","Shock","electric"),
+                                ("burn","Burn","fire"), ("chill","Chill","ice"))
+]
+
 with open("forms.json", "w", encoding="utf-8") as f:
     json.dump(forms, f, ensure_ascii=False, separators=(",", ":"))
 print(f"Wrote forms.json: {len(forms)} Pokemon, {sum(map(len, forms.values()))} meaningful forms")
