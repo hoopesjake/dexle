@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dexle — Trainer Stats</title>
+  <link rel="stylesheet" href="stats.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="lamp"></div>
+    <div class="titles">
+      <h1>Trainer Stats</h1>
+      <p class="tag">Keep track of your best performances!</p>
+    </div>
+    <nav class="hdr-btns">
+      <a class="toggle" href="index.html">Home</a>
+      <a class="toggle" href="dexle.html">Dexle</a>
+      <a class="toggle" href="gauntlet.html?mode=champion">Region</a>
+      <a class="toggle" href="gauntlet.html?mode=gauntlet">Gauntlet</a>
+    </nav>
+  </header>
+
+  <div class="stats-view-toggle" aria-label="Choose statistics view">
+    <a class="on" href="stats.html">Team Stats</a>
+    <a href="dexle-stats.html">Dexle Progress</a>
+  </div>
+
+  <!-- <div id="setup" class="notice" hidden>
+    <b>Stats storage needs its final connection.</b>
+    <span>Add your Supabase Project URL and publishable key to
+      <code>supabase-config.js</code>. The included setup guide has the exact steps.</span>
+  </div>
+  <div id="error" class="notice error" hidden></div> -->
+
+  <section class="summary" id="summary">
+    <div><span>Your runs</span><b>—</b></div>
+    <div><span>Perfect runs</span><b>—</b></div>
+    <div><span>Favorite region</span><b>—</b></div>
+    <div><span>Community runs</span><b>—</b></div>
+  </section>
+
+  <section class="panel">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Usage leaderboard</p>
+        <h2>Most-used Pokémon</h2>
+      </div>
+      <div class="seg" id="scopeTabs">
+        <button class="on" data-scope="personal">Personal</button>
+        <button data-scope="community">Community</button>
+      </div>
+    </div>
+    <div class="filters">
+      <label>Run type
+        <select id="usageMode">
+          <option value="">All runs</option>
+          <option value="region">Region Champion</option>
+          <option value="gauntlet">Gauntlet</option>
+        </select>
+      </label>
+      <label id="usageRegionWrap">Region challenge
+        <select id="usageRegion"></select>
+      </label>
+      <label>Pokémon generation
+        <select id="usageGeneration"></select>
+      </label>
+    </div>
+    <div class="leaderboard" id="leaderboard">
+      <p class="empty">Loading rankings…</p>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Recent history</p>
+        <h2>Your last five teams</h2>
+      </div>
+      <div class="seg" id="historyTabs">
+        <button class="on" data-mode="region">Region</button>
+        <button data-mode="gauntlet">Gauntlet</button>
+      </div>
+    </div>
+    <div class="filters" id="historyFilters">
+      <label>Region
+        <select id="historyRegion"></select>
+      </label>
+    </div>
+    <div class="run-list" id="history"></div>
+  </section>
+
+  <section class="panel">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Personal bests</p>
+        <h2>Your strongest teams</h2>
+      </div>
+    </div>
+    <div class="best-grid">
+      <div>
+        <div class="best-title-row">
+          <h3>Best Region team</h3>
+          <label>Region
+            <select id="bestRegion"></select>
+          </label>
+        </div>
+        <div id="bestRegionCard"></div>
+      </div>
+      <div>
+        <div class="best-title-row">
+          <h3>Best Gauntlet team</h3>
+          <span class="filter-spacer" aria-hidden="true"></span>
+        </div>
+        <div id="bestGauntletCard"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel community-best">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Community record</p>
+        <h2>Best teams of all time</h2>
+        <p class="section-copy">The highest effective team totals submitted by any player.</p>
+      </div>
+    </div>
+    <div class="best-grid">
+      <div>
+        <div class="best-title-row">
+          <h3>Best Region Champion team</h3>
+          <label>Region
+            <select id="communityBestRegion"></select>
+          </label>
+        </div>
+        <div id="communityBestRegionCard"></div>
+      </div>
+      <div>
+        <div class="best-title-row">
+          <h3>Best Gauntlet team</h3>
+          <span class="filter-spacer" aria-hidden="true"></span>
+        </div>
+        <div id="communityBestGauntletCard"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="stats-store.js"></script>
+<script src="stats.js"></script>
+</body>
+</html>

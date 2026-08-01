@@ -1,0 +1,120 @@
+/* =========================================================
+   Dexle hub - landing page
+   ========================================================= */
+
+:root{
+  --ground:#141A2E; --panel:#1D2540; --panel-2:#273052; --line:#33406B;
+  --ink:#EEF2FF; --ink-dim:#93A0C8;
+  --lamp:#E0483C; --hit:#3E9D5B; --violet:#7A66C4; --gold:#E8C33D;
+}
+*{ box-sizing:border-box }
+
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:'Segoe UI', system-ui, sans-serif; font-size:15px; line-height:1.5;
+  background-image:radial-gradient(900px 520px at 50% -8%, #1E2745 0%, transparent 70%);
+}
+.wrap{ max-width:1080px; margin:0 auto; padding:34px 18px 60px }
+
+/* ---------- header ---------- */
+header{ display:flex; align-items:center; gap:14px; margin-bottom:34px }
+.stats-link{
+  margin-left:auto; padding:9px 14px; border:1px solid var(--line);
+  border-radius:8px; background:var(--panel-2); color:var(--ink-dim);
+  text-decoration:none; font-size:12px; font-weight:700;
+  letter-spacing:.06em; text-transform:uppercase;
+}
+.stats-link:hover{ filter:brightness(1.12) }
+.lamp{
+  width:38px; height:38px; border-radius:50%; flex:none; background:var(--lamp);
+  box-shadow:0 0 0 4px #2A3252, 0 0 24px rgba(224,72,60,.55); position:relative;
+}
+.lamp::after{
+  content:""; position:absolute; top:7px; left:8px; width:12px; height:9px;
+  border-radius:50%; background:rgba(255,255,255,.6); filter:blur(1px);
+}
+h1{ margin:0; font-size:30px; letter-spacing:.16em; text-transform:uppercase }
+.tag{ color:var(--ink-dim); font-size:13.5px; margin:0 }
+
+/* ---------- mode cards ---------- */
+.menu{
+  display:grid; gap:16px;
+  grid-template-columns:repeat(auto-fit, minmax(290px, 1fr));
+}
+
+.mode{
+  display:flex; flex-direction:column;
+  background:var(--panel); border:1px solid var(--line); border-radius:14px;
+  padding:22px; text-decoration:none; color:inherit; position:relative;
+  overflow:hidden; transition:transform .16s ease, border-color .16s ease;
+}
+.mode::before{
+  content:""; position:absolute; inset:0 0 auto 0; height:3px;
+  background:var(--accent);
+}
+.mode::after{
+  content:""; position:absolute; top:-70px; right:-70px;
+  width:190px; height:190px; border-radius:50%;
+  background:var(--accent); opacity:.09; pointer-events:none;
+}
+.mode:hover{ transform:translateY(-4px); border-color:var(--accent) }
+
+.mode.guess{ --accent:var(--lamp) }
+.mode.champ{ --accent:var(--hit) }
+.mode.gaunt{ --accent:var(--violet) }
+
+.mode-top{
+  display:flex; align-items:center; gap:12px; margin-bottom:16px;
+}
+.mode-tag{
+  font-size:9.5px; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--accent); border:1px solid var(--accent); border-radius:999px;
+  padding:4px 11px; opacity:.9;
+}
+.mode-go{
+  margin-left:auto; font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+  font-weight:700; color:var(--ink-dim); transition:color .16s;
+}
+.mode:hover .mode-go{ color:var(--accent) }
+
+.mode h2{
+  margin:0; font-size:26px; letter-spacing:.06em;
+}
+.mode-name{
+  margin:2px 0 14px; font-size:13px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--accent); font-weight:700;
+}
+.mode-desc{
+  margin:0; color:var(--ink-dim); font-size:13.5px; line-height:1.75; flex:1;
+}
+
+.mode-facts{
+  list-style:none; margin:18px 0 0; padding:16px 0 0;
+  border-top:1px solid var(--line);
+  display:flex; flex-wrap:wrap; gap:7px;
+}
+.mode-facts li{
+  font-size:11px; letter-spacing:.05em; color:var(--ink-dim);
+  background:var(--panel-2); border-radius:999px; padding:5px 11px;
+}
+
+/* ---------- footer ---------- */
+.foot{
+  margin:44px 0 0; text-align:center;
+  color:var(--ink-dim); font-size:11.5px; opacity:.75;
+}
+
+/* ---------- responsive ---------- */
+@media (max-width:560px){
+  .wrap{ padding-top:26px; overflow-x:hidden }
+  header{ flex-wrap:wrap }
+  .titles{ min-width:0; flex:1 }
+  .stats-link{ width:calc(100% - 52px); margin-left:52px; text-align:center }
+  h1{ font-size:24px }
+  .mode h2{ font-size:22px }
+  .mode{ padding:18px }
+}
+@media (prefers-reduced-motion:reduce){
+  *{ transition:none !important }
+  .mode:hover{ transform:none }
+}
