@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dexle — Trainer Account</title>
   <link rel="stylesheet" href="stats.css">
-  <link rel="stylesheet" href="account.css">
+  <link rel="stylesheet" href="account.css?v=20260801-4">
 </head>
 <body>
 <div class="wrap">
@@ -46,10 +46,17 @@
       </form>
     </div>
     <div id="signedIn" hidden>
-      <p class="eyebrow">Signed in</p>
-      <div class="profile-row">
-        <div><h2 id="profileName">Trainer</h2><p id="profileEmail" class="section-copy"></p></div>
-        <button id="signOut" class="secondary">Sign out</button>
+      <div class="welcome-card">
+        <span class="welcome-spark spark-one">&#10022;</span>
+        <span class="welcome-spark spark-two">&#9672;</span>
+        <p class="eyebrow">Trainer account active</p>
+        <div class="profile-row">
+          <div>
+            <h2>Welcome, Trainer <span id="profileName">Trainer</span>!</h2>
+            <p id="profileEmail" class="section-copy"></p>
+          </div>
+          <button id="signOut" class="logout-btn">Log Out</button>
+        </div>
       </div>
     </div>
   </section>
@@ -70,7 +77,7 @@
     <div class="section-head">
       <div><p class="eyebrow">Personal collection</p><h2>Shiny Dex</h2><p class="section-copy">A shiny unlocks when it appears on your completed final team. Mega shinies are collected separately.</p></div>
       <label>Sort
-        <select id="shinySort"><option value="dex">Dex number</option><option value="recent">Most recent</option></select>
+        <select id="shinySort"><option value="recent">Most recent</option><option value="dex">Dex number</option></select>
       </label>
     </div>
     <div class="dex-progress"><b id="shinyCount">0 / 1025</b><span>base Pokémon</span><i><span id="shinyBar"></span></i><b id="formCount">0 bonus forms</b></div>
@@ -79,7 +86,7 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
-<script src="stats-store.js"></script>
-<script src="account.js"></script>
+<script src="stats-store.js?v=20260801-4"></script>
+<script src="account.js?v=20260801-5"></script>
 </body>
 </html>

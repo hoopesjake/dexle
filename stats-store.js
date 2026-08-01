@@ -127,17 +127,25 @@
     const current = await user();
     const { data: profile } = await client.from("profiles")
       .select("username").eq("user_id", current.id).maybeSingle();
-    return { user: current, profile, anonymous: !!current.is_anonymous };
+    // An upgraded anonymous user can briefly retain stale anonymous metadata
+    // while its new email session settles. An email or profile means account.
+    return {
+      user: current,
+      profile,
+      anonymous: !current.email && !profile?.username,
+    };
   }
 
   async function createAccount(email, password, username) {
     const current = await user();
     if (!current.is_anonymous) throw new Error("This device is already signed in.");
     const clean = String(username || "").trim();
+    // Keep the /dexle/ project path when GitHub Pages handles confirmation.
+    const emailRedirectTo = new URL("account.html", window.location.href).href;
     const { data, error } = await client.auth.updateUser({
       email: String(email || "").trim(), password,
       data: { username: clean },
-    });
+    }, { emailRedirectTo });
     if (error) throw error;
     const id = data.user?.id || current.id;
     const { error: profileError } = await client.from("profiles")

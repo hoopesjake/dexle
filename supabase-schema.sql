@@ -344,6 +344,7 @@ begin
         last_seen_at = greatest(public.shiny_dex.last_seen_at, excluded.last_seen_at),
         times_seen = public.shiny_dex.times_seen + 1,
         pokemon_name = excluded.pokemon_name;
+
     end if;
   end loop;
   return new;
@@ -374,6 +375,10 @@ from public.runs r cross join lateral jsonb_array_elements(r.team) m
 where coalesce((m->>'shiny')::boolean, false)
 group by 1,2,3,4,5,6
 on conflict (user_id, form_key) do nothing;
+
+-- Remove any placeholder evolution-line entries made by the short-lived
+-- three-stage starter experiment. Genuine catches have their real names.
+delete from public.shiny_dex where pokemon_name like 'Starter #%';
 
 create or replace function public.community_hall_of_fame(
   p_mode text,
