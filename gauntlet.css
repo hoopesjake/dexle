@@ -313,6 +313,70 @@ button:disabled{ opacity:.4; cursor:not-allowed; filter:none }
 }
 .shiny-tag{ color:var(--gold); font-size:12px; margin-left:5px }
 
+/* ---------- draft pick preview ---------- */
+#pickModal{
+  position:fixed; inset:0; z-index:74; display:flex;
+  align-items:center; justify-content:center; padding:20px;
+  background:rgba(8,11,22,.82); backdrop-filter:blur(3px);
+  animation:fade .18s ease both;
+}
+#pickModal[hidden]{ display:none }
+.pickcard{
+  position:relative; width:min(430px,100%); max-height:90vh; overflow:auto;
+  padding:24px; background:var(--panel); border:1px solid var(--line);
+  border-radius:16px; box-shadow:0 30px 70px rgba(0,0,0,.62);
+  animation:rise .24s cubic-bezier(.2,.9,.3,1.2) both;
+}
+.pick-close{
+  position:absolute; top:12px; right:12px; z-index:2;
+  width:34px; height:34px; min-width:34px; padding:0; border-radius:50%;
+  background:#2B2447; border:1px solid #4B3F7A; color:#C9BEF5;
+  font-size:22px; line-height:1;
+}
+.pick-identity{ text-align:center }
+.pick-sprite{
+  display:block; width:180px; height:180px; margin:0 auto 2px;
+  object-fit:contain; image-rendering:pixelated;
+}
+.pick-identity h2{ margin:4px 0 9px; font-size:24px }
+.pick-types{ display:flex; justify-content:center; gap:5px }
+.pick-shiny{
+  display:inline-block; margin-left:8px; color:var(--gold);
+  font-size:11px; letter-spacing:.08em; text-transform:uppercase; vertical-align:middle;
+}
+.pick-mega-gem{
+  display:inline-block; margin-left:8px; color:#E278CE;
+  font-size:17px; line-height:1; vertical-align:middle;
+  filter:drop-shadow(0 0 5px rgba(226,120,206,.45));
+}
+.pick-stats{
+  display:grid; grid-template-columns:repeat(2,1fr); gap:8px;
+  margin:20px 0 10px;
+}
+.pick-stat{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 12px; border-radius:9px; background:var(--panel-2);
+  border:1px solid var(--line);
+}
+.pick-stat span,
+.pick-total span{ color:var(--ink-dim); font-size:10px; letter-spacing:.1em; text-transform:uppercase }
+.pick-stat b,
+.pick-total b{ font-family:ui-monospace,Consolas,monospace; font-size:17px }
+.pick-total{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:12px 14px; border-radius:9px; background:#101728; border:1px solid var(--line);
+}
+.pick-total b{ color:var(--gold); font-size:21px }
+.confirm-pick{ width:100%; margin-top:16px }
+
+@media (max-width:560px){
+  #pickModal{ padding:12px }
+  .pickcard{ padding:18px }
+  .pick-sprite{ width:145px; height:145px }
+  .pick-identity h2{ font-size:21px }
+  .pick-stats{ margin-top:15px }
+}
+
 /* ---------- evolution line (starter cards only) ---------- */
 .evoline{
   display:flex; flex-direction:row; align-items:center; justify-content:center;

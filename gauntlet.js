@@ -492,21 +492,45 @@ function renderResults(list) {
   }).join("");
 
   $("reslist").querySelectorAll("[data-id]").forEach(b => {
-    b.onclick = () => {
-      const picked = byId[+b.dataset.id];
-      const wasShiny = spin.shiny;
-      addToTeam(picked, wasShiny, false);
-      if (team.length >= 6) return finish();
-
-      // Preserve the result list and its height so the viewport never jumps.
-      startBallPhase(true);
-      $("resCount").textContent = `${picked.name} joined your team Â· Slot ${team.length + 1} is ready`;
-      $("reslist").querySelectorAll("[data-id]").forEach(row => {
-        row.disabled = true;
-        row.classList.add("picked-lock");
-      });
-    };
+    b.onclick = () => openPickPreview(byId[+b.dataset.id]);
   });
+}
+
+function closePickPreview() {
+  $("pickModal").hidden = true;
+  $("pickBody").innerHTML = "";
+}
+
+function openPickPreview(p) {
+  const shiny = !!spin.shiny;
+  const canMega = !!megaFormsFor(p);
+  $("pickBody").innerHTML = `
+    <div class="pick-identity">
+      ${spriteImg(p, shiny, "pick-sprite")}
+      <span class="rr-id">#${String(p.id).padStart(4,"0")}</span>
+      <h2 id="pickName">${p.name}${shiny ? '<span class="pick-shiny">&#10022; Shiny</span>' : ""}${canMega ? '<span class="pick-mega-gem" title="Mega Evolvable" aria-label="Mega Evolvable">&#9672;</span>' : ""}</h2>
+      <div class="pick-types">${[p.t1,p.t2].filter(Boolean).map(chip).join("")}</div>
+    </div>
+    <div class="pick-stats">
+      ${p.s.map((v,i) => `<div class="pick-stat"><span>${STAT_NAMES[i]}</span><b>${v}</b></div>`).join("")}
+    </div>
+    <div class="pick-total"><span>Total stats</span><b>${bst(p)}</b></div>
+    <button id="confirmPick" class="confirm-pick">Add to Team</button>`;
+
+  $("pickModal").hidden = false;
+  $("confirmPick").onclick = () => {
+    // Hold the card's height so closing the results cannot jerk the viewport.
+    const panel = $("scBall").querySelector(".panel");
+    panel.style.minHeight = Math.max(panel.offsetHeight,
+      parseFloat(panel.style.minHeight) || 0) + "px";
+    addToTeam(p, shiny, false);
+    closePickPreview();
+    $("results").hidden = true;
+    $("reslist").innerHTML = "";
+    removeShinyNote();
+    if (team.length >= 6) return finish();
+    startBallPhase(false);
+  };
 }
 
 /* ---------- rerolls ---------- */
@@ -1051,6 +1075,7 @@ function startOver() {
   megaIdx      = -1;
   $("selHint").hidden  = true;
   $("megaModal").hidden = true;
+  closePickPreview();
   removeShinyNote();
   drawTeamBar();
 
@@ -1135,6 +1160,8 @@ $("megaBtn").onclick     = () => {
   setSelMode("mega");
 };
 $("candyBtn").onclick    = () => setSelMode(selMode === "candy" ? null : "candy");
+$("pickClose").onclick   = closePickPreview;
+$("pickModal").onclick   = e => { if (e.target.id === "pickModal") closePickPreview(); };
 $("megaClose").onclick   = () => { $("megaModal").hidden = true; setSelMode(null); };
 $("megaModal").onclick   = e => {
   if (e.target.id === "megaModal") { $("megaModal").hidden = true; setSelMode(null); }
