@@ -152,11 +152,8 @@ function startDaily(){
   $("grid").innerHTML="";$("hints").innerHTML="";$("hintbar").innerHTML="";$("dexmodal").hidden=true;$("end").className="";$("end").dataset.win="";
   $("again").textContent="Play again";drawPips();$("q").focus();
 }
-function dailyEmojiRows(){
-  return guesses.map(p=>{
-    const r=compare(p);
-    return [r.t1,r.t2,r.gen,r.stage,r.h.c,r.w.c,r.id.c,r.bst.c].map(v=>v==="hit"?"🟩":"⬜").join("");
-  });
+function dailyGuessBoxes(result={won:true,guesses:guesses.length}){
+  return [Array.from({length:BUDGET},(_,i)=>result.won&&i===result.guesses-1?"🟩":"⬜").join("")];
 }
 function dailyParticipationStreak(){
   let streak=0,d=new Date();d.setHours(0,0,0,0);
@@ -168,7 +165,7 @@ function dailyParticipationStreak(){
 }
 function dailyShareText(){
   const result=JSON.parse(localStorage.getItem(dailyStorageKey())||"{}");
-  const rows=result.emoji||dailyEmojiRows();
+  const rows=dailyGuessBoxes(result);
   const score=result.won?`${result.guesses}/10`:"X/10";
   return `Dexle Daily ${dailyDateKey()} ${score}\n${rows.join("\n")}\n🔥 ${dailyParticipationStreak()} day streak\n${new URL("dexle.html",location.href).href}`;
 }
@@ -178,7 +175,7 @@ function openDailyResult(){
   if(!resultTarget)return;
   $("dailyResultImage").src=SPRITE(resultTarget.id);$("dailyResultImage").alt=resultTarget.name;
   $("dailyResultSummary").textContent=`${resultTarget.name} in ${result.guesses} ${result.guesses===1?"guess":"guesses"}${result.hints?` with ${result.hints} hint${result.hints===1?"":"s"}`:""}.`;
-  $("dailyResultGrid").innerHTML=(result.emoji||dailyEmojiRows()).map(row=>`<div>${row}</div>`).join("");
+  $("dailyResultGrid").innerHTML=dailyGuessBoxes(result).map(row=>`<div>${row}</div>`).join("");
   $("dailyResultStreak").textContent=`🔥 ${dailyParticipationStreak()} day Daily Challenge streak`;
   $("dailyShareStatus").textContent="";$("dailyResultModal").hidden=false;
 }
@@ -434,7 +431,7 @@ function finish(won) {
 
   if (pending) { appendRow(pending); pending = null; }
   if (DAILY_MODE) {
-    try { localStorage.setItem(dailyStorageKey(), JSON.stringify({date:dailyDateKey(),won,guesses:guesses.length,hints:hintsUsed,target:target.id,emoji:dailyEmojiRows(),completedAt:new Date().toISOString()})); } catch (e) {}
+    try { localStorage.setItem(dailyStorageKey(), JSON.stringify({date:dailyDateKey(),won,guesses:guesses.length,hints:hintsUsed,target:target.id,emoji:dailyGuessBoxes({won,guesses:guesses.length}),completedAt:new Date().toISOString()})); } catch (e) {}
     $("again").textContent = "Choose a Mode";
     updateDailyCard();
   }
