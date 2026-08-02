@@ -168,8 +168,8 @@ function dailyShareText(){
   const result=JSON.parse(localStorage.getItem(dailyStorageKey())||"{}");
   const rows=dailyGuessBoxes(result);
   const message=result.won
-    ? `I caught it in ${result.guesses} ${result.guesses===1?"guess":"guesses"}, try the Daily Dexle here: dexle.io`
-    : "I didn't catch it today, try the Daily Dexle here: dexle.io";
+    ? `I caught it in ${result.guesses} ${result.guesses===1?"guess":"guesses"}! Try the Daily Dexle here: dexle.io`
+    : "I didn't catch it today! Try the Daily Dexle here: dexle.io";
   return `${rows.join("\n")}\n${message}`;
 }
 function openDailyResult(){
