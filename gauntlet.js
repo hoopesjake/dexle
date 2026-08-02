@@ -384,7 +384,7 @@ function drawOpponents() {
   // only meaningful for a single region; the Gauntlet spans all nine
   if (challenge?.mode === "daily" && dailyOpponent) {
     $("oppPanel").hidden=false;$("oppCount").textContent=`6 vs 6 · Champion ${dailyOpponent.name} · Ace: ${dailyOpponent.team[0].name}`;
-    $("oppList").innerHTML=`<div class="opp"><div class="opp-head"><b>Champion ${dailyOpponent.name}</b><span class="opp-role">${dailyOpponent.region}</span><span class="type" style="background:${TYPE_COLOR[dailyOpponent.type]}">${dailyOpponent.type} ace</span></div><div class="opp-team">${dailyOpponent.team.map(m=>`<div class="opp-mon ${m.ace?"daily-ace":""}" title="${m.name} · Max trained"><img src="${spriteUrl(m,false)}" alt="${m.name}"><span class="opp-mn">${m.name}${m.ace?" ★ Ace":""}</span><span class="opp-lv">Max trained</span><span class="opp-mt">${[m.t1,m.t2].filter(Boolean).map(chip).join("")}</span></div>`).join("")}</div></div>`;
+    $("oppList").innerHTML=`<div class="opp"><div class="opp-head"><b>Champion ${dailyOpponent.name}</b><span class="opp-role">${dailyOpponent.region}</span><span class="type" style="background:${TYPE_COLOR[dailyOpponent.type]}">${dailyOpponent.type} ace</span></div><div class="opp-team">${dailyOpponent.team.map(m=>`<div class="opp-mon ${m.ace?"daily-ace":""}" title="${m.name} · ${m.s.reduce((a,b)=>a+b,0)} total stats"><img src="${spriteUrl(m,false)}" alt="${m.name}"><span class="opp-mn">${m.name}${m.ace?" ★ Ace":""}</span><span class="opp-lv">${m.s.reduce((a,b)=>a+b,0)} total stats</span><span class="opp-mt">${[m.t1,m.t2].filter(Boolean).map(chip).join("")}</span></div>`).join("")}</div></div>`;
     return;
   }
   if (MODE !== "champion" || !challenge || challenge.mode !== "single") {
@@ -518,7 +518,7 @@ function renderResults(list) {
   const q      = norm($("resSearch").value);
   const shown  = q ? list.filter(p => norm(p.name).includes(q)) : list;
   const legendsOnTeam = team.filter(m => m.p.legend).length;
-  const legendLocked  = legendsOnTeam >= MAX_LEGEND;
+  const legendLocked  = challenge?.mode !== "daily" && legendsOnTeam >= MAX_LEGEND;
 
   $("resCount").textContent =
     `${list.length} eligible · ${spin.type} · ${REGIONS[spin.gen]}` +
@@ -688,7 +688,7 @@ function powerFormsForMember(m) {
   }
   return forms.length ? forms : null;
 }
-const megaEligible = () => team.filter(m => powerFormsForMember(m));
+const megaEligible = () => team.filter(m => (challenge?.mode !== "daily" || !m.mega) && powerFormsForMember(m));
 const typeFormsFor = p => formCatalog(p, "free");
 const typeEligible = () => team.filter(m => !m.mega && typeFormsFor(originalPokemon(m)).length);
 
@@ -698,11 +698,11 @@ function setSelMode(mode) {
   $("selHint").hidden = !mode;
   $("selHint").className = "selhint" + (mode ? " " + mode : "");
   $("selHint").textContent =
-    mode === "mega"  ? "Select one Pokémon to Mega Evolve or power-change its form."
+    mode === "mega"  ? (challenge?.mode==="daily"?"Select any eligible Pokémon to Mega Evolve, Gigantamax, or power-change. You may power up multiple teammates.":"Select one Pokémon to Mega Evolve or power-change its form.")
   : mode === "type"  ? "Select a Pokémon to change its type or equipped Drive. This does not use your power transformation."
-  : mode === "candy" ? `Select one Pokémon to feed the Rare Candy — ` +
+  : mode === "candy" ? `${challenge?.mode==="daily"?"Select any teammate to feed a Rare Candy — ":"Select one Pokémon to feed the Rare Candy — "}` +
                        `+${Math.round((CANDY_BOOST - 1) * 100)}% to every stat. ` +
-                       `Not your starter, a legendary, or the Mega.`
+                       (challenge?.mode==="daily"?"Every teammate is eligible.":`Not your starter, a legendary, or the Mega.`)
   : "";
   $("megaBtn").classList.toggle("armed", mode === "mega");
   $("typeBtn").classList.toggle("armed", mode === "type");
@@ -711,12 +711,12 @@ function setSelMode(mode) {
 }
 
 // who may eat the candy: not the starter, not a legendary, not the Mega
-const candyOk = m => !m.starter && !m.p.legend && !m.mega;
+const candyOk = m => challenge?.mode === "daily" ? !m.candy : !m.starter && !m.p.legend && !m.mega;
 const candyEligible = () => team.filter(candyOk);
 
 function applyMega(slot, form) {
   const m = team[slot];
-  delete m.candy;                             // a Mega can't also be candied
+  if(challenge?.mode !== "daily")delete m.candy; // Daily Champion permits stacked power-ups
   m.base = m.p;                               // remember the selected style/form
   m.preMegaTypeBase = m.typeBase;
   m.preMegaTypeForm = m.typeForm;
@@ -759,7 +759,8 @@ function revertMega() {
 function pickForSelection(slot) {
   if (selMode === "candy") {
     if (!candyOk(team[slot])) return;
-    team.forEach((m, i) => m.candy = (i === slot));
+    if(challenge?.mode === "daily")team[slot].candy=true;
+    else team.forEach((m, i) => m.candy = (i === slot));
     setSelMode(null);
     return;
   }
@@ -779,7 +780,7 @@ function pickForSelection(slot) {
     return;
   }
 
-  if (megaIdx >= 0 && megaIdx !== slot) revertMega();   // only one at a time
+  if (challenge?.mode !== "daily" && megaIdx >= 0 && megaIdx !== slot) revertMega();
   if (forms.length === 1) return applyMega(slot, forms[0]);
   openMegaChooser(slot, forms, "power");
 }
@@ -876,16 +877,16 @@ function renderDone() {
   const typeLabel=hasDrive && !hasTypeForm ? "Change Drive" : hasDrive ? "Type / Drive" : "Change Type";
   $("typeBtn").innerHTML = `<span aria-hidden="true">◇</span><span class="tool-label">${typeLabel}</span>`;
   $("typeBtn").setAttribute("aria-label",typeLabel);
-  const fed  = team.find(m => m.candy);
+  const fed  = team.find(m => m.candy),fedCount=team.filter(m=>m.candy).length;
   const cOk  = candyEligible();
   $("candyBtn").disabled = !cOk.length;
   $("candyBtn").title = cOk.length
-    ? `${cOk.length} of your team can take the candy`
+    ? `${cOk.length} of your team can take ${challenge?.mode==="daily"?"a":"the"} candy`
     : "Nobody eligible - the candy can't go to your starter, a legendary, or the Mega";
   const cIcon = `<span class="cb-candy"><img src="${CANDY_ICON}" alt=""></span>`;
-  $("candyBtn").innerHTML = `${cIcon}<span class="tool-label">${fed ? `Candy: ${fed.p.name}` : "Rare Candy"}</span>`;
-  $("candyBtn").setAttribute("aria-label",fed ? `Rare Candy given to ${fed.p.name}` : "Use Rare Candy");
-  $("megaBtn").classList.toggle("done", megaIdx >= 0);
+  $("candyBtn").innerHTML = `${cIcon}<span class="tool-label">${challenge?.mode==="daily"&&fedCount?`Rare Candy ×${fedCount}`:fed?`Candy: ${fed.p.name}`:"Rare Candy"}</span>`;
+  $("candyBtn").setAttribute("aria-label",challenge?.mode==="daily"?`${fedCount} teammates have Rare Candy`:fed?`Rare Candy given to ${fed.p.name}`:"Use Rare Candy");
+  $("megaBtn").classList.toggle("done", team.some(m=>m.mega));
   $("typeBtn").classList.toggle("done", team.some(m => m.typeForm));
   $("candyBtn").classList.toggle("done", !!fed);
 
@@ -1377,7 +1378,7 @@ $("gAgain").onclick      = startOver;
 $("gBack").onclick       = () => show("scDone");
 $("megaBtn").onclick     = () => {
   if (selMode === "mega") return setSelMode(null);
-  if (megaIdx >= 0) { revertMega(); return setSelMode("mega"); }
+  if (challenge?.mode !== "daily" && megaIdx >= 0) { revertMega(); return setSelMode("mega"); }
   setSelMode("mega");
 };
 $("typeBtn").onclick     = () => setSelMode(selMode === "type" ? null : "type");
