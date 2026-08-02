@@ -774,7 +774,7 @@ function openMegaChooser(slot, forms, mode) {
           <small class="form-kind">${f.kind}</small>
           <div>${[f.t1, f.t2].filter(Boolean).map(chip).join(" ")}</div>
           ${f.attackType ? `<div class="drive-attack">Techno Blast: ${chip(f.attackType)}</div>` : ""}
-          <div class="mo-bst">${f.gmax ? `${sumStats(f.s)} BST → <i>${sumStats(f.s) + f.s[0]}</i> HP-adjusted · battle HP ×2` : isType ? `${sumStats(f.s)} total stats` : `${sumStats(before.s)} → <i>${sumStats(f.s)}</i>`}</div>
+          <div class="mo-bst">${f.gmax ? `${sumStats(f.s)} → <i>${sumStats(f.s) + f.s[0]}</i> (2× HP)` : isType ? `${sumStats(f.s)} total stats` : `${sumStats(before.s)} → <i>${sumStats(f.s)}</i>`}</div>
           ${isType ? "" : `<div class="mo-diff">${statDiff(before.s, f.s)}</div>`}
         </button>`).join("")}
     </div>`;
@@ -881,7 +881,7 @@ function renderDone() {
         <b>${p.name}</b>
         <div>${[p.t1,p.t2].filter(Boolean).map(chip).join(" ")}</div>
         ${m.from ? `<div class="fin-from">from ${byId[m.from].name}</div>` : ""}
-        <div class="fin-bst">${p.gmax ? `${t} BST → ${t + s[0]} HP-adjusted` : `${t}${m.starter ? " (bonded)" : m.candy ? " (candied)" : ""}`}</div>
+        <div class="fin-bst">${p.gmax ? `${t} → ${t + s[0]} (2× HP)` : `${t}${m.starter ? " (bonded)" : m.candy ? " (candied)" : ""}`}</div>
         <div class="fin-badges">
           ${m.mega   ? `<span class="badge mega">${p.gmax ? "Gigantamax · HP ×2" : "Mega Evolved"}</span>` : ""}
           ${m.typeForm ? `<span class="badge typeform">${m.p.driveName || "Change Type"}</span>` : ""}
