@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dexle — Gotta Guess 'Em All!</title>
-  <link rel="stylesheet" href="dexle.css?v=20260801-10">
+  <link rel="stylesheet" href="dexle.css?v=20260802-1">
   <link rel="stylesheet" href="trainer-menu.css?v=20260801-5">
 </head>
 <body>
@@ -32,10 +32,24 @@
   </header>
 
   <!-- shown before a round starts -->
-  <section id="start" class="panel">
+  <section id="start" class="panel dexle-mode-picker">
+    <p class="mode-eyebrow">Choose your challenge</p>
     <h2>Ready when you are</h2>
-    <p>A random Pokémon is waiting. Every guess tells you what you got right.</p>
-    <button id="play" disabled>Enter the Tall Grass</button>
+    <p>Every guess tells you what you got right. Hints still cost one guess.</p>
+    <div class="dexle-mode-grid">
+      <article id="dailyCard" class="dexle-mode-card daily">
+        <span class="daily-dot" aria-hidden="true"></span>
+        <p class="mode-label">Once per day</p><h3>Daily Challenge</h3>
+        <p>Everyone gets one Pokémon and ten guesses. Win or lose, your next challenge arrives at midnight.</p>
+        <strong id="dailyReset">Resets in --h --m</strong>
+        <button id="dailyPlay" disabled>Play Today's Challenge</button>
+      </article>
+      <article class="dexle-mode-card unlimited">
+        <p class="mode-label">Unlimited play</p><h3>Dexle</h3>
+        <p>Guess as many randomly chosen Pokémon as you like, with your preferred generations in play.</p>
+        <button id="play" disabled>Play Dexle</button>
+      </article>
+    </div>
   </section>
 
   <!-- the game itself, hidden until Start is clicked -->
@@ -151,7 +165,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script src="stats-store.js?v=20260801-2"></script>
-<script src="game.js?v=20260801-1"></script>
-<script src="trainer-menu.js?v=20260801-7"></script>
+<script src="game.js?v=20260802-1"></script>
+<script src="trainer-menu.js?v=20260802-1"></script>
 </body>
 </html>

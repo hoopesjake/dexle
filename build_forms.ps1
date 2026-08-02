@@ -60,7 +60,8 @@ foreach ($p in $pokemon) {
   if (-not $statChange -and -not $typeChange -and -not $isGmax -and $p.identifier -notin $requestedSameStatForms) { continue }
   $key = [string]$species; if (-not $forms.Contains($key)) { $forms[$key] = @() }
   $regionalTypeForm = $p.identifier.EndsWith('-alola') -or $p.identifier.EndsWith('-hisui')
-  $form = [ordered]@{id=$pokeId;name=(FormName $p.identifier);t1=$altTypes[0];t2=$altTypes[1];s=$stats[$pokeId];cost=if($isGmax){'power'}else{'free'};kind=if($isGmax){'Gigantamax'}else{'Change Type'}}
+  $isEternamax=$p.identifier -eq 'eternatus-eternamax'
+  $form = [ordered]@{id=$pokeId;name=(FormName $p.identifier);t1=$altTypes[0];t2=$altTypes[1];s=$stats[$pokeId];cost=if($isGmax -or $isEternamax){'power'}else{'free'};kind=if($isGmax){'Gigantamax'}elseif($isEternamax){'Eternamax'}else{'Change Type'}}
   if ($isGmax) { $form.gmax=$true; $form.hpMultiplier=2 }
   if ($baseFormNames.ContainsKey($species)) { $form.baseName=$baseFormNames[$species] }
   if ($regionalTypeForm -or $isGmax -or $p.identifier -in $requestedSameStatForms) { $form.sprite="$pokeId.png"; $form.shinySprite="shiny/$pokeId.png" }

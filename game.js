@@ -40,6 +40,7 @@ let over    = false;
 let hintsUsed  = 0;
 let hintsTaken = [];
 let dexleSaveStarted = false;
+let DAILY_MODE = false;
 
 let picked  = null;        // dropdown selection
 let matches = [];
@@ -65,6 +66,8 @@ async function loadDex() {
   } catch (e) {}
 
   drawGens();
+  updateDailyCard();
+  setInterval(updateDailyCard, 30000);
 
   const params = new URLSearchParams(location.search);
   const entryId = Number(params.get("pokemon"));
@@ -81,6 +84,7 @@ loadDex();
 
 /* ---------- round control ---------- */
 function newRound() {
+  DAILY_MODE = false;
   roundPool = pool();                 // freeze - mid-round gen changes can't break this
   roundGens = new Set(GENS);
   target    = roundPool[Math.floor(Math.random() * roundPool.length)];
@@ -110,9 +114,40 @@ function newRound() {
   $("dexmodal").hidden   = true;
   $("end").className     = "";
   $("end").dataset.win   = "";
+  $("again").textContent = "Play again";
 
   drawPips();
   $("q").focus();
+}
+
+const dailyDateKey = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const dailyStorageKey = () => `dexle-daily:${dailyDateKey()}`;
+function dailyIndex(key, length) {
+  let hash = 2166136261;
+  for (const char of `dexle:${key}`) { hash ^= char.charCodeAt(0); hash = Math.imul(hash, 16777619); }
+  return (hash >>> 0) % length;
+}
+function dailyComplete(){try{return !!localStorage.getItem(dailyStorageKey());}catch(e){return false;}}
+function updateDailyCard(){
+  const now=new Date(),midnight=new Date(now);midnight.setHours(24,0,0,0);
+  const left=Math.max(0,midnight-now),hours=Math.floor(left/3600000),minutes=Math.floor(left%3600000/60000);
+  const done=dailyComplete(),card=$("dailyCard");
+  if(!card)return;
+  card.classList.toggle("complete",done);
+  $("dailyPlay").disabled=!DEX.length||done;
+  $("dailyPlay").textContent=done?"Come Back Tomorrow":"Play Today's Challenge";
+  $("dailyReset").textContent=done?`Completed · resets in ${hours}h ${minutes}m`:`Resets in ${hours}h ${minutes}m`;
+}
+function startDaily(){
+  if(!DEX.length||dailyComplete())return;
+  DAILY_MODE=true;
+  roundPool=[...DEX];roundGens=new Set([1,2,3,4,5,6,7,8,9]);
+  target=DEX[dailyIndex(dailyDateKey(),DEX.length)];
+  guesses=[];pending=null;over=false;picked=null;matches=[];hintsUsed=0;hintsTaken=[];dexleSaveStarted=false;
+  $("start").style.display="none";$("game").hidden=false;$("q").value="";$("q").disabled=false;$("go").disabled=false;
+  $("q").placeholder="Type a Pokémon name…";$("searchbar").classList.remove("caught");$("inspect").className="";
+  $("grid").innerHTML="";$("hints").innerHTML="";$("hintbar").innerHTML="";$("dexmodal").hidden=true;$("end").className="";$("end").dataset.win="";
+  $("again").textContent="Play again";drawPips();$("q").focus();
 }
 
 function drawPips() {
@@ -357,6 +392,11 @@ function finish(won) {
   $("hintbar").innerHTML = "";
 
   if (pending) { appendRow(pending); pending = null; }
+  if (DAILY_MODE) {
+    try { localStorage.setItem(dailyStorageKey(), JSON.stringify({won,guesses:guesses.length,hints:hintsUsed,target:target.id,completedAt:new Date().toISOString()})); } catch (e) {}
+    $("again").textContent = "Choose a Mode";
+    updateDailyCard();
+  }
 
   if (!dexleSaveStarted && window.DexleStats?.configured) {
     dexleSaveStarted = true;
@@ -549,13 +589,15 @@ function backToStart() {
 
   closeDrawer();
   drawGens();
+  updateDailyCard();
 }
 
 /* =========================================================
    event bindings - keep them all here
    ========================================================= */
 $("play").onclick   = newRound;
-$("again").onclick  = newRound;
+$("dailyPlay").onclick = startDaily;
+$("again").onclick  = () => DAILY_MODE ? backToStart() : newRound();
 $("go").onclick     = submit;
 $("reopen").onclick = openDex;
 $("dexclose").onclick = closeDex;

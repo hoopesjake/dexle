@@ -538,11 +538,12 @@ function closePickPreview() {
 function openPickPreview(p) {
   const shiny = !!spin.shiny;
   const canMega = !!megaFormsFor(p);
+  const canType = typeFormsFor(p).length > 0;
   $("pickBody").innerHTML = `
     <div class="pick-identity">
       ${spriteImg(p, shiny, "pick-sprite")}
       <span class="rr-id">#${String(p.id).padStart(4,"0")}</span>
-      <h2 id="pickName">${p.name}${shiny ? '<span class="pick-shiny">&#10022; Shiny</span>' : ""}${ownedShinyMark(p.id, shiny)}${canMega ? '<span class="pick-mega-gem" title="Mega Evolvable" aria-label="Mega Evolvable">&#9672;</span>' : ""}</h2>
+      <h2 id="pickName">${p.name}${shiny ? '<span class="pick-shiny">&#10022; Shiny</span>' : ""}${ownedShinyMark(p.id, shiny)}${canMega ? '<span class="pick-mega-gem" title="Mega Evolvable" aria-label="Mega Evolvable">&#9672;</span>' : ""}${canType ? '<span class="pick-type-gem" title="Can change type or form" aria-label="Can change type or form">&#9671;</span>' : ""}</h2>
       <div class="pick-types">${[p.t1,p.t2].filter(Boolean).map(chip).join("")}</div>
     </div>
     <div class="pick-stats">
@@ -634,7 +635,9 @@ function drawTeamBar() {
 
 function formCatalog(p, cost) {
   if (!p) return [];
-  return (FORMS[String(p.id)] || FORMS[p.id] || []).filter(f => f.cost === cost);
+  return (FORMS[String(p.id)] || FORMS[p.id] || []).map(f =>
+    +p.id === 890 && /Eternamax/i.test(f.name) ? {...f,cost:"power",kind:"Eternamax"} : f
+  ).filter(f => f.cost === cost);
 }
 function megaFormsFor(p) {
   if (!p) return null;
@@ -839,11 +842,12 @@ function renderDone() {
   $("megaBtn").title    = elig.length
     ? `${elig.length} of your team can Mega Evolve or power-change form`
     : "None of your Pokémon has a powered form";
-  $("megaBtn").innerHTML = megaIdx >= 0
-    ? `<span class="mb-gem">\u25c8</span> ${team[megaIdx].mega}`
-    : `<span class="mb-gem">\u25c8</span> Mega / Form`;
+  $("megaBtn").innerHTML = `<span class="mb-gem" aria-hidden="true">\u25c8</span><span class="tool-label">${megaIdx >= 0 ? team[megaIdx].mega : "Mega / Form"}</span>`;
+  $("megaBtn").setAttribute("aria-label",megaIdx >= 0 ? team[megaIdx].mega : "Mega Evolve or power-change a form");
   $("typeBtn").title = `${typeElig.length} of your team can change type for free`;
-  $("typeBtn").innerHTML = `<span>◇</span> ${hasDrive && !hasTypeForm ? "Change Drive" : hasDrive ? "Type / Drive" : "Change Type"}`;
+  const typeLabel=hasDrive && !hasTypeForm ? "Change Drive" : hasDrive ? "Type / Drive" : "Change Type";
+  $("typeBtn").innerHTML = `<span aria-hidden="true">◇</span><span class="tool-label">${typeLabel}</span>`;
+  $("typeBtn").setAttribute("aria-label",typeLabel);
   const fed  = team.find(m => m.candy);
   const cOk  = candyEligible();
   $("candyBtn").disabled = !cOk.length;
@@ -851,9 +855,8 @@ function renderDone() {
     ? `${cOk.length} of your team can take the candy`
     : "Nobody eligible - the candy can't go to your starter, a legendary, or the Mega";
   const cIcon = `<span class="cb-candy"><img src="${CANDY_ICON}" alt=""></span>`;
-  $("candyBtn").innerHTML = fed
-    ? `${cIcon} Candy: ${fed.p.name}`
-    : `${cIcon} Rare Candy`;
+  $("candyBtn").innerHTML = `${cIcon}<span class="tool-label">${fed ? `Candy: ${fed.p.name}` : "Rare Candy"}</span>`;
+  $("candyBtn").setAttribute("aria-label",fed ? `Rare Candy given to ${fed.p.name}` : "Use Rare Candy");
   $("megaBtn").classList.toggle("done", megaIdx >= 0);
   $("typeBtn").classList.toggle("done", team.some(m => m.typeForm));
   $("candyBtn").classList.toggle("done", !!fed);
@@ -883,7 +886,7 @@ function renderDone() {
         ${m.from ? `<div class="fin-from">from ${byId[m.from].name}</div>` : ""}
         <div class="fin-bst">${p.gmax ? `${t} → ${t + s[0]} (2× HP)` : `${t}${m.starter ? " (bonded)" : m.candy ? " (candied)" : ""}`}</div>
         <div class="fin-badges">
-          ${m.mega   ? `<span class="badge mega">${p.gmax ? "Gigantamax · HP ×2" : "Mega Evolved"}</span>` : ""}
+          ${m.mega   ? `<span class="badge mega">${p.gmax ? "Gigantamax" : "Mega Evolved"}</span>` : ""}
           ${m.typeForm ? `<span class="badge typeform">${m.p.driveName || "Change Type"}</span>` : ""}
           ${m.candy  ? `<span class="badge candy"><img src="${CANDY_ICON}" alt="">Rare Candy +${Math.round((CANDY_BOOST-1)*100)}%</span>` : ""}
         </div>

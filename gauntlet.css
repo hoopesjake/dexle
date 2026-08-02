@@ -351,6 +351,7 @@ button:disabled{ opacity:.4; cursor:not-allowed; filter:none }
   font-size:17px; line-height:1; vertical-align:middle;
   filter:drop-shadow(0 0 5px rgba(226,120,206,.45));
 }
+.pick-type-gem{display:inline-block;margin-left:7px;color:#fff;font-size:18px;vertical-align:2px;text-shadow:0 0 8px rgba(255,255,255,.8)}
 .pick-stats{
   display:grid; grid-template-columns:repeat(2,1fr); gap:8px;
   margin:20px 0 10px;
@@ -1044,6 +1045,7 @@ button:disabled{ opacity:.4; cursor:not-allowed; filter:none }
 .type-form-btn:hover{background:rgba(255,255,255,.13);filter:none}
 .type-form-btn.armed{box-shadow:0 0 0 3px rgba(255,255,255,.2),0 0 22px rgba(255,255,255,.22)}
 .type-form-btn.done{background:rgba(255,255,255,.16)}
+.done-tools .mega-btn,.done-tools .type-form-btn,.done-tools .candy-btn{width:44px;height:44px;justify-content:center;padding:0;border-radius:10px}.done-tools .tool-label{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.done-tools .mb-gem,.done-tools .type-form-btn>span:first-child{font-size:20px}.done-tools .cb-candy img{width:25px;height:25px}
 .fin.pickable.typeform{border-color:#fff;box-shadow:0 0 0 1px #fff,0 0 20px rgba(255,255,255,.22)}
 .fin.typeon{border-color:rgba(255,255,255,.78);box-shadow:0 0 18px rgba(255,255,255,.16)}
 .badge.typeform{color:#fff;border:1px solid rgba(255,255,255,.75);background:transparent}

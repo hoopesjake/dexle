@@ -99,8 +99,8 @@ for row in pokemon:
     form = {
         "id": pid, "name": form_name(row["identifier"]),
         "t1": alt_types[0], "t2": alt_types[1], "s": stats[pid],
-        "cost": "power" if is_gmax else "free",
-        "kind": "Gigantamax" if is_gmax else "Change Type",
+        "cost": "power" if is_gmax or ident == "eternatus-eternamax" else "free",
+        "kind": "Gigantamax" if is_gmax else "Eternamax" if ident == "eternatus-eternamax" else "Change Type",
     }
     if is_gmax:
         form.update({"gmax": True, "hpMultiplier": 2})

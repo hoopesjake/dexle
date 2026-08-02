@@ -8,7 +8,8 @@
   if (generations && startCard) {
     generations.classList.add("dexle-generation-choice");
     generations.append(" Select Generations");
-    startCard.insertBefore(generations, document.getElementById("play"));
+    const play = document.getElementById("play");
+    play.parentElement.insertBefore(generations, play);
   }
   document.querySelectorAll(".hdr-btns,.home-links").forEach(el => el.remove());
   document.getElementById("mobileMenuShade")?.remove();
