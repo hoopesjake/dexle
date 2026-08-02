@@ -22,12 +22,18 @@ def form_name(identifier):
     if identifier == "calyrex-shadow":
         return "Calyrex Shadow Rider"
     words = identifier.replace("-", " ").title()
-    return words.replace("Galar ", "Galarian ").replace("Alola ", "Alolan ").replace("Hisui ", "Hisuian ").replace("Paldea ", "Paldean ")
+    for region, adjective in (("Galar", "Galarian"), ("Alola", "Alolan"),
+                              ("Hisui", "Hisuian"), ("Paldea", "Paldean")):
+        words = words.replace(region + " ", adjective + " ")
+        if words.endswith(" " + region):
+            words = adjective + " " + words[:-(len(region) + 1)]
+    return words
 
 forms = {}
 for row in pokemon:
     pid, species = int(row["id"]), int(row["species_id"])
-    if pid <= 1025 or species > 1025 or "mega" in row["identifier"] or "primal" in row["identifier"]:
+    if (pid <= 1025 or species > 1025 or "mega" in row["identifier"] or
+            "primal" in row["identifier"] or "totem" in row["identifier"]):
         continue
     base = by_id.get(species)
     if not base or pid not in stats or species not in stats:
@@ -38,12 +44,16 @@ for row in pokemon:
     type_change = alt_types != base_types
     if not stat_change and not type_change:
         continue
-    forms.setdefault(str(species), []).append({
+    regional_type_form = row["identifier"].endswith(("-alola", "-hisui"))
+    form = {
         "id": pid, "name": form_name(row["identifier"]),
         "t1": alt_types[0], "t2": alt_types[1], "s": stats[pid],
-        "cost": "power" if stat_change else "free",
-        "kind": "Form Change" if stat_change else "Change Type",
-    })
+        "cost": "free" if regional_type_form or not stat_change else "power",
+        "kind": "Change Type" if regional_type_form or not stat_change else "Form Change",
+    }
+    if regional_type_form:
+        form.update({"sprite": f"{pid}.png", "shinySprite": f"shiny/{pid}.png"})
+    forms.setdefault(str(species), []).append(form)
 
 # PokeAPI models these type plates/memories as forms rather than separate
 # numeric Pokemon. They use the base sprite and never change stats.

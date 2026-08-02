@@ -16,12 +16,16 @@ function FormName([string]$id) {
   if ($id -eq 'calyrex-ice') { return 'Calyrex Ice Rider' }
   if ($id -eq 'calyrex-shadow') { return 'Calyrex Shadow Rider' }
   $name = (Get-Culture).TextInfo.ToTitleCase($id.Replace('-', ' '))
-  return $name.Replace('Galar ', 'Galarian ').Replace('Alola ', 'Alolan ').Replace('Hisui ', 'Hisuian ').Replace('Paldea ', 'Paldean ')
+  foreach ($pair in @(@('Galar','Galarian'),@('Alola','Alolan'),@('Hisui','Hisuian'),@('Paldea','Paldean'))) {
+    $name = $name.Replace("$($pair[0]) ", "$($pair[1]) ")
+    if ($name.EndsWith(" $($pair[0])")) { $name = "$($pair[1]) " + $name.Substring(0, $name.Length - $pair[0].Length - 1) }
+  }
+  return $name
 }
 $forms = [ordered]@{}
 foreach ($p in $pokemon) {
   $pokeId = [int]$p.id; $species = [int]$p.species_id
-  if ($pokeId -le 1025 -or $species -gt 1025 -or $p.identifier -match 'mega|primal') { continue }
+  if ($pokeId -le 1025 -or $species -gt 1025 -or $p.identifier -match 'mega|primal|totem') { continue }
   if (-not $byId.ContainsKey($species) -or -not $stats.ContainsKey($pokeId) -or -not $stats.ContainsKey($species)) { continue }
   $statChange = (Compare-Object $stats[$pokeId] $stats[$species]).Count -gt 0
   $alt1 = [string]$types[$pokeId][1]; $alt2 = [string]$types[$pokeId][2]
@@ -30,7 +34,10 @@ foreach ($p in $pokemon) {
   $typeChange = $alt1 -ne $base1 -or $alt2 -ne $base2
   if (-not $statChange -and -not $typeChange) { continue }
   $key = [string]$species; if (-not $forms.Contains($key)) { $forms[$key] = @() }
-  $forms[$key] += [ordered]@{id=$pokeId;name=(FormName $p.identifier);t1=$altTypes[0];t2=$altTypes[1];s=$stats[$pokeId];cost=if($statChange){'power'}else{'free'};kind=if($statChange){'Form Change'}else{'Change Type'}}
+  $regionalTypeForm = $p.identifier.EndsWith('-alola') -or $p.identifier.EndsWith('-hisui')
+  $form = [ordered]@{id=$pokeId;name=(FormName $p.identifier);t1=$altTypes[0];t2=$altTypes[1];s=$stats[$pokeId];cost=if($regionalTypeForm -or -not $statChange){'free'}else{'power'};kind=if($regionalTypeForm -or -not $statChange){'Change Type'}else{'Form Change'}}
+  if ($regionalTypeForm) { $form.sprite="$pokeId.png"; $form.shinySprite="shiny/$pokeId.png" }
+  $forms[$key] += $form
 }
 $allTypes = @('normal','fire','water','electric','grass','ice','fighting','poison','ground','flying','psychic','bug','rock','ghost','dragon','dark','steel','fairy')
 foreach ($entry in @(@(493,'Arceus'),@(773,'Silvally'))) {
