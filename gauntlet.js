@@ -384,7 +384,7 @@ function drawOpponents() {
   // only meaningful for a single region; the Gauntlet spans all nine
   if (challenge?.mode === "daily" && dailyOpponent) {
     $("oppPanel").hidden=false;$("oppCount").textContent=`6 vs 6 · Champion ${dailyOpponent.name} · Ace: ${dailyOpponent.team[0].name}`;
-    $("oppList").innerHTML=`<div class="opp"><div class="opp-head"><b>Champion ${dailyOpponent.name}</b><span class="opp-role">${dailyOpponent.region}</span><span class="type" style="background:${TYPE_COLOR[dailyOpponent.type]}">${dailyOpponent.type}</span></div><div class="opp-team">${dailyOpponent.team.map(m=>`<div class="opp-mon ${m.ace?"daily-ace":""}" title="${m.name} · ${m.s.reduce((a,b)=>a+b,0)} total stats"><img src="${spriteUrl(m,false)}" alt="${m.name}"><span class="opp-mn">${m.name}${m.ace?" ★":""}</span><span class="opp-lv">${m.s.reduce((a,b)=>a+b,0)} total stats</span><span class="opp-mt">${[m.t1,m.t2].filter(Boolean).map(chip).join("")}</span></div>`).join("")}</div></div>`;
+    $("oppList").innerHTML=`<div class="opp daily-opp"><div class="opp-head"><b>Champion ${dailyOpponent.name}</b><span class="opp-role">${dailyOpponent.region}</span><span class="type" style="background:${TYPE_COLOR[dailyOpponent.type]}">${dailyOpponent.type}</span></div><div class="opp-team">${dailyOpponent.team.map(m=>`<div class="opp-mon ${m.ace?"daily-ace":""}" title="${m.name}"><img src="${spriteUrl(m,false)}" alt="${m.name}"><span class="opp-mn">${m.name}${m.ace?" ★":""}</span><span class="opp-mt">${[m.t1,m.t2].filter(Boolean).map(chip).join("")}</span></div>`).join("")}</div></div>`;
     return;
   }
   if (MODE !== "champion" || !challenge || challenge.mode !== "single") {
@@ -518,7 +518,7 @@ function renderResults(list) {
   const q      = norm($("resSearch").value);
   const shown  = q ? list.filter(p => norm(p.name).includes(q)) : list;
   const legendsOnTeam = team.filter(m => m.p.legend).length;
-  const legendLocked  = challenge?.mode !== "daily" && legendsOnTeam >= MAX_LEGEND;
+  const legendLocked  = legendsOnTeam >= MAX_LEGEND;
 
   $("resCount").textContent =
     `${list.length} eligible · ${spin.type} · ${REGIONS[spin.gen]}` +
@@ -688,7 +688,7 @@ function powerFormsForMember(m) {
   }
   return forms.length ? forms : null;
 }
-const megaEligible = () => team.filter(m => (challenge?.mode !== "daily" || !m.mega) && powerFormsForMember(m));
+const megaEligible = () => team.filter(m => powerFormsForMember(m));
 const typeFormsFor = p => formCatalog(p, "free");
 const typeEligible = () => team.filter(m => !m.mega && typeFormsFor(originalPokemon(m)).length);
 
@@ -698,11 +698,11 @@ function setSelMode(mode) {
   $("selHint").hidden = !mode;
   $("selHint").className = "selhint" + (mode ? " " + mode : "");
   $("selHint").textContent =
-    mode === "mega"  ? (challenge?.mode==="daily"?"Select any eligible Pokémon to Mega Evolve, Gigantamax, or power-change. You may power up multiple teammates.":"Select one Pokémon to Mega Evolve or power-change its form.")
+    mode === "mega"  ? "Select one Pokémon to Mega Evolve or power-change its form."
   : mode === "type"  ? "Select a Pokémon to change its type or equipped Drive. This does not use your power transformation."
-  : mode === "candy" ? `${challenge?.mode==="daily"?"Select any teammate to feed a Rare Candy — ":"Select one Pokémon to feed the Rare Candy — "}` +
+  : mode === "candy" ? `Select one Pokémon to feed the Rare Candy — ` +
                        `+${Math.round((CANDY_BOOST - 1) * 100)}% to every stat. ` +
-                       (challenge?.mode==="daily"?"Every teammate is eligible.":`Not your starter, a legendary, or the Mega.`)
+                       `Not your starter, a legendary, or the Mega.`
   : "";
   $("megaBtn").classList.toggle("armed", mode === "mega");
   $("typeBtn").classList.toggle("armed", mode === "type");
@@ -711,12 +711,12 @@ function setSelMode(mode) {
 }
 
 // who may eat the candy: not the starter, not a legendary, not the Mega
-const candyOk = m => challenge?.mode === "daily" ? !m.candy : !m.starter && !m.p.legend && !m.mega;
+const candyOk = m => !m.starter && !m.p.legend && !m.mega;
 const candyEligible = () => team.filter(candyOk);
 
 function applyMega(slot, form) {
   const m = team[slot];
-  if(challenge?.mode !== "daily")delete m.candy; // Daily Champion permits stacked power-ups
+  delete m.candy;
   m.base = m.p;                               // remember the selected style/form
   m.preMegaTypeBase = m.typeBase;
   m.preMegaTypeForm = m.typeForm;
@@ -759,8 +759,7 @@ function revertMega() {
 function pickForSelection(slot) {
   if (selMode === "candy") {
     if (!candyOk(team[slot])) return;
-    if(challenge?.mode === "daily")team[slot].candy=true;
-    else team.forEach((m, i) => m.candy = (i === slot));
+    team.forEach((m, i) => m.candy = (i === slot));
     setSelMode(null);
     return;
   }
@@ -780,7 +779,7 @@ function pickForSelection(slot) {
     return;
   }
 
-  if (challenge?.mode !== "daily" && megaIdx >= 0 && megaIdx !== slot) revertMega();
+  if (megaIdx >= 0 && megaIdx !== slot) revertMega();
   if (forms.length === 1) return applyMega(slot, forms[0]);
   openMegaChooser(slot, forms, "power");
 }
@@ -877,16 +876,16 @@ function renderDone() {
   const typeLabel=hasDrive && !hasTypeForm ? "Change Drive" : hasDrive ? "Type / Drive" : "Change Type";
   $("typeBtn").innerHTML = `<span aria-hidden="true">◇</span><span class="tool-label">${typeLabel}</span>`;
   $("typeBtn").setAttribute("aria-label",typeLabel);
-  const fed  = team.find(m => m.candy),fedCount=team.filter(m=>m.candy).length;
+  const fed  = team.find(m => m.candy);
   const cOk  = candyEligible();
   $("candyBtn").disabled = !cOk.length;
   $("candyBtn").title = cOk.length
-    ? `${cOk.length} of your team can take ${challenge?.mode==="daily"?"a":"the"} candy`
+    ? `${cOk.length} of your team can take the candy`
     : "Nobody eligible - the candy can't go to your starter, a legendary, or the Mega";
   const cIcon = `<span class="cb-candy"><img src="${CANDY_ICON}" alt=""></span>`;
-  $("candyBtn").innerHTML = `${cIcon}<span class="tool-label">${challenge?.mode==="daily"&&fedCount?`Rare Candy ×${fedCount}`:fed?`Candy: ${fed.p.name}`:"Rare Candy"}</span>`;
-  $("candyBtn").setAttribute("aria-label",challenge?.mode==="daily"?`${fedCount} teammates have Rare Candy`:fed?`Rare Candy given to ${fed.p.name}`:"Use Rare Candy");
-  $("megaBtn").classList.toggle("done", team.some(m=>m.mega));
+  $("candyBtn").innerHTML = `${cIcon}<span class="tool-label">${fed?`Candy: ${fed.p.name}`:"Rare Candy"}</span>`;
+  $("candyBtn").setAttribute("aria-label",fed?`Rare Candy given to ${fed.p.name}`:"Use Rare Candy");
+  $("megaBtn").classList.toggle("done", megaIdx >= 0);
   $("typeBtn").classList.toggle("done", team.some(m => m.typeForm));
   $("candyBtn").classList.toggle("done", !!fed);
 
@@ -1197,19 +1196,23 @@ async function shareDailyChampion(){const saved=dailyChampionResult();if(!saved)
 function showSavedDailyChampion(saved){dailyOpponent=saved.opponent;challenge={mode:"daily",gen:1};team=(saved.members||saved.team.map(name=>DEX.find(p=>p.name===name))).filter(Boolean).map(p=>({p,shiny:false}));$("recW").textContent=saved.left;$("recL").textContent=0;$("recRank").innerHTML="";$("recTitle").textContent=`You defeated Champion ${saved.champion}!`;$("recSub").textContent=`Won in ${saved.attempts} ${saved.attempts===1?"attempt":"attempts"} with ${saved.left} Pokémon left.`;$("recStats").innerHTML=`<div class="rstat"><b>Attempts</b><span>${saved.attempts}</span></div><div class="rstat"><b>Winning team</b><span>${saved.team.length}/6</span></div>`;$("battles").innerHTML=`<div class="daily-battle-summary"><h3>Your winning team</h3><div class="daily-result-team">${team.map(m=>`<span>${spriteImg(m.p,false)}<b>${m.p.name}</b></span>`).join("")}</div></div>`;$("againBtn2").textContent="Share Results";locked=true;lastScreen="scResult";show("scResult");}
 
 const dailyChampionDate=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;};
-const dailyChampionKey=()=>`dexle-daily-champion:${dailyChampionDate()}`;
+const dailyChampionKey=()=>`dexle-daily-champion-v2:${dailyChampionDate()}`;
 function dailyChampionResult(){try{return JSON.parse(localStorage.getItem(dailyChampionKey())||"null");}catch(e){return null;}}
 function seededDaily(seed){let t=seed>>>0;return()=>{t+=0x6D2B79F5;let r=Math.imul(t^t>>>15,1|t);r^=r+Math.imul(r^r>>>7,61|r);return((r^r>>>14)>>>0)/4294967296;};}
 function makeDailyOpponent(){
-  const date=dailyChampionDate(),seed=+[...date].filter(c=>/\d/.test(c)).join(""),rng=seededDaily(seed);
+  const date=dailyChampionDate(),seed=+[...date].filter(c=>/\d/.test(c)).join("")+260802,rng=seededDaily(seed);
   const [yy,mm,dd]=date.split("-").map(Number),ordinal=Math.floor(Date.UTC(yy,mm-1,dd)/86400000);
   const champ=DAILY_CHAMPIONS[ordinal%DAILY_CHAMPIONS.length];
-  const catalog=[...DEX,...Object.values(MEGAS).flat(),...Object.values(FORMS).flat()].filter(p=>p?.s?.length===6);
+  const baseById=new Map(DEX.map(p=>[+p.id,p]));
+  const powered=[...Object.entries(MEGAS),...Object.entries(FORMS)].flatMap(([base,list])=>list.filter(p=>MEGAS[base]?.includes(p)||p.cost==="power").map(p=>({...p,power:true,legend:!!baseById.get(+base)?.legend})));
+  const catalog=[...DEX.map(p=>({...p,power:false})),...powered].filter(p=>p?.s?.length===6);
   const strong=catalog.filter(p=>bst(p)>=540),acePool=strong.filter(p=>p.t1===champ.type||p.t2===champ.type);
   const used=new Set(),take=pool=>{let p;do{p=pool[Math.floor(rng()*pool.length)];}while(used.has(`${p.id}:${p.name}`));used.add(`${p.id}:${p.name}`);return p;};
-  const ace=take(acePool.length?acePool:strong),rest=Array.from({length:5},()=>take(strong));
-  const boost=(p,aceMon)=>({...p,s:p.s.map((v,i)=>Math.max(v,aceMon?(i===0?130:125):(i===0?110:105))),lvl:100,ace:aceMon});
-  return {...champ,role:"Daily Champion",place:champ.region,team:[boost(ace,true),...rest.map(p=>boost(p,false))]};
+  const ace=take(acePool.length?acePool:strong),chosen=[ace];
+  while(chosen.length<6){const pool=strong.filter(p=>(!p.legend||!chosen.some(x=>x.legend))&&(!p.power||!chosen.some(x=>x.power)));chosen.push(take(pool));}
+  const candyChoices=chosen.map((p,i)=>!p.legend&&!p.power?i:null).filter(i=>i!==null),candyIndex=candyChoices[Math.floor(rng()*candyChoices.length)];
+  const trained=chosen.map((p,i)=>{let s=p.s.map((v,n)=>Math.max(v,i===0?(n===0?130:125):(n===0?110:105)));if(i===candyIndex)s=s.map(v=>Math.round(v*CANDY_BOOST));return {...p,s,lvl:100,ace:i===0,candy:i===candyIndex};});
+  return {...champ,role:"Daily Champion",place:champ.region,team:trained};
 }
 function startDailyChampion(){const saved=dailyChampionResult();if(saved)return showSavedDailyChampion(saved);dailyOpponent=makeDailyOpponent();challenge={mode:"daily",gen:DAILY_CHAMPIONS.findIndex(c=>c.name===dailyOpponent.name)+1};startStarter();}
 
@@ -1378,7 +1381,7 @@ $("gAgain").onclick      = startOver;
 $("gBack").onclick       = () => show("scDone");
 $("megaBtn").onclick     = () => {
   if (selMode === "mega") return setSelMode(null);
-  if (challenge?.mode !== "daily" && megaIdx >= 0) { revertMega(); return setSelMode("mega"); }
+  if (megaIdx >= 0) { revertMega(); return setSelMode("mega"); }
   setSelMode("mega");
 };
 $("typeBtn").onclick     = () => setSelMode(selMode === "type" ? null : "type");
