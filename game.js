@@ -65,6 +65,17 @@ async function loadDex() {
   } catch (e) {}
 
   drawGens();
+
+  const params = new URLSearchParams(location.search);
+  const entryId = Number(params.get("pokemon"));
+  const linked = DEX.find(p => p.id === entryId);
+  if (linked) {
+    SHINY = params.get("shiny") === "1";
+    document.body.classList.toggle("shiny", SHINY);
+    $("shiny").setAttribute("aria-pressed", SHINY);
+    target = linked;
+    openDex();
+  }
 }
 loadDex();
 

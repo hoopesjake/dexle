@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Dexle — Team Tester</title>
+  <link rel="stylesheet" href="team-tester.css">
+</head>
+<body>
+<main class="tester-wrap">
+  <header class="tester-head">
+    <div><p class="eyebrow">Temporary debug lab</p><h1>Team &amp; Sprite Tester</h1><p>Inspect every supported sprite and transformation without running a draft.</p></div>
+    <nav><a href="account.html">Account</a><a href="gauntlet.html?mode=gauntlet">Gauntlet</a></nav>
+  </header>
+
+  <section class="team-stage">
+    <div class="stage-head"><div><p class="eyebrow">Pre-Gauntlet view</p><h2>Test Team</h2></div><button id="clearTeam" type="button">Clear team</button></div>
+    <div id="teamGrid" class="team-grid"></div>
+    <div class="team-math"><span>Total BST <b id="teamBst">0</b></span><span>HP-adjusted total <b id="teamEffective">0</b></span><span>Average BST <b id="teamAvg">0</b></span><span>Offensive coverage <b id="teamCoverage">0 / 18</b></span></div>
+  </section>
+
+  <section class="catalog-panel">
+    <div class="filters">
+      <label>Search<input id="search" type="search" placeholder="Pokémon or form name…" autofocus></label>
+      <label>Type<select id="typeFilter"><option value="">All types</option></select></label>
+      <label>Transformation<select id="formFilter"><option value="">Everything</option><option value="base">Base Pokémon</option><option value="type">Change Type / Form</option><option value="mega">Mega / Primal</option><option value="gmax">Gigantamax</option></select></label>
+      <label class="shiny-check"><input id="shinyToggle" type="checkbox"> Show shiny sprites</label>
+    </div>
+    <p id="resultCount" class="result-count"></p>
+    <div id="catalog" class="catalog"></div>
+  </section>
+</main>
+<script src="team-tester.js"></script>
+</body>
+</html>

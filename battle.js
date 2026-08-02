@@ -78,10 +78,9 @@ const OPP_POWER = {
      G_HEAL_FAINTED   -> 0.78
    G_HEAL_FAINTED is by far the strongest lever - lower it to tighten further. */
 const G_OPP_POWER = {
-  // 5% easier across the entire Gauntlet: every final opponent stat multiplier
-  // is the previous value x 0.95. Region Challenge OPP_POWER is untouched.
-  "Gym Leader":0.95, "Trial":0.95, "Kahuna":0.95,
-  "Elite Four":0.988, "Champion Cup":0.988, "Champion":1.02125,
+  // 2.5% harder than the previous Gauntlet tuning. Region challenges are untouched.
+  "Gym Leader":0.97375, "Trial":0.97375, "Kahuna":0.97375,
+  "Elite Four":1.0127, "Champion Cup":1.0127, "Champion":1.04678125,
 };
 const G_MIN_MULT = 1.00;
 
@@ -125,6 +124,10 @@ function teamCurve(mySum, count) {
   return Math.max(TEAM_CURVE_MIN,
     Math.min(TEAM_CURVE_MAX, 1 + (avg - TEAM_CURVE_PIVOT) * TEAM_CURVE_RATE));
 }
+
+// Make good type matchups matter more than a small raw-stat advantage while
+// retaining the team-stat curve needed to reach a flawless 121-0 run.
+const TYPE_EDGE_EXP = 1.12;
 
 /* You bring as many Pokemon as they do. A gym leader with two is a 2v2, not a
    6v2 — which is the only thing that stops a stacked team auto-sweeping the
@@ -246,11 +249,14 @@ const hpAt   = (base, lvl) => Math.floor((2 * base + 36) * lvl / 100) + lvl + 10
 function fighter(mon, lvl, stats, power, minMult) {
   const k = power || 1;
   const s = (stats || mon.s).map(v => v * k);
+  // Level-10 Dynamax/Gigantamax doubles calculated HP only. Base stats and
+  // Attack, Defense, Sp. Atk, Sp. Def, and Speed remain unchanged.
+  const maxHp = Math.round(hpAt(s[0], lvl) * (mon.hpMultiplier || 1));
   return {
     name: mon.name, id: mon.id, t1: mon.t1, t2: mon.t2,
     attackType: mon.attackType || null, lvl,
     minMult: minMult || 0,
-    hp:  hpAt(s[0], lvl), max: hpAt(s[0], lvl),
+    hp: maxHp, max: maxHp,
     atk: statAt(s[1], lvl), def: statAt(s[2], lvl),
     spa: statAt(s[3], lvl), spd: statAt(s[4], lvl),
     spe: statAt(s[5], lvl),
@@ -324,7 +330,7 @@ function simBattle(mine, theirs, rng) {
       if (att.skip) { att.skip = false; continue; }      // just switched in
       if (rng() < MISS) continue;                       // whiffed
       const mult = Math.max(bestMult(att, def), att.minMult || 0);
-      def.hp -= damage(att, def, mult, rng);
+      def.hp -= damage(att, def, Math.pow(mult, TYPE_EDGE_EXP), rng);
 
       if (def.hp <= 0) {
         // both sides bring in their best remaining answer, but the

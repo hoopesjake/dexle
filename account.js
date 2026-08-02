@@ -3,10 +3,11 @@
   const $=id=>document.getElementById(id);
   const REGIONS={1:"Kanto",2:"Johto",3:"Hoenn",4:"Sinnoh",5:"Unova",6:"Kalos",7:"Alola",8:"Galar",9:"Paldea"};
   const sprite=(id,shiny=true)=>`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${shiny?"shiny/":""}${id}.png`;
-  const savedSprite=m=>{const custom=m.shiny?m.shiny_sprite:m.sprite;return custom?`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${custom}`:sprite(m.id,m.shiny);};
+  const savedSprite=m=>{if(+m.id===10301)return"assets/megas/mega-zygarde.png";const custom=m.shiny?m.shiny_sprite:m.sprite;return custom?`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${custom}`:sprite(m.id,m.shiny);};
   const CANDY_ICON="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/rare-candy.png";
   let authMode="create",hallMode="region",dex=[],pokemon=[],dexVisible=27;
   const message=(text,error=false)=>{
+    if(error&&/email.*rate limit|rate limit.*email/i.test(text))text="Supabase has temporarily reached its email limit. Please wait before trying email signup again.";
     const id=error?"accountError":"accountMessage";
     let el=$(id);
     // Protect against GitHub Pages briefly mixing cached HTML with new JS.
@@ -62,9 +63,9 @@
     const collected=new Map(dex.map(x=>[x.form_key,x]));
     let cards=pokemon.map(p=>{
       const hit=collected.get(`base:${p.id}`);
-      return{base:p.id,recent:hit?.last_seen_at||"",html:`<div class="dex-mon ${hit?"":"locked"}" title="${p.name}">${hit?`<img loading="lazy" src="${sprite(p.id)}" alt="${p.name}">`:""}<b>${p.name}</b><small>#${String(p.id).padStart(4,"0")}</small>${hit&&Date.now()-new Date(hit.last_seen_at)<21600000?'<span class="dex-new">New</span>':""}</div>`};
+      return{base:p.id,recent:hit?.last_seen_at||"",html:`<${hit?'a href="dexle.html?pokemon='+p.id+'&shiny=1"':'div'} class="dex-mon ${hit?"":"locked"}" title="${hit?`View shiny ${p.name} Pokédex entry`:p.name}">${hit?`<img loading="lazy" src="${sprite(p.id)}" alt="${p.name}">`:""}<b>${p.name}</b><small>#${String(p.id).padStart(4,"0")}</small>${hit&&Date.now()-new Date(hit.last_seen_at)<21600000?'<span class="dex-new">New</span>':""}</${hit?'a':'div'}>`};
     });
-    dex.filter(x=>x.is_mega||x.pokemon_id!==x.base_id).forEach(x=>cards.push({base:x.base_id,recent:x.last_seen_at,html:`<div class="dex-mon ${x.is_mega?"mega":""}">${x.is_mega?'<span class="dex-gem">&#9672;</span>':""}<img loading="lazy" src="${sprite(x.pokemon_id)}" alt="${x.pokemon_name}" onerror="this.onerror=null;this.src='${sprite(x.base_id)}'"><b>${x.pokemon_name}</b><small>${x.is_mega?"Mega":"Alternate"} form</small></div>`}));
+    dex.filter(x=>x.is_mega||x.pokemon_id!==x.base_id).forEach(x=>cards.push({base:x.base_id,recent:x.last_seen_at,html:`<div class="dex-mon ${x.is_mega?"mega":""}">${x.is_mega?'<span class="dex-gem">&#9672;</span>':""}<img loading="lazy" src="${+x.pokemon_id===10301?'assets/megas/mega-zygarde.png':sprite(x.pokemon_id)}" alt="${x.pokemon_name}" onerror="this.onerror=null;this.src='${sprite(x.base_id)}'"><b>${x.pokemon_name}</b><small>${x.is_mega?"Mega":"Alternate"} form</small></div>`}));
     if($("shinySort").value==="recent")cards.sort((a,b)=>String(b.recent).localeCompare(String(a.recent))||a.base-b.base);else cards.sort((a,b)=>a.base-b.base);
     $("shinyGrid").innerHTML=cards.slice(0,dexVisible).map(x=>x.html).join("");
     $("shinyMore").hidden=dexVisible>=cards.length;

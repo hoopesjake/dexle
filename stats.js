@@ -17,7 +17,7 @@
     [650,658],[722,730],[810,818],[906,914],
   ].flatMap(([first,last]) => Array.from({length:last-first+1},(_,i) => first+i)));
   const localSprite = (id, shiny) =>
-    id === 10301 && !shiny ? "assets/megas/mega-zygarde.png" : sprite(id, shiny);
+    id === 10301 ? "assets/megas/mega-zygarde.png" : sprite(id, shiny);
   const savedSprite = mon => {
     const custom = mon.shiny ? mon.shiny_sprite : mon.sprite;
     return custom

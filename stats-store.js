@@ -130,8 +130,25 @@
 
   async function account() {
     const current = await user();
-    const { data: profile } = await client.from("profiles")
+    let { data: profile } = await client.from("profiles")
       .select("username").eq("user_id", current.id).maybeSingle();
+    if (!profile && current.email && !current.is_anonymous) {
+      const metaName = current.user_metadata?.preferred_username ||
+        current.user_metadata?.full_name || current.user_metadata?.name ||
+        current.email.split("@")[0];
+      let clean = String(metaName || "Trainer").replace(/[^A-Za-z0-9_]/g, "").slice(0, 20);
+      if (clean.length < 3) clean = `Trainer${current.id.replace(/-/g, "").slice(0, 8)}`;
+      let result = await client.from("profiles")
+        .insert({ user_id:current.id, username:clean }).select("username").single();
+      if (result.error?.code === "23505") {
+        const suffix = current.id.replace(/-/g, "").slice(0, 5);
+        clean = `${clean.slice(0, 14)}_${suffix}`;
+        result = await client.from("profiles")
+          .insert({ user_id:current.id, username:clean }).select("username").single();
+      }
+      if (result.error) throw result.error;
+      profile = result.data;
+    }
     // An upgraded anonymous user can briefly retain stale anonymous metadata
     // while its new email session settles. An email or profile means account.
     return {

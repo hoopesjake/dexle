@@ -51,6 +51,7 @@ const SPRITE = (id, shiny) =>
 const SPRITE_ROOT = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/";
 
 function spriteUrl(mon, shiny) {
+  if (mon.id === 10301) return "assets/megas/mega-zygarde.png";
   const custom = shiny ? mon.shinySprite : mon.sprite;
   return custom ? SPRITE_ROOT + custom : SPRITE(mon.id, shiny);
 }
@@ -644,7 +645,20 @@ function megaFormsFor(p) {
   return forms.length ? forms : null;
 }
 function originalPokemon(m) { return m.base || m.typeBase || m.p; }
-const megaEligible = () => team.filter(m => megaFormsFor(originalPokemon(m)));
+function powerFormsForMember(m) {
+  const root = m.typeBase || (m.base?.baseId && byId[m.base.baseId]) || m.base || m.p;
+  let forms = megaFormsFor(root);
+  if (!forms) return null;
+  // Urshifu may only Gigantamax into the style currently selected through
+  // Change Type: Dark = Single Strike, Water = Rapid Strike.
+  if (+root.id === 892) {
+    const rapid = m.p.t2 === "water";
+    forms = forms.filter(f => !/Gigantamax Urshifu/i.test(f.name) ||
+      (rapid ? /Rapid Strike/i.test(f.name) : /Single Strike/i.test(f.name)));
+  }
+  return forms.length ? forms : null;
+}
+const megaEligible = () => team.filter(m => powerFormsForMember(m));
 const typeFormsFor = p => formCatalog(p, "free");
 const typeEligible = () => team.filter(m => !m.mega && typeFormsFor(originalPokemon(m)).length);
 
@@ -673,10 +687,12 @@ const candyEligible = () => team.filter(candyOk);
 function applyMega(slot, form) {
   const m = team[slot];
   delete m.candy;                             // a Mega can't also be candied
-  m.base = originalPokemon(m);                // remember the true original
+  m.base = m.p;                               // remember the selected style/form
+  m.preMegaTypeBase = m.typeBase;
+  m.preMegaTypeForm = m.typeForm;
   delete m.typeBase; delete m.typeForm;
   m.p    = { ...form, legend: m.base.legend, gen: m.base.gen,
-             region: m.base.region, baseId: m.base.id };
+             region: m.base.region, baseId: m.base.baseId || m.base.id };
   m.mega = form.name;
   megaIdx = slot;
   setSelMode(null);
@@ -703,6 +719,9 @@ function revertMega() {
   if (megaIdx < 0) return;
   const m = team[megaIdx];
   if (m.base) m.p = m.base;
+  if (m.preMegaTypeBase) m.typeBase = m.preMegaTypeBase;
+  if (m.preMegaTypeForm) m.typeForm = m.preMegaTypeForm;
+  delete m.preMegaTypeBase; delete m.preMegaTypeForm;
   delete m.mega; delete m.base;
   megaIdx = -1;
 }
@@ -724,7 +743,7 @@ function pickForSelection(slot) {
   if (selMode !== "mega") return;
 
   const m     = team[slot];
-  const forms = megaFormsFor(originalPokemon(m));
+  const forms = powerFormsForMember(m);
   if (!forms) {
     console.warn("No Mega form for", (m.base || m.p).name, (m.base || m.p).id);
     return;
@@ -739,12 +758,13 @@ function openMegaChooser(slot, forms, mode) {
   const before = originalPokemon(team[slot]);
   const isType = mode === "type";
   const isDrive = isType && forms.every(f => f.drive);
+  const baseFormName = forms.find(f => f.baseName)?.baseName || before.name;
   $("formModalTitle").textContent = isDrive ? "Choose a Drive" : isType ? "Choose a Type Form" : "Choose a Power Form";
   $("megaBody").innerHTML = `
-    <p class="mega-lead">${before.name} has ${forms.length} ${isDrive ? "Drive choices. These are free and only change Techno Blast's offensive type." : isType ? "type choices. These are free and do not change its stats." : "powered forms. One powered form may be active per team."}</p>
+    <p class="mega-lead">${before.name} has ${forms.length} ${isDrive ? "Drive choices. These are free and only change Techno Blast's offensive type." : isType ? "form choices. These are free and may change appearance, typing, or stats." : "powered forms. One powered form may be active per team."}</p>
     <div class="megaopts">
       ${isType && team[slot].typeForm ? `<button class="megaopt" data-original="1">
-        ${spriteImg(before, team[slot].shiny)}<b>Original ${before.name}</b>
+        ${spriteImg(before, team[slot].shiny)}<b>${baseFormName}</b>
         <div>${[before.t1,before.t2].filter(Boolean).map(chip).join(" ")}</div>
         <div class="mo-bst">Restore original typing</div></button>` : ""}
       ${forms.map((f, i) => `
@@ -754,7 +774,7 @@ function openMegaChooser(slot, forms, mode) {
           <small class="form-kind">${f.kind}</small>
           <div>${[f.t1, f.t2].filter(Boolean).map(chip).join(" ")}</div>
           ${f.attackType ? `<div class="drive-attack">Techno Blast: ${chip(f.attackType)}</div>` : ""}
-          <div class="mo-bst">${isType ? `${sumStats(f.s)} total stats` : `${sumStats(before.s)} → <i>${sumStats(f.s)}</i>`}</div>
+          <div class="mo-bst">${f.gmax ? `${sumStats(f.s)} BST → <i>${sumStats(f.s) + f.s[0]}</i> HP-adjusted · battle HP ×2` : isType ? `${sumStats(f.s)} total stats` : `${sumStats(before.s)} → <i>${sumStats(f.s)}</i>`}</div>
           ${isType ? "" : `<div class="mo-diff">${statDiff(before.s, f.s)}</div>`}
         </button>`).join("")}
     </div>`;
@@ -847,7 +867,7 @@ function renderDone() {
 
     // selection mode: which cards can be clicked
     let pick = "";
-    if (selMode === "mega")  pick = megaFormsFor(originalPokemon(m)) ? "pickable mega" : "dimmed";
+    if (selMode === "mega")  pick = powerFormsForMember(m) ? "pickable mega" : "dimmed";
     if (selMode === "type")  pick = !m.mega && typeFormsFor(originalPokemon(m)).length ? "pickable typeform" : "dimmed";
     if (selMode === "candy") pick = candyOk(m) ? "pickable candy" : "dimmed";
 
@@ -861,9 +881,9 @@ function renderDone() {
         <b>${p.name}</b>
         <div>${[p.t1,p.t2].filter(Boolean).map(chip).join(" ")}</div>
         ${m.from ? `<div class="fin-from">from ${byId[m.from].name}</div>` : ""}
-        <div class="fin-bst">${t}${m.starter ? " (bonded)" : m.candy ? " (candied)" : ""}</div>
+        <div class="fin-bst">${p.gmax ? `${t} BST → ${t + s[0]} HP-adjusted` : `${t}${m.starter ? " (bonded)" : m.candy ? " (candied)" : ""}`}</div>
         <div class="fin-badges">
-          ${m.mega   ? '<span class="badge mega">Mega Evolved</span>' : ""}
+          ${m.mega   ? `<span class="badge mega">${p.gmax ? "Gigantamax · HP ×2" : "Mega Evolved"}</span>` : ""}
           ${m.typeForm ? `<span class="badge typeform">${m.p.driveName || "Change Type"}</span>` : ""}
           ${m.candy  ? `<span class="badge candy"><img src="${CANDY_ICON}" alt="">Rare Candy +${Math.round((CANDY_BOOST-1)*100)}%</span>` : ""}
         </div>
