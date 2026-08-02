@@ -89,8 +89,14 @@ const teamBst = m => m.starter ? boosted(m.p).reduce((a,b) => a+b, 0) : bst(m.p)
 
 /* ---------- mode, from the URL ---------- */
 // index.html links here as ?mode=champion or ?mode=gauntlet
-const MODE = new URLSearchParams(location.search).get("mode") === "gauntlet"
-  ? "gauntlet" : "champion";
+const MODE = new URLSearchParams(location.search).get("mode") === "gauntlet" ? "gauntlet" : "champion";
+const DAILY_CHAMPIONS=[
+  {name:"Blue",region:"Kanto",type:"normal"},{name:"Lance",region:"Johto",type:"dragon"},
+  {name:"Steven",region:"Hoenn",type:"steel"},{name:"Cynthia",region:"Sinnoh",type:"dragon"},
+  {name:"Alder",region:"Unova",type:"bug"},{name:"Diantha",region:"Kalos",type:"fairy"},
+  {name:"Kukui",region:"Alola",type:"rock"},{name:"Leon",region:"Galar",type:"dragon"},
+  {name:"Geeta",region:"Paldea",type:"rock"}
+];
 
 /* ---------- starter evolution ---------- */
 // Every one of the 27 starters is exactly three stages at consecutive dex
@@ -129,6 +135,8 @@ let starterSpins = 0;            // one initial spin plus one respin
 let starterGen   = null;         // so a respin can't hand back the same region
 const STARTER_SPINS = 2;
 let spinning  = false;
+let dailyOpponent=null;
+let dailyBattleResult=null;
 
 /* ---------- load ---------- */
 (async function init() {
@@ -179,7 +187,7 @@ function applyMode() {
     startStarter();
   } else {
     $("pageTitle").textContent = "Region Champion";
-    $("pageSub").textContent   = "Pick a region, then draft a team of six.";
+    $("pageSub").textContent   = "Take today's Champion challenge or play the full region circuit.";
     drawChallenge();
     show("scChallenge");
   }
@@ -196,6 +204,17 @@ function show(id) {
 
 /* ---------- 1. challenge ---------- */
 function drawChallenge() {
+  const done=dailyChampionResult();
+  const now=new Date(),midnight=new Date(now);midnight.setHours(24,0,0,0);const ms=midnight-now,reset=`${Math.floor(ms/3600000)}h ${Math.floor(ms%3600000/60000)}m`;
+  $("chHd").textContent="Choose your challenge";
+  $("chSub").textContent="Fight today's six-Pokémon Champion team, or take on a complete region challenge.";
+  $("chgrid").innerHTML=`<button class="chcard daily-champion-card ${done?"complete":""}" data-daily="1"><small>Once per day</small><b>Daily Champion Battle</b><span>${done?`Share your winning team · resets in ${reset}`:`One rotating Champion · 6 vs 6 · resets in ${reset}`}</span><strong>${done?"Share Your Results":"Play Today's Battle"}</strong></button><button class="chcard regular-champion-card" data-regular="1"><small>Unlimited play</small><b>Region Champion</b><span>Choose one of nine full region circuits</span><strong>Choose a Region</strong></button>`;
+  $("toStarter").hidden=true;
+  $("chgrid").querySelector("[data-daily]").onclick=()=>done?showSavedDailyChampion(done):startDailyChampion();
+  $("chgrid").querySelector("[data-regular]").onclick=drawRegionChallenge;
+}
+function drawRegionChallenge() {
+  $("chHd").textContent="Choose your region";$("chSub").textContent="Which Champion are you going after? You'll still draft Pokémon from every generation.";
   $("chgrid").innerHTML = Object.keys(REGIONS).map(g => {
     const n = OPP[g] ? OPP[g].opponents.length : 13;
     return `
@@ -307,7 +326,9 @@ function coverageData() {
 
   // which types are actually on the opposition in this region
   let facing = null;
-  if (MODE === "champion" && challenge && challenge.mode === "single" && OPP[challenge.gen]) {
+  if (challenge?.mode === "daily" && dailyOpponent) {
+    facing=new Set();dailyOpponent.team.forEach(m=>[m.t1,m.t2].filter(Boolean).forEach(t=>facing.add(t)));
+  } else if (MODE === "champion" && challenge && challenge.mode === "single" && OPP[challenge.gen]) {
     facing = new Set();
     OPP[challenge.gen].opponents.forEach(o =>
       o.team.forEach(m => [m.t1, m.t2].filter(Boolean).forEach(t => facing.add(t))));
@@ -354,12 +375,17 @@ function drawCoverage() {
         : `<span class="covnone">no shared weaknesses</span>`}</div>
     </div>
     ${facing ? `<p class="covnote">Outlined types appear on trainers in
-       ${OPP[challenge.gen].region}. Gaps you never face don't matter.</p>` : ""}`;
+       ${challenge.mode==="daily"?dailyOpponent.name:OPP[challenge.gen].region}. Gaps you never face don't matter.</p>` : ""}`;
 }
 
 /* ---------- who you'll face ---------- */
 function drawOpponents() {
   // only meaningful for a single region; the Gauntlet spans all nine
+  if (challenge?.mode === "daily" && dailyOpponent) {
+    $("oppPanel").hidden=false;$("oppCount").textContent=`6 vs 6 · Champion ${dailyOpponent.name} · Ace: ${dailyOpponent.team[0].name}`;
+    $("oppList").innerHTML=`<div class="opp"><div class="opp-head"><b>Champion ${dailyOpponent.name}</b><span class="opp-role">${dailyOpponent.region}</span><span class="type" style="background:${TYPE_COLOR[dailyOpponent.type]}">${dailyOpponent.type} ace</span></div><div class="opp-team">${dailyOpponent.team.map(m=>`<div class="opp-mon ${m.ace?"daily-ace":""}" title="${m.name} · Max trained"><img src="${spriteUrl(m,false)}" alt="${m.name}"><span class="opp-mn">${m.name}${m.ace?" ★ Ace":""}</span><span class="opp-lv">Max trained</span><span class="opp-mt">${[m.t1,m.t2].filter(Boolean).map(chip).join("")}</span></div>`).join("")}</div></div>`;
+    return;
+  }
   if (MODE !== "champion" || !challenge || challenge.mode !== "single") {
     $("oppPanel").hidden = true;
     return;
@@ -818,6 +844,7 @@ function renderDone() {
   const shinies = team.filter(m => m.shiny).length;
   const where   = challenge.mode === "gauntlet"
     ? "the full nine-region Gauntlet"
+    : challenge.mode === "daily" ? `today's battle with Champion ${dailyOpponent.name}`
     : `${REGIONS[challenge.gen]} (Generation ${challenge.gen})`;
 
   $("doneSub").innerHTML =
@@ -830,7 +857,7 @@ function renderDone() {
     : MODE === "gauntlet" ? "Run the Gauntlet"
                           : "Run the challenge";
 
-  const canUse = !locked && (MODE === "gauntlet" || challenge.mode === "single");
+  const canUse = !locked && (MODE === "gauntlet" || challenge.mode === "single" || challenge.mode === "daily");
   const elig   = megaEligible();
   const typeElig = typeEligible();
   const hasDrive = typeElig.some(m => typeFormsFor(originalPokemon(m)).some(f => f.drive));
@@ -1054,6 +1081,7 @@ function runGauntlet() {
 
 /* ---------- 5. run the challenge ---------- */
 function runChallenge() {
+  if(challenge.mode==="daily")return runDailyChampion();
   const g = OPP[challenge.gen];
   if (!g) return;
 
@@ -1115,6 +1143,7 @@ function runChallenge() {
         </div>
       </div>`;
   }).join("");
+  $("toStarter").hidden=false;
 
   $("battles").innerHTML = `
     <div class="reg ${l === 0 ? "clean" : ""}">
@@ -1140,6 +1169,47 @@ function runChallenge() {
   show("scResult");
   requestAnimationFrame(() => $("scResult").scrollIntoView({ block:"start" }));
 }
+function dailyAttemptsKey(){return `${dailyChampionKey()}:attempts`;}
+function runDailyChampion(){
+  const attempts=+(localStorage.getItem(dailyAttemptsKey())||0)+1;localStorage.setItem(dailyAttemptsKey(),attempts);
+  const mine=team.map(m=>fighter(m.p,100,statsFor(m),1,0));
+  const theirs=dailyOpponent.team.map(m=>fighter(m,100,m.s,1,0));
+  const seed=team.reduce((n,m)=>n+(+m.p.id||0),attempts*9973);
+  const sims=Array.from({length:101},(_,i)=>simBattle(mine,theirs,mulberry(seed+i*104729)));
+  const winRate=sims.filter(r=>r.win).length/101,winner=winRate>=.5;
+  const candidates=sims.filter(r=>r.win===winner).sort((a,b)=>(a.left-a.oleft)-(b.left-b.oleft));
+  const result=candidates[Math.floor(candidates.length/2)];dailyBattleResult=result;locked=true;lastScreen="scResult";
+  const faintedMine=team.map(m=>m.p.name).filter(n=>!result.mineAlive.includes(n));
+  const faintedTheirs=dailyOpponent.team.map(m=>m.name).filter(n=>!result.oppAlive.includes(n));
+  $("recW").textContent=result.left;$("recL").textContent=result.oleft;$("recRank").innerHTML="";
+  $("recTitle").textContent=result.win?`You defeated Champion ${dailyOpponent.name}!`:`Champion ${dailyOpponent.name} wins`;
+  $("recSub").textContent=result.win?`${result.left} of your Pokémon remained after attempt ${attempts}.`:`Your team fainted with ${result.oleft} opposing Pokémon left. A full new draft awaits.`;
+  $("recStats").innerHTML=`<div class="rstat"><b>Your Pokémon left</b><span>${result.left}/6</span></div><div class="rstat"><b>Champion fainted</b><span>${6-result.oleft}/6</span></div><div class="rstat"><b>Win simulation</b><span>${Math.round(winRate*100)}%</span></div><div class="rstat"><b>Attempts</b><span>${attempts}</span></div>`;
+  $("battles").innerHTML=`<div class="daily-battle-summary"><h3>Your team</h3><div class="daily-result-team">${team.map(m=>`<span class="${faintedMine.includes(m.p.name)?"fainted":""}">${spriteImg(m.p,m.shiny)}<b>${m.p.name}</b></span>`).join("")}</div><h3>Champion ${dailyOpponent.name}</h3><div class="daily-result-team">${dailyOpponent.team.map(m=>`<span class="${faintedTheirs.includes(m.name)?"fainted":""}">${spriteImg(m,false)}<b>${m.name}${m.ace?" ★":""}</b></span>`).join("")}</div></div>`;
+  $("againBtn2").textContent=result.win?"Share Results":"Draft a New Team";
+  if(result.win){const saved={date:dailyChampionDate(),champion:dailyOpponent.name,attempts,team:team.map(m=>m.p.name),members:team.map(m=>m.p),left:result.left,opponent:dailyOpponent};localStorage.setItem(dailyChampionKey(),JSON.stringify(saved));}
+  show("scResult");requestAnimationFrame(()=>$("scResult").scrollIntoView({block:"start"}));
+}
+function dailyChampionShareText(saved=dailyChampionResult()){return `I beat Champion ${saved.champion} in ${saved.attempts} ${saved.attempts===1?"attempt":"attempts"}! My team: ${saved.team.join(", ")}. Try the Daily Champion Battle here: dexle.io`;}
+async function shareDailyChampion(){const saved=dailyChampionResult();if(!saved)return;const text=dailyChampionShareText(saved);try{if(navigator.share)await navigator.share({title:"My Daily Champion result",text});else{await navigator.clipboard.writeText(text);alert("Result copied — paste it into a text message!");}}catch(e){}}
+function showSavedDailyChampion(saved){dailyOpponent=saved.opponent;challenge={mode:"daily",gen:1};team=(saved.members||saved.team.map(name=>DEX.find(p=>p.name===name))).filter(Boolean).map(p=>({p,shiny:false}));$("recW").textContent=saved.left;$("recL").textContent=0;$("recRank").innerHTML="";$("recTitle").textContent=`You defeated Champion ${saved.champion}!`;$("recSub").textContent=`Won in ${saved.attempts} ${saved.attempts===1?"attempt":"attempts"} with ${saved.left} Pokémon left.`;$("recStats").innerHTML=`<div class="rstat"><b>Attempts</b><span>${saved.attempts}</span></div><div class="rstat"><b>Winning team</b><span>${saved.team.length}/6</span></div>`;$("battles").innerHTML=`<div class="daily-battle-summary"><h3>Your winning team</h3><div class="daily-result-team">${team.map(m=>`<span>${spriteImg(m.p,false)}<b>${m.p.name}</b></span>`).join("")}</div></div>`;$("againBtn2").textContent="Share Results";locked=true;lastScreen="scResult";show("scResult");}
+
+const dailyChampionDate=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;};
+const dailyChampionKey=()=>`dexle-daily-champion:${dailyChampionDate()}`;
+function dailyChampionResult(){try{return JSON.parse(localStorage.getItem(dailyChampionKey())||"null");}catch(e){return null;}}
+function seededDaily(seed){let t=seed>>>0;return()=>{t+=0x6D2B79F5;let r=Math.imul(t^t>>>15,1|t);r^=r+Math.imul(r^r>>>7,61|r);return((r^r>>>14)>>>0)/4294967296;};}
+function makeDailyOpponent(){
+  const date=dailyChampionDate(),seed=+[...date].filter(c=>/\d/.test(c)).join(""),rng=seededDaily(seed);
+  const [yy,mm,dd]=date.split("-").map(Number),ordinal=Math.floor(Date.UTC(yy,mm-1,dd)/86400000);
+  const champ=DAILY_CHAMPIONS[ordinal%DAILY_CHAMPIONS.length];
+  const catalog=[...DEX,...Object.values(MEGAS).flat(),...Object.values(FORMS).flat()].filter(p=>p?.s?.length===6);
+  const strong=catalog.filter(p=>bst(p)>=540),acePool=strong.filter(p=>p.t1===champ.type||p.t2===champ.type);
+  const used=new Set(),take=pool=>{let p;do{p=pool[Math.floor(rng()*pool.length)];}while(used.has(`${p.id}:${p.name}`));used.add(`${p.id}:${p.name}`);return p;};
+  const ace=take(acePool.length?acePool:strong),rest=Array.from({length:5},()=>take(strong));
+  const boost=(p,aceMon)=>({...p,s:p.s.map((v,i)=>Math.max(v,aceMon?(i===0?130:125):(i===0?110:105))),lvl:100,ace:aceMon});
+  return {...champ,role:"Daily Champion",place:champ.region,team:[boost(ace,true),...rest.map(p=>boost(p,false))]};
+}
+function startDailyChampion(){const saved=dailyChampionResult();if(saved)return showSavedDailyChampion(saved);dailyOpponent=makeDailyOpponent();challenge={mode:"daily",gen:DAILY_CHAMPIONS.findIndex(c=>c.name===dailyOpponent.name)+1};startStarter();}
 
 // how many of the 18 types your team can hit for super-effective damage
 function coverage() {
@@ -1205,6 +1275,7 @@ const removeShinyNote = () => { const n = $("shinyNote"); if (n) n.remove(); };
 
 /* ---------- start over ---------- */
 function startOver() {
+  const wasDaily=challenge?.mode==="daily";
   $("scBall").querySelector(".panel").style.minHeight = "";
   team = [];
   spin = null;
@@ -1241,13 +1312,14 @@ function startOver() {
   $("covToggle").setAttribute("aria-expanded", "false");
   $("covToggle").classList.remove("open");
 
-  if (MODE === "gauntlet") {
+  if(wasDaily){startDailyChampion();
+  } else if (MODE === "gauntlet") {
     challenge = { mode:"gauntlet" };
     startStarter();                     // no region to choose
   } else {
     challenge = null;
     $("toStarter").disabled = true;
-    $("chgrid").querySelectorAll(".chcard").forEach(b => b.classList.remove("on"));
+    drawChallenge();
     show("scChallenge");
   }
 }
@@ -1315,7 +1387,7 @@ $("megaClose").onclick   = () => { $("megaModal").hidden = true; setSelMode(null
 $("megaModal").onclick   = e => {
   if (e.target.id === "megaModal") { $("megaModal").hidden = true; setSelMode(null); }
 };
-$("againBtn2").onclick   = startOver;
+$("againBtn2").onclick   = () => challenge?.mode==="daily"&&dailyChampionResult() ? shareDailyChampion() : startOver();
 $("backTeam").onclick    = () => show("scDone");
 $("restart").onclick     = startOver;
 // $("debugTeam").onclick = debugTeam;

@@ -347,6 +347,8 @@ function simBattle(mine, theirs, rng) {
   const oleft = B.filter(x => x.hp > 0).length;
   return {
     win: left > 0 && oleft === 0, left, oleft, turns,
+    mineAlive:A.filter(x=>x.hp>0).map(x=>x.name),
+    oppAlive:B.filter(x=>x.hp>0).map(x=>x.name),
     hp: A.map(x => Math.max(0, x.hp)),        // carried into the next battle
   };
 }
