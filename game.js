@@ -153,7 +153,8 @@ function startDaily(){
   $("again").textContent="Play again";drawPips();$("q").focus();
 }
 function dailyGuessBoxes(result={won:true,guesses:guesses.length}){
-  return [Array.from({length:BUDGET},(_,i)=>result.won&&i===result.guesses-1?"🟩":"⬜").join("")];
+  const count=result.won?result.guesses:BUDGET;
+  return [Array.from({length:count},(_,i)=>result.won&&i===count-1?"🟩":"⬜").join("")];
 }
 function dailyParticipationStreak(){
   let streak=0,d=new Date();d.setHours(0,0,0,0);
@@ -166,8 +167,10 @@ function dailyParticipationStreak(){
 function dailyShareText(){
   const result=JSON.parse(localStorage.getItem(dailyStorageKey())||"{}");
   const rows=dailyGuessBoxes(result);
-  const score=result.won?`${result.guesses}/10`:"X/10";
-  return `Dexle Daily ${dailyDateKey()} ${score}\n${rows.join("\n")}\n🔥 ${dailyParticipationStreak()} day streak\n${new URL("dexle.html",location.href).href}`;
+  const message=result.won
+    ? `I caught it in ${result.guesses} ${result.guesses===1?"guess":"guesses"}, try the Daily Dexle here: dexle.io`
+    : "I didn't catch it today, try the Daily Dexle here: dexle.io";
+  return `${rows.join("\n")}\n${message}`;
 }
 function openDailyResult(){
   const result=JSON.parse(localStorage.getItem(dailyStorageKey())||"{}");
