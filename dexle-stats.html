@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dexle — Stats</title>
-  <link rel="stylesheet" href="stats.css?v=20260801-11">
+  <link rel="stylesheet" href="stats.css?v=20260802-1">
   <link rel="stylesheet" href="trainer-menu.css?v=20260801-5">
 </head>
 <body>
@@ -36,11 +36,15 @@
   <div id="error" class="notice error" hidden></div> -->
 
   <section class="panel dexle-progress">
+    <div class="dexle-stat-modes" role="tablist" aria-label="Choose Dexle stats">
+      <button class="on" data-stat-mode="daily" role="tab" aria-selected="true">Daily Challenge</button>
+      <button data-stat-mode="regular" role="tab" aria-selected="false">Dexle</button>
+    </div>
     <div class="section-head">
       <div>
-        <p class="eyebrow">Guessing-game record</p>
-        <h2>Your Dexle progress</h2>
-        <p class="section-copy">Your all-time catches, failures, streaks, and guess distribution.</p>
+        <p class="eyebrow" id="statsEyebrow">Once-a-day record</p>
+        <h2 id="statsTitle">Your Daily Challenge progress</h2>
+        <p class="section-copy" id="statsCopy">Your daily catches, failures, participation streak, and guess distribution.</p>
       </div>
       <a class="play-dexle" href="dexle.html">Play Dexle</a>
     </div>
@@ -50,8 +54,8 @@
       <div><span>Fails</span><b>0</b></div>
       <div><span>Win rate</span><b>0%</b></div>
       <div><span>Average guesses</span><b>â€”</b></div>
-      <div><span>Current streak</span><b>0</b></div>
-      <div><span>Best streak</span><b>0</b></div>
+      <div><span id="currentStreakLabel">Daily streak</span><b>0</b></div>
+      <div><span id="bestStreakLabel">Best streak</span><b>0</b></div>
     </div>
     <div class="guess-chart" id="guessChart"></div>
   </section>
@@ -60,7 +64,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script src="stats-store.js?v=20260801-2"></script>
-<script src="dexle-stats.js"></script>
+<script src="dexle-stats.js?v=20260802-1"></script>
 <script src="trainer-menu.js?v=20260801-7"></script>
 </body>
 </html>

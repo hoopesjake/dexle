@@ -43,6 +43,7 @@ h1,h2,h3,p{margin-top:0} h1{margin:0;font-size:30px;letter-spacing:.16em;text-tr
   background:var(--red);color:#fff;text-decoration:none;font-size:12px;
   font-weight:800;letter-spacing:.06em;text-transform:uppercase;
 }
+.dexle-stat-modes{display:inline-flex;margin:0 0 20px;padding:4px;border:1px solid var(--line);border-radius:10px;background:var(--ground)}.dexle-stat-modes button{border:0;border-radius:7px;padding:9px 15px;background:transparent;color:var(--dim);font:800 11px/1 "Segoe UI",system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;cursor:pointer}.dexle-stat-modes button.on{background:var(--panel2);color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.22)}
 .notice{display:flex;gap:8px;flex-direction:column;padding:16px 18px;margin-bottom:18px;border:1px solid var(--gold);
   border-radius:12px;background:#2A2940;color:#F8E8A0}
 .notice.error{border-color:var(--red);background:#352238;color:#FFD1D1}

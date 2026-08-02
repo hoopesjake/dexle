@@ -120,6 +120,20 @@
 <!-- confetti overlay -->
 <canvas id="confetti"></canvas>
 
+<div id="dailyResultModal" hidden>
+  <article class="daily-result-card" role="dialog" aria-modal="true" aria-labelledby="dailyResultTitle">
+    <button id="dailyResultClose" class="daily-result-close" type="button" aria-label="Close">&times;</button>
+    <p class="daily-result-kicker">Daily Challenge complete</p>
+    <img id="dailyResultImage" alt="">
+    <h2 id="dailyResultTitle">You caught it!</h2>
+    <p id="dailyResultSummary"></p>
+    <div id="dailyResultGrid" class="daily-result-grid" aria-label="Your guess results"></div>
+    <p id="dailyResultStreak" class="daily-result-streak"></p>
+    <button id="dailyShare" type="button">Share with Friends</button>
+    <p id="dailyShareStatus" class="tag" aria-live="polite"></p>
+  </article>
+</div>
+
 <!-- pokedex reveal -->
 <div id="dexmodal" hidden>
   <div class="dexcard">
@@ -165,7 +179,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script src="stats-store.js?v=20260801-2"></script>
-<script src="game.js?v=20260802-1"></script>
+<script src="game.js?v=20260802-2"></script>
 <script src="trainer-menu.js?v=20260802-1"></script>
 </body>
 </html>

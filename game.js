@@ -123,9 +123,12 @@ function newRound() {
 const dailyDateKey = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 const dailyStorageKey = () => `dexle-daily:${dailyDateKey()}`;
 function dailyIndex(key, length) {
-  let hash = 2166136261;
-  for (const char of `dexle:${key}`) { hash ^= char.charCodeAt(0); hash = Math.imul(hash, 16777619); }
-  return (hash >>> 0) % length;
+  const [year,month,day]=key.split("-").map(Number);
+  const ordinal=Math.floor(Date.UTC(year,month-1,day)/86400000);
+  const gcd=(a,b)=>b?gcd(b,a%b):a;
+  let step=Math.min(791,length-1)||1;
+  while(gcd(step,length)!==1)step--;
+  return ((ordinal*step+389)%length+length)%length;
 }
 function dailyComplete(){try{return !!localStorage.getItem(dailyStorageKey());}catch(e){return false;}}
 function updateDailyCard(){
@@ -134,8 +137,8 @@ function updateDailyCard(){
   const done=dailyComplete(),card=$("dailyCard");
   if(!card)return;
   card.classList.toggle("complete",done);
-  $("dailyPlay").disabled=!DEX.length||done;
-  $("dailyPlay").textContent=done?"Come Back Tomorrow":"Play Today's Challenge";
+  $("dailyPlay").disabled=!DEX.length;
+  $("dailyPlay").textContent=done?"Share Your Results":"Play Today's Challenge";
   $("dailyReset").textContent=done?`Completed · resets in ${hours}h ${minutes}m`:`Resets in ${hours}h ${minutes}m`;
 }
 function startDaily(){
@@ -148,6 +151,44 @@ function startDaily(){
   $("q").placeholder="Type a Pokémon name…";$("searchbar").classList.remove("caught");$("inspect").className="";
   $("grid").innerHTML="";$("hints").innerHTML="";$("hintbar").innerHTML="";$("dexmodal").hidden=true;$("end").className="";$("end").dataset.win="";
   $("again").textContent="Play again";drawPips();$("q").focus();
+}
+function dailyEmojiRows(){
+  return guesses.map(p=>{
+    const r=compare(p);
+    return [r.t1,r.t2,r.gen,r.stage,r.h.c,r.w.c,r.id.c,r.bst.c].map(v=>v==="hit"?"🟩":"⬜").join("");
+  });
+}
+function dailyParticipationStreak(){
+  let streak=0,d=new Date();d.setHours(0,0,0,0);
+  while(true){
+    try{if(!localStorage.getItem(`dexle-daily:${dailyDateKey(d)}`))break;}catch(e){break;}
+    streak++;d.setDate(d.getDate()-1);
+  }
+  return streak;
+}
+function dailyShareText(){
+  const result=JSON.parse(localStorage.getItem(dailyStorageKey())||"{}");
+  const rows=result.emoji||dailyEmojiRows();
+  const score=result.won?`${result.guesses}/10`:"X/10";
+  return `Dexle Daily ${dailyDateKey()} ${score}\n${rows.join("\n")}\n🔥 ${dailyParticipationStreak()} day streak\n${new URL("dexle.html",location.href).href}`;
+}
+function openDailyResult(){
+  const result=JSON.parse(localStorage.getItem(dailyStorageKey())||"{}");
+  const resultTarget=DEX.find(p=>p.id===+result.target)||target;
+  if(!resultTarget)return;
+  $("dailyResultImage").src=SPRITE(resultTarget.id);$("dailyResultImage").alt=resultTarget.name;
+  $("dailyResultSummary").textContent=`${resultTarget.name} in ${result.guesses} ${result.guesses===1?"guess":"guesses"}${result.hints?` with ${result.hints} hint${result.hints===1?"":"s"}`:""}.`;
+  $("dailyResultGrid").innerHTML=(result.emoji||dailyEmojiRows()).map(row=>`<div>${row}</div>`).join("");
+  $("dailyResultStreak").textContent=`🔥 ${dailyParticipationStreak()} day Daily Challenge streak`;
+  $("dailyShareStatus").textContent="";$("dailyResultModal").hidden=false;
+}
+function closeDailyResult(){$("dailyResultModal").hidden=true;showEnd();}
+async function shareDailyResult(){
+  const text=dailyShareText();
+  try{
+    if(navigator.share)await navigator.share({title:"My Dexle Daily result",text});
+    else{await navigator.clipboard.writeText(text);$("dailyShareStatus").textContent="Result copied — paste it into a text message!";}
+  }catch(e){if(e.name!=="AbortError")$("dailyShareStatus").textContent="Could not share this result.";}
 }
 
 function drawPips() {
@@ -393,12 +434,12 @@ function finish(won) {
 
   if (pending) { appendRow(pending); pending = null; }
   if (DAILY_MODE) {
-    try { localStorage.setItem(dailyStorageKey(), JSON.stringify({won,guesses:guesses.length,hints:hintsUsed,target:target.id,completedAt:new Date().toISOString()})); } catch (e) {}
+    try { localStorage.setItem(dailyStorageKey(), JSON.stringify({date:dailyDateKey(),won,guesses:guesses.length,hints:hintsUsed,target:target.id,emoji:dailyEmojiRows(),completedAt:new Date().toISOString()})); } catch (e) {}
     $("again").textContent = "Choose a Mode";
     updateDailyCard();
   }
 
-  if (!dexleSaveStarted && window.DexleStats?.configured) {
+  if (!DAILY_MODE && !dexleSaveStarted && window.DexleStats?.configured) {
     dexleSaveStarted = true;
     window.DexleStats.saveDexleGame({
       won,
@@ -423,7 +464,7 @@ function finish(won) {
     $("searchbar").classList.add("caught");
     $("q").value = "You Caught It!";
     fireConfetti();
-    setTimeout(openDex, 2000);
+    setTimeout(DAILY_MODE?openDailyResult:openDex, DAILY_MODE?900:2000);
   } else {
     showEnd();
     openDex();
@@ -596,11 +637,14 @@ function backToStart() {
    event bindings - keep them all here
    ========================================================= */
 $("play").onclick   = newRound;
-$("dailyPlay").onclick = startDaily;
+$("dailyPlay").onclick = () => dailyComplete() ? openDailyResult() : startDaily();
 $("again").onclick  = () => DAILY_MODE ? backToStart() : newRound();
 $("go").onclick     = submit;
 $("reopen").onclick = openDex;
 $("dexclose").onclick = closeDex;
+$("dailyResultClose").onclick = closeDailyResult;
+$("dailyShare").onclick = shareDailyResult;
+$("dailyResultModal").onclick = e => {if(e.target.id==="dailyResultModal")closeDailyResult();};
 
 $("menu").onclick        = openDrawer;
 $("drawerclose").onclick = closeDrawer;
@@ -664,6 +708,7 @@ $("dexmodal").onclick = e => { if (e.target.id === "dexmodal") closeDex(); };
 
 document.addEventListener("keydown", e => {
   if (e.key === "Escape" && !$("dexmodal").hidden) closeDex();
+  if (e.key === "Escape" && !$("dailyResultModal").hidden) closeDailyResult();
 });
 
 document.addEventListener("click", e => {
