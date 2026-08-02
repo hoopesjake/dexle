@@ -86,6 +86,7 @@ button:disabled{ opacity:.4; cursor:not-allowed; filter:none }
   display:block; font-size:15px; letter-spacing:.04em; font-weight:700;
 }
 .chcard span{ color:var(--ink-dim); font-size:11.5px }
+.mode-eyebrow-heading{margin:0 0 4px!important;color:#E278CE!important;font-size:10px!important;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
 
 
 /* ---------- coverage panel ---------- */

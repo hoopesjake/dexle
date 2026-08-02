@@ -207,6 +207,7 @@ function drawChallenge() {
   const done=dailyChampionResult();
   const now=new Date(),midnight=new Date(now);midnight.setHours(24,0,0,0);const ms=midnight-now,reset=`${Math.floor(ms/3600000)}h ${Math.floor(ms%3600000/60000)}m`;
   $("chHd").textContent="Choose your challenge";
+  $("chHd").classList.add("mode-eyebrow-heading");
   $("chSub").textContent="Fight today's six-Pokémon Champion team, or take on a complete region challenge.";
   $("chgrid").innerHTML=`<button class="chcard daily-champion-card ${done?"complete":""}" data-daily="1"><small>Once per day</small><b>Daily Champion Battle</b><span>${done?`Share your winning team · resets in ${reset}`:`One rotating Champion · 6 vs 6 · resets in ${reset}`}</span><strong>${done?"Share Your Results":"Play Today's Battle"}</strong></button><button class="chcard regular-champion-card" data-regular="1"><small>Unlimited play</small><b>Region Champion</b><span>Choose one of nine full region circuits</span><strong>Choose a Region</strong></button>`;
   $("toStarter").hidden=true;
@@ -214,7 +215,7 @@ function drawChallenge() {
   $("chgrid").querySelector("[data-regular]").onclick=drawRegionChallenge;
 }
 function drawRegionChallenge() {
-  $("chHd").textContent="Choose your region";$("chSub").textContent="Which Champion are you going after? You'll still draft Pokémon from every generation.";
+  $("chHd").textContent="Choose your region";$("chHd").classList.remove("mode-eyebrow-heading");$("chSub").textContent="Which Champion are you going after? You'll still draft Pokémon from every generation.";
   $("chgrid").innerHTML = Object.keys(REGIONS).map(g => {
     const n = OPP[g] ? OPP[g].opponents.length : 13;
     return `
