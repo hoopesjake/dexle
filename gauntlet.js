@@ -210,12 +210,13 @@ function drawChallenge() {
   $("chHd").classList.add("mode-eyebrow-heading");
   $("chgrid").classList.add("mode-choice-grid");
   $("chSub").textContent="Fight today's six-Pokémon Champion team, or take on a complete region challenge.";
-  $("chgrid").innerHTML=`<button class="chcard daily-champion-card ${done?"complete":""}" data-daily="1"><small>Once per day</small><b>Daily Champion Battle</b><span>${done?`Share your winning team · resets in ${reset}`:`One rotating Champion · 6 vs 6 · resets in ${reset}`}</span><strong>${done?"Share Your Results":"Play Today's Battle"}</strong></button><button class="chcard regular-champion-card" data-regular="1"><small>Unlimited play</small><b>Region Champion</b><span>Choose one of nine full region circuits</span><strong>Choose a Region</strong></button>`;
+  $("chgrid").innerHTML=`<button class="chcard daily-champion-card ${done?"complete":""}" data-daily="1"><small>Once per day</small><b>Daily Champion Battle</b><span>${done?`Share your winning team · resets in ${reset}`:`One rotating Champion · 6 vs 6 · resets in ${reset}`}</span><strong>${done?"Share Your Results":"Play Today's Battle"}</strong></button><button class="chcard regular-champion-card" data-regular="1"><small>Unlimited play</small><b>Region Champion</b><span>Choose one of nine full region circuits. Beat a region and earn a badge!</span><strong>Choose a Region</strong></button>`;
   $("toStarter").hidden=true;
   $("chgrid").querySelector("[data-daily]").onclick=()=>done?showSavedDailyChampion(done):startDailyChampion();
   $("chgrid").querySelector("[data-regular]").onclick=drawRegionChallenge;
 }
 function drawRegionChallenge() {
+  $("toStarter").hidden=false;
   $("chHd").textContent="Choose your region";$("chHd").classList.remove("mode-eyebrow-heading");$("chgrid").classList.remove("mode-choice-grid");$("chSub").textContent="Which Champion are you going after? You'll still draft Pokémon from every generation.";
   $("chgrid").innerHTML = Object.keys(REGIONS).map(g => {
     const n = OPP[g] ? OPP[g].opponents.length : 13;
