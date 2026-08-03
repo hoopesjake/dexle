@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Dexle — Trainer Friends</title>
   <link rel="stylesheet" href="stats.css?v=20260801-18">
-  <link rel="stylesheet" href="account.css?v=20260801-20">
+  <link rel="stylesheet" href="account.css?v=20260802-1">
   <link rel="stylesheet" href="trainer-menu.css?v=20260801-5">
 </head>
 <body>
@@ -29,10 +29,11 @@
     <section class="panel"><div class="section-head"><div><p class="eyebrow">Collection</p><h2 id="friendDexTitle">Shiny Dex</h2></div><label>Sort<select id="friendShinySort"><option value="recent">Most recent</option><option value="dex">Dex number</option></select></label></div><div class="dex-progress"><b id="friendShinyCount">0 / 1025</b><span>base Pokémon</span><i><span id="friendShinyBar"></span></i><b id="friendFormCount">0 bonus forms</b></div><div id="friendShinyGrid" class="shiny-grid"></div><button id="friendShinyMore" class="shiny-more" hidden>See more&hellip;</button></section>
   </div>
 </div>
+<div id="shinyEntryModal" class="shiny-entry-modal" hidden><article class="shiny-entry-card" role="dialog" aria-modal="true" aria-labelledby="shinyEntryName"><header><span class="shiny-entry-spark">&#10022;</span><span>Shiny Pok&eacute;dex entry</span><button id="shinyEntryClose" type="button" aria-label="Close">&times;</button></header><div id="shinyEntryBody"></div></article></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script src="stats-store.js?v=20260801-10"></script>
-<script src="friends.js?v=20260801-2"></script>
+<script src="friends.js?v=20260802-1"></script>
 <script src="trainer-menu.js?v=20260801-7"></script>
 </body>
 </html>

@@ -208,6 +208,7 @@ function drawChallenge() {
   const now=new Date(),midnight=new Date(now);midnight.setHours(24,0,0,0);const ms=midnight-now,reset=`${Math.floor(ms/3600000)}h ${Math.floor(ms%3600000/60000)}m`;
   $("chHd").textContent="Choose your challenge";
   $("chHd").classList.add("mode-eyebrow-heading");
+  $("chgrid").classList.add("mode-choice-grid");
   $("chSub").textContent="Fight today's six-Pokémon Champion team, or take on a complete region challenge.";
   $("chgrid").innerHTML=`<button class="chcard daily-champion-card ${done?"complete":""}" data-daily="1"><small>Once per day</small><b>Daily Champion Battle</b><span>${done?`Share your winning team · resets in ${reset}`:`One rotating Champion · 6 vs 6 · resets in ${reset}`}</span><strong>${done?"Share Your Results":"Play Today's Battle"}</strong></button><button class="chcard regular-champion-card" data-regular="1"><small>Unlimited play</small><b>Region Champion</b><span>Choose one of nine full region circuits</span><strong>Choose a Region</strong></button>`;
   $("toStarter").hidden=true;
@@ -215,7 +216,7 @@ function drawChallenge() {
   $("chgrid").querySelector("[data-regular]").onclick=drawRegionChallenge;
 }
 function drawRegionChallenge() {
-  $("chHd").textContent="Choose your region";$("chHd").classList.remove("mode-eyebrow-heading");$("chSub").textContent="Which Champion are you going after? You'll still draft Pokémon from every generation.";
+  $("chHd").textContent="Choose your region";$("chHd").classList.remove("mode-eyebrow-heading");$("chgrid").classList.remove("mode-choice-grid");$("chSub").textContent="Which Champion are you going after? You'll still draft Pokémon from every generation.";
   $("chgrid").innerHTML = Object.keys(REGIONS).map(g => {
     const n = OPP[g] ? OPP[g].opponents.length : 13;
     return `
@@ -1193,7 +1194,7 @@ function runDailyChampion(){
 }
 function dailyChampionShareText(saved=dailyChampionResult()){return `I beat Champion ${saved.champion} in ${saved.attempts} ${saved.attempts===1?"attempt":"attempts"}! My team: ${saved.team.join(", ")}. Try the Daily Champion Battle here: dexle.io`;}
 async function shareDailyChampion(){const saved=dailyChampionResult();if(!saved)return;const text=dailyChampionShareText(saved);try{if(navigator.share)await navigator.share({title:"My Daily Champion result",text});else{await navigator.clipboard.writeText(text);alert("Result copied — paste it into a text message!");}}catch(e){}}
-function showSavedDailyChampion(saved){dailyOpponent=saved.opponent;challenge={mode:"daily",gen:1};team=(saved.members||saved.team.map(name=>DEX.find(p=>p.name===name))).filter(Boolean).map(p=>({p,shiny:false}));$("recW").textContent=saved.left;$("recL").textContent=0;$("recRank").innerHTML="";$("recTitle").textContent=`You defeated Champion ${saved.champion}!`;$("recSub").textContent=`Won in ${saved.attempts} ${saved.attempts===1?"attempt":"attempts"} with ${saved.left} Pokémon left.`;$("recStats").innerHTML=`<div class="rstat"><b>Attempts</b><span>${saved.attempts}</span></div><div class="rstat"><b>Winning team</b><span>${saved.team.length}/6</span></div>`;$("battles").innerHTML=`<div class="daily-battle-summary"><h3>Your winning team</h3><div class="daily-result-team">${team.map(m=>`<span>${spriteImg(m.p,false)}<b>${m.p.name}</b></span>`).join("")}</div></div>`;$("againBtn2").textContent="Share Results";locked=true;lastScreen="scResult";show("scResult");}
+function showSavedDailyChampion(saved){$("dailyChampionShareSummary").textContent=`You defeated Champion ${saved.champion} in ${saved.attempts} ${saved.attempts===1?"attempt":"attempts"} with ${saved.left} Pokémon left.`;const members=(saved.members||saved.team.map(name=>DEX.find(p=>p.name===name))).filter(Boolean);$("dailyChampionShareTeam").innerHTML=members.map(p=>`<span>${spriteImg(p,false)}<b>${p.name}</b><i>${[p.t1,p.t2].filter(Boolean).map(chip).join("")}</i></span>`).join("");$("dailyChampionModal").hidden=false;}
 
 const dailyChampionDate=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;};
 const dailyChampionKey=()=>`dexle-daily-champion-v2:${dailyChampionDate()}`;
@@ -1392,8 +1393,10 @@ $("megaClose").onclick   = () => { $("megaModal").hidden = true; setSelMode(null
 $("megaModal").onclick   = e => {
   if (e.target.id === "megaModal") { $("megaModal").hidden = true; setSelMode(null); }
 };
-$("againBtn2").onclick   = () => challenge?.mode==="daily"&&dailyChampionResult() ? shareDailyChampion() : startOver();
-$("backTeam").onclick    = () => show("scDone");
+$("againBtn2").onclick   = () => challenge?.mode==="daily"&&dailyChampionResult() ? showSavedDailyChampion(dailyChampionResult()) : startOver();
+$("dailyChampionClose").onclick=()=>{$("dailyChampionModal").hidden=true;};
+$("dailyChampionShare").onclick=shareDailyChampion;
+$("dailyChampionModal").onclick=e=>{if(e.target.id==="dailyChampionModal")$("dailyChampionModal").hidden=true;};
 $("restart").onclick     = startOver;
 // $("debugTeam").onclick = debugTeam;
 

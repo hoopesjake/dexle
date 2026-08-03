@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pokémon Gauntlet — Team Builder</title>
-  <link rel="stylesheet" href="gauntlet.css?v=20260802-3">
+  <link rel="stylesheet" href="gauntlet.css?v=20260802-4">
   <link rel="stylesheet" href="trainer-menu.css?v=20260801-5">
 </head>
 <body>
@@ -191,12 +191,20 @@
       <div class="regions" id="battles"></div>
 
       <div class="done-btns">
-        <button id="backTeam" class="result-back" aria-label="Back to team" title="Back to team">&larr;</button>
+        <a class="result-home" href="index.html" aria-label="Home" title="Home">&#8962;</a>
         <button id="againBtn2">Draft a new team</button>
       </div>
     </div>
   </section>
 
+</div>
+
+<div id="dailyChampionModal" hidden>
+  <article class="daily-share-card" role="dialog" aria-modal="true" aria-labelledby="dailyChampionShareTitle">
+    <h2 id="dailyChampionShareTitle">Daily Champion Victory</h2><p id="dailyChampionShareSummary" class="sub"></p>
+    <div id="dailyChampionShareTeam" class="daily-share-team"></div>
+    <div class="daily-share-actions"><button id="dailyChampionClose" class="result-back" aria-label="Back">&larr;</button><button id="dailyChampionShare">Share Results</button><a href="index.html" aria-label="Home" title="Home">&#8962;</a></div>
+  </article>
 </div>
 
 <!-- fixed team footer -->
@@ -231,7 +239,7 @@
 <script src="supabase-config.js"></script>
 <script src="stats-store.js?v=20260801-9"></script>
 <script src="battle.js?v=20260802-1"></script>
-<script src="gauntlet.js?v=20260802-6"></script>
+<script src="gauntlet.js?v=20260802-7"></script>
 <script src="trainer-menu.js?v=20260801-7"></script>
 </body>
 </html>
