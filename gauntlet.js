@@ -1084,6 +1084,7 @@ function runGauntlet() {
 /* ---------- 5. run the challenge ---------- */
 function runChallenge() {
   if(challenge.mode==="daily")return runDailyChampion();
+  $("recW").parentElement.classList.remove("daily-outcome","loss");
   const g = OPP[challenge.gen];
   if (!g) return;
 
@@ -1183,7 +1184,8 @@ function runDailyChampion(){
   const result=candidates[Math.floor(candidates.length/2)];dailyBattleResult=result;locked=true;lastScreen="scResult";
   const faintedMine=team.map(m=>m.p.name).filter(n=>!result.mineAlive.includes(n));
   const faintedTheirs=dailyOpponent.team.map(m=>m.name).filter(n=>!result.oppAlive.includes(n));
-  $("recW").textContent=result.left;$("recL").textContent=result.oleft;$("recRank").innerHTML="";
+  $("recW").parentElement.classList.add("daily-outcome");$("recW").parentElement.classList.toggle("loss",!result.win);
+  $("recW").textContent=result.win?"W":"L";$("recL").textContent="";$("recRank").innerHTML="";
   $("recTitle").textContent=result.win?`You defeated Champion ${dailyOpponent.name}!`:`Champion ${dailyOpponent.name} wins`;
   $("recSub").textContent=result.win?`${result.left} of your Pokémon remained after attempt ${attempts}.`:`Your team fainted with ${result.oleft} opposing Pokémon left. A full new draft awaits.`;
   $("recStats").innerHTML=`<div class="rstat"><b>Your Pokémon left</b><span>${result.left}/6</span></div><div class="rstat"><b>Champion fainted</b><span>${6-result.oleft}/6</span></div><div class="rstat"><b>Win simulation</b><span>${Math.round(winRate*100)}%</span></div><div class="rstat"><b>Attempts</b><span>${attempts}</span></div>`;
