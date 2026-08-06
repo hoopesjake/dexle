@@ -61,7 +61,7 @@
   }
 
   function runCard(run) {
-    const title = run.mode === "unlimited_region" ? `Region Ascendant · ${REGIONS[run.region]||"Region"}` : run.mode === "unlimited_gauntlet" ? "Infinite Gauntlet" : run.mode === "base_max" ? "Base Form Fury" : run.mode === "team_rocket_gauntlet" ? "Team Rocket Gauntlet" : run.mode === "gauntlet" ? "Gauntlet" : REGIONS[run.region];
+    const title = run.mode === "unlimited_region" ? `Region Ascendant · ${REGIONS[run.region]||"Region"}` : run.mode === "unlimited_gauntlet" ? "Infinite Gauntlet" : run.mode === "base_max" ? "Base Form Fury" : run.mode === "team_rocket_gauntlet" ? "Shadow Challenge" : run.mode === "gauntlet" ? "Gauntlet" : REGIONS[run.region];
     const date = new Date(run.created_at).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"});
     return `<article class="run-card ${run.wins === run.total ? "flawless" : ""}">
       <div class="run-top">
@@ -161,7 +161,7 @@
     if (!run) {
       return '<p class="empty">The first qualifying team will claim this spot.</p>';
     }
-    const title = run.mode === "unlimited_region" ? `Region Ascendant · ${REGIONS[run.region]||"Region"}` : run.mode === "unlimited_gauntlet" ? "Infinite Gauntlet" : run.mode === "base_max" ? "Base Form Fury" : run.mode === "team_rocket_gauntlet" ? "Team Rocket Gauntlet" : run.mode === "gauntlet"
+    const title = run.mode === "unlimited_region" ? `Region Ascendant · ${REGIONS[run.region]||"Region"}` : run.mode === "unlimited_gauntlet" ? "Infinite Gauntlet" : run.mode === "base_max" ? "Base Form Fury" : run.mode === "team_rocket_gauntlet" ? "Shadow Challenge" : run.mode === "gauntlet"
       ? "Gauntlet"
       : REGIONS[run.region];
     return `

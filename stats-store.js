@@ -91,7 +91,19 @@
       region_records: input.regionRecords || null,
     };
     const { error } = await client.from("runs").insert(row);
-    if (error && error.code !== "23505") throw error;
+    if (error && error.code !== "23505") {
+      // These four modes were added after the original runs table. Surface a
+      // useful deployment error instead of the opaque constraint message.
+      if (error.code === "23514" && [
+        "unlimited_region", "unlimited_gauntlet", "base_max",
+        "team_rocket_gauntlet",
+      ].includes(row.mode)) {
+        throw new Error(
+          `The database does not allow ${row.mode} runs yet. Run supabase-team-rocket-gauntlet.sql in the Supabase SQL Editor.`
+        );
+      }
+      throw error;
+    }
     return row.client_run_id;
   }
 
