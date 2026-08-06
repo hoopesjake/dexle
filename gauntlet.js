@@ -786,7 +786,8 @@ function addToTeam(picked, shiny, starter, shadow = !!(TEAM_ROCKET && spin?.shad
   // starters arrive fully evolved; everyone else joins exactly as drafted
   const p = starter && !BASE_MAX && !picked.legend ? byId[starterFinal(picked.id)] : picked;
   team.push({ p, from: starter ? picked.id : null,
-              shiny:!!shiny, shadow:!!(TEAM_ROCKET&&shadow), starter:!!starter });
+              shiny:!!shiny, shadow:!!(TEAM_ROCKET&&shadow), starter:!!starter,
+              legend:!!picked.legend });
   drawTeamBar();
   drawCoverage();
 }
@@ -882,7 +883,7 @@ function applyMega(slot, form) {
   m.preMegaTypeBase = m.typeBase;
   m.preMegaTypeForm = m.typeForm;
   delete m.typeBase; delete m.typeForm;
-  m.p    = { ...form, legend: m.base.legend, gen: m.base.gen,
+  m.p    = { ...form, legend: !!(m.legend || m.base.legend), gen: m.base.gen,
              region: m.base.region, baseId: m.base.baseId || m.base.id };
   m.mega = form.name;
   megaIdx = slot;
@@ -893,7 +894,7 @@ function applyTypeForm(slot, form) {
   const m = team[slot];
   if (m.mega) return;
   m.typeBase = m.typeBase || m.p;
-  m.p = { ...form, legend:m.typeBase.legend, gen:m.typeBase.gen,
+  m.p = { ...form, legend:!!(m.legend || m.typeBase.legend), gen:m.typeBase.gen,
           region:m.typeBase.region, baseId:m.typeBase.id };
   m.typeForm = form.name;
   setSelMode(null);
@@ -1112,14 +1113,8 @@ function saveCompletedRun(res, rk, mode) {
   if (runSaveStarted) return;
   runSaveStarted = true;
   const savedMode=TEAM_ROCKET?"team_rocket_gauntlet":UNLIMITED?(mode==="gauntlet"?(BASE_MAX?"base_max":"unlimited_gauntlet"):"unlimited_region"):mode;
-  const saveStatus=document.createElement("p");
-  saveStatus.className="run-save-status saving";
-  saveStatus.textContent="Saving this run to Trainer Stats…";
-  (mode==="gauntlet"?$("scGauntlet"):$("scResult")).querySelector(".panel").appendChild(saveStatus);
   if (!window.DexleStats?.configured) {
     console.info("Run finished, but Dexle stats is not connected yet.");
-    saveStatus.className="run-save-status failed";
-    saveStatus.textContent="This run was not saved because Trainer Stats is not connected.";
     return;
   }
 
@@ -1146,14 +1141,9 @@ function saveCompletedRun(res, rk, mode) {
     regionRecords,
   }).then(() => {
     team.filter(member => member.shiny).forEach(member => ownedShinyIds.add(+member.p.id));
-    const statsHref=["unlimited_region","unlimited_gauntlet","base_max"].includes(savedMode)?"stats.html?view=unlimited":"stats.html";
-    saveStatus.className="run-save-status saved";
-    saveStatus.innerHTML=`Run saved. <a href="${statsHref}">View it in Trainer Stats</a>`;
   }).catch(err => {
     runSaveStarted = false;
     console.error("Could not save this Dexle run:", err);
-    saveStatus.className="run-save-status failed";
-    saveStatus.textContent=`Run not saved: ${err.message||err}`;
   });
 }
 
@@ -1479,7 +1469,6 @@ function startOver() {
   $("megaModal").hidden = true;
   closePickPreview();
   removeShinyNote();
-  document.querySelectorAll(".run-save-status").forEach(el=>el.remove());
   drawTeamBar();
 
   $("starterPick").hidden    = true;

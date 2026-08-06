@@ -154,7 +154,7 @@
     const rocketBest = best(runs.filter(r => r.mode === "team_rocket_gauntlet"));
     $("bestRegionCard").innerHTML = regionBest ? runCard(regionBest) : '<p class="empty">No Region runs yet.</p>';
     $("bestGauntletCard").innerHTML = gauntletBest ? runCard(gauntletBest) : '<p class="empty">No Gauntlet runs yet.</p>';
-    $("bestRocketCard").innerHTML = rocketBest ? runCard(rocketBest) : '<p class="empty">No Team Rocket Gauntlet runs yet.</p>';
+    $("bestRocketCard").innerHTML = rocketBest ? runCard(rocketBest) : '<p class="empty">No flawless Team Rocket runs yet.</p>';
   }
 
   function communityBestCard(run) {

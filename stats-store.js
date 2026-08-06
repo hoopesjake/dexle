@@ -56,7 +56,10 @@
         region: base.region || null,
         t1: p.t1 || null,
         t2: p.t2 || null,
-        legend: !!base.legend,
+        // Legendary is permanent provenance. A Mega/type form must never
+        // erase it, including teams drafted by older client versions.
+        legend: !!(member.legend || member.base?.legend ||
+          member.typeBase?.legend || base.legend || p.legend),
         stage: base.stage || null,
         mega: !!member.mega,
         mega_name: member.mega || null,

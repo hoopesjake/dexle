@@ -43,7 +43,7 @@
   const teamHtml=team=>`<div class="team">${team.map(m=>`<span class="mon ${m.mega?"mega":""} ${m.type_form?"type-form":""} ${m.shiny?"shiny":""} ${m.shadow?"shadow":""} ${m.candy?"candy":""}"><img src="${savedSprite(m)}" alt="${m.name}" onerror="this.onerror=null;this.src='${sprite(m.base_id||m.id,m.shiny)}'">${m.candy?`<span class="candy-mark"><img src="${CANDY_ICON}" alt="Rare Candy"></span>`:""}${m.mega?'<span class="mega-mark">&#9672;</span>':""}${m.type_form?'<span class="type-form-mark">&#9671;</span>':""}${m.shiny?'<span class="shiny-mark">&#10022;</span>':""}</span>`).join("")}</div>`;
   function setAvatarEditorCollapsed(collapsed){$("profileAvatarEditor").classList.toggle("collapsed",collapsed);$("profileAvatarChange").textContent=currentAccount?.profile?.avatar?"Change Profile Sprite":"Select Profile Sprite";}
   async function refreshAccount(){const a=await DexleStats.account();currentAccount=a;$("signedOut").hidden=!a.anonymous;$("signedIn").hidden=a.anonymous;if(!a.anonymous){$("profileName").textContent=a.profile?.username||a.user.user_metadata?.username||"Trainer";$("profileEmail").textContent=a.user.email||"";selectedAvatar=a.profile?.avatar||null;renderAvatarChoice("profileAvatarChoice",selectedAvatar);syncProfileAvatar(selectedAvatar);setAvatarEditorCollapsed(true);}return a;}
-  const hallCard=r=>`<article class="hall-card flawless"><div class="hall-head"><span class="rankball oak-disc"></span><b>${r.mode==="gauntlet"?"Gauntlet":REGIONS[r.region]}</b><span class="hall-date">${new Date(r.created_at).toLocaleDateString()}</span><div class="team-metrics"><span>Stats <b>${Number(r.team_bst||0).toLocaleString()}</b></span><span>Coverage <b>${r.coverage??0}/18</b></span></div><span class="record"><span class="wins">${r.wins}</span><i>–</i><span class="losses">${r.losses}</span></span></div>${teamHtml(r.team)}</article>`;
+  const hallCard=r=>`<article class="hall-card flawless"><div class="hall-head"><span class="rankball oak-disc"></span><b>${r.mode==="team_rocket_gauntlet"?"Shadow Challenge":r.mode==="gauntlet"?"Gauntlet":REGIONS[r.region]}</b><span class="hall-date">${new Date(r.created_at).toLocaleDateString()}</span><div class="team-metrics"><span>Stats <b>${Number(r.team_bst||0).toLocaleString()}</b></span><span>Coverage <b>${r.coverage??0}/18</b></span></div><span class="record"><span class="wins">${r.wins}</span><i>–</i><span class="losses">${r.losses}</span></span></div>${teamHtml(r.team)}</article>`;
   function masteryTier(count){
     if(count>=25)return{key:"ultimate",name:"Shadow Ultimate",target:25,next:"Maximum tier"};
     if(count>=10)return{key:"ethereal",name:"Ethereal",target:25,next:"Shadow Ultimate at 25"};
@@ -76,14 +76,15 @@
     });
   }
   async function refreshHall(){
-    $("hallBadgeView").hidden=hallMode==="gauntlet";
-    $("hallTeamsView").hidden=hallMode!=="gauntlet";
+    const teamMode=hallMode!=="region";
+    $("hallBadgeView").hidden=teamMode;
+    $("hallTeamsView").hidden=!teamMode;
     if(hallMode==="region")$("badgeGrid").innerHTML='<p class="empty">Loading badges…</p>';
     else $("hallList").innerHTML='<p class="empty">Loading flawless runs…</p>';
     try{
       const rows=await DexleStats.hallOfFame(hallMode,null);
       if(hallMode==="region")drawBadges(rows);
-      else drawHallTeams(rows,"Flawless Gauntlet teams",true);
+      else drawHallTeams(rows,hallMode==="team_rocket_gauntlet"?"Flawless Shadow teams":"Flawless Gauntlet teams",true);
     }catch(e){message(e.message,true);}
   }
   function drawDex(){

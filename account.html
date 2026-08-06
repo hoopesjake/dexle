@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dexle — Trainer Account</title>
   <link rel="stylesheet" href="stats.css?v=20260801-18">
-  <link rel="stylesheet" href="account.css?v=20260806-5">
+  <link rel="stylesheet" href="account.css?v=20260806-6">
   <link rel="stylesheet" href="trainer-menu.css?v=20260805-4">
 </head>
 <body>
@@ -56,10 +56,14 @@
 
   <section class="panel" id="hallPanel">
     <div class="section-head">
-      <div><p class="eyebrow">Personal achievements</p><h2 id="hallTitle">Your Hall of Fame</h2><p class="section-copy">Flawless Region Champion and Gauntlet runs.</p></div>
-      <div class="seg" id="hallTabs">
-        <button class="on" data-mode="region">Region</button>
-        <button data-mode="gauntlet">Gauntlet</button>
+      <div><p class="eyebrow">Personal achievements</p><h2 id="hallTitle">Your Hall of Fame</h2><p class="section-copy">Flawless Region, Gauntlet, and Shadow runs.</p></div>
+      <div class="hall-head-actions">
+        <a class="hall-achievements-link" href="achievements.html" aria-label="View achievements"><span aria-hidden="true">&#127941;</span><b>View achievements</b></a>
+        <div class="seg" id="hallTabs">
+          <button class="on" data-mode="region">Region</button>
+          <button data-mode="gauntlet">Gauntlet</button>
+          <button data-mode="team_rocket_gauntlet">Shadow</button>
+        </div>
       </div>
     </div>
     <div id="hallBadgeView"><div id="badgeGrid" class="badge-grid"><p class="empty">Loading badges…</p></div></div>
@@ -113,7 +117,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script src="stats-store.js?v=20260805-1"></script>
-<script src="account.js?v=20260806-1"></script>
+<script src="account.js?v=20260806-2"></script>
 <script src="trainer-menu.js?v=20260805-4"></script>
 </body>
 </html>

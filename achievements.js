@@ -2,13 +2,14 @@
   "use strict";
   const $=id=>document.getElementById(id),REGIONS={1:"Kanto",2:"Johto",3:"Hoenn",4:"Sinnoh",5:"Unova",6:"Kalos",7:"Alola",8:"Galar",9:"Paldea"};
   const STARTERS=new Set([[1,9],[152,160],[252,260],[387,395],[495,503],[650,658],[722,730],[810,818],[906,914]].flatMap(([a,b])=>Array.from({length:b-a+1},(_,i)=>a+i)));
-  let runs=[],dex=[],daily=[],champ=[],forms={},megas={};
-  try{[runs,dex,champ,forms,megas]=await Promise.all([DexleStats.personalRuns(),DexleStats.shinyDex(),DexleStats.dailyChampionHistory(),fetch("forms.json").then(r=>r.json()),fetch("megas.json").then(r=>r.json())]);}catch(e){}
+  let runs=[],dex=[],daily=[],champ=[],forms={},megas={},pokemon=[];
+  try{[runs,dex,champ,forms,megas,pokemon]=await Promise.all([DexleStats.personalRuns(),DexleStats.shinyDex(),DexleStats.dailyChampionHistory(),fetch("forms.json").then(r=>r.json()),fetch("megas.json").then(r=>r.json()),fetch("pokedex.json").then(r=>r.json())]);}catch(e){}
   try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(/^dexle-daily:\d{4}-\d{2}-\d{2}$/.test(k))daily.push(JSON.parse(localStorage.getItem(k)||"{}"));}}catch(e){}
-  const flawless=r=>r.wins===r.total,noLeg=r=>(r.team||[]).every(m=>!m.legend),allShiny=r=>(r.team||[]).length===6&&(r.team||[]).every(m=>m.shiny),allStarter=r=>(r.team||[]).length===6&&(r.team||[]).every(m=>STARTERS.has(+(m.base_id||m.id))),sameRegion=r=>(r.team||[]).length===6&&new Set(r.team.map(m=>+(m.gen||0))).size===1;
+  const legendaryIds=new Set(pokemon.filter(p=>p.legend).map(p=>+p.id));
+  const flawless=r=>r.wins===r.total,noLeg=r=>(r.team||[]).length===6&&(r.team||[]).every(m=>!m.legend&&!legendaryIds.has(+(m.base_id||m.id))),allShiny=r=>(r.team||[]).length===6&&(r.team||[]).every(m=>m.shiny),allStarter=r=>(r.team||[]).length===6&&(r.team||[]).every(m=>STARTERS.has(+(m.base_id||m.id))),sameRegion=r=>(r.team||[]).length===6&&new Set(r.team.map(m=>+(m.gen||0))).size===1;
   const sameType=r=>{const team=r.team||[];if(team.length!==6)return false;const common=new Set([team[0].t1,team[0].t2].filter(Boolean));return team.slice(1).every(m=>[m.t1,m.t2].some(t=>common.has(t)));};
   const evoLine=r=>{const ids=new Set((r.team||[]).map(m=>+(m.base_id||m.id)));return [...ids].some(id=>ids.has(id+1)||ids.has(id+2));};
-  const regions=new Set(runs.filter(r=>r.mode==="region"&&flawless(r)).map(r=>+r.region)),gaunt=runs.filter(r=>r.mode==="gauntlet"),flawGaunt=gaunt.filter(flawless),dailyWins=daily.filter(r=>r.won),max=a=>Math.max(0,...a);
+  const regions=new Set(runs.filter(r=>r.mode==="region"&&flawless(r)).map(r=>+r.region)),gaunt=runs.filter(r=>r.mode==="gauntlet"),flawGaunt=gaunt.filter(flawless),rocket=runs.filter(r=>r.mode==="team_rocket_gauntlet"),flawRocket=rocket.filter(flawless),dailyWins=daily.filter(r=>r.won),max=a=>Math.max(0,...a);
   const streak=dailyWins.length,champStreak=champ.length,firstTry=dailyWins.filter(r=>+r.guesses===1).length,baseCaught=new Set(dex.filter(x=>String(x.form_key).startsWith("base:")).map(x=>+x.base_id)).size;
   const bonusCatalog=[...Object.values(forms).flat(),...Object.values(megas).flat()],bonusTarget=new Set(bonusCatalog.map(x=>`${+x.id}|${x.name}`)).size,bonusCaught=new Set(dex.filter(x=>!String(x.form_key).startsWith("base:")).map(x=>`${+x.pokemon_id}|${x.pokemon_name}`)).size,totalCaught=baseCaught+bonusCaught;
   const defs=[],add=(category,name,copy,value,target,unlockWhen=true)=>defs.push({category,name,copy,value,target,unlockWhen});
@@ -20,6 +21,16 @@
   add("Gauntlet","Mortal Marathon","Go 121–0 with no Legendaries",flawGaunt.some(noLeg)?1:0,1);
   [["Chromatic Crew","Chromatic Conquerors","Complete a Gauntlet with an all-shiny team","Go 121–0 with an all-shiny team",allShiny],["Starter Assembly","Starter Summit","Complete a Gauntlet with six starter-family Pokémon","Go 121–0 with six starter-family Pokémon",allStarter],["Single-Type Squad","Monotype Master","Complete a Gauntlet with one type shared by all six","Go 121–0 with one type shared by all six",sameType],["Regional Reunion","Home Turf Heroes","Complete a Gauntlet with all six from one region","Go 121–0 with all six from one region",sameRegion],["Family Reunion","Evolution Dynasty","Complete a Gauntlet with an evolutionary pair","Go 121–0 with an evolutionary pair",evoLine]].forEach(([baseName,eliteName,baseCopy,eliteCopy,test])=>{const base=gaunt.some(test),elite=flawGaunt.some(test);add("Gauntlet",baseName,baseCopy,base?1:0,1);add("Gauntlet",eliteName,eliteCopy,elite?1:0,1,base);});
   add("Gauntlet","Power Overwhelming","Finish with 4,500+ team stats",max(runs.map(r=>+r.team_bst||0)),4500);
+  const allShadow=r=>(r.team||[]).length===6&&(r.team||[]).every(m=>m.shadow);
+  add("Team Rocket Mode","Rocket Recruit","Complete your first Team Rocket run",rocket.length,1);
+  add("Team Rocket Mode","Mortal Takeover","Complete Team Rocket Mode with no Legendaries",rocket.some(noLeg)?1:0,1);
+  add("Team Rocket Mode","Power at Any Cost","Finish Team Rocket Mode with 6,000+ team stats",max(rocket.map(r=>+r.team_bst||0)),6000);
+  add("Team Rocket Mode","Executive Sweep","Go 36–0 in Team Rocket Mode",flawRocket.length,1);
+  add("Team Rocket Mode","Shadow Legion","Complete Team Rocket Mode with an all-Shadow team",rocket.some(allShadow)?1:0,1);
+  add("Team Rocket Mode","Perfect Corruption","Go 36–0 with an all-Shadow team",flawRocket.some(allShadow)?1:0,1);
+  add("Team Rocket Mode","Mortal Mastermind","Go 36–0 with no Legendaries",flawRocket.some(noLeg)?1:0,1);
+  add("Team Rocket Mode","Monotype Mob","Complete Team Rocket Mode with one type shared by all six",rocket.some(sameType)?1:0,1);
+  add("Team Rocket Mode","Regional Racket","Complete Team Rocket Mode with all six Pokémon from one region",rocket.some(sameRegion)?1:0,1);
   add("Collection","A Glimmer","Collect your first shiny",totalCaught,1);add("Collection","Shiny Hunter","Collect 25 unique shinies, including bonus forms",totalCaught,25);add("Collection","Unlimited Key","Collect 100 unique shinies, including bonus forms",totalCaught,100);add("Collection","Ultimate Collector","Collect all 1,025 base Pokémon shinies",baseCaught,1025);add("Collection","Master of Every Form","Collect every bonus-form shiny",bonusCaught,bonusTarget||322);
   const visible=defs.filter(d=>d.unlockWhen),done=defs.filter(d=>d.value>=d.target).length,groups=visible.reduce((o,d)=>((o[d.category]??=[]).push(d),o),{});
   $("achievementSummary").innerHTML=`<b>${done}/${defs.length}</b><span>achievements unlocked</span>`;
