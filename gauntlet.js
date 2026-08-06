@@ -342,8 +342,8 @@ function selectChallenge(c) {
 /* ---------- 2. starter ---------- */
 function startStarter() {
   const starterPanel=$("scStarter").querySelector(".panel");
-  starterPanel.querySelector("h2").textContent=TEAM_ROCKET?"Choose your starter":UNLIMITED&&!BASE_MAX?"Choose your Legendary partner":BASE_MAX?"Choose your base-form partner":"Your starter";
-  starterPanel.querySelector(".sub").innerHTML=TEAM_ROCKET?"Spin for a region, then choose a starter. Every spin has a <b>10%</b> chance to produce a Shadow encounter. Shadow Pokémon receive a <b>50%</b> boost but cannot use Rare Candy.":UNLIMITED&&!BASE_MAX?"Spin for a region, then choose any Legendary from that region's generation. Your partner receives a <b>20%</b> boost to every base stat.":BASE_MAX?"Spin for a region and choose a base-form starter. Your partner receives a <b>20%</b> bond before the Base Form Fury boost.":"Spin for a region, then pick one of its three starters. Your first Pokémon gets a friendship bond — a <b id=\"boostPct\">10%</b> boost to every base stat.";
+  starterPanel.querySelector("h2").textContent=TEAM_ROCKET?"Choose your Shadow starter":UNLIMITED&&!BASE_MAX?"Choose your Legendary partner":BASE_MAX?"Choose your base-form partner":"Your starter";
+  starterPanel.querySelector(".sub").innerHTML=TEAM_ROCKET?"Your starter is always a Shadow Pokémon. Each of the five Poké Ball spins then has its own <b>10%</b> Shadow chance. Shadow Pokémon receive a <b>50%</b> boost but cannot use Rare Candy.":UNLIMITED&&!BASE_MAX?"Spin for a region, then choose any Legendary from that region's generation. Your partner receives a <b>20%</b> boost to every base stat.":BASE_MAX?"Spin for a region and choose a base-form starter. Your partner receives a <b>20%</b> bond before the Base Form Fury boost.":"Spin for a region, then pick one of its three starters. Your first Pokémon gets a friendship bond — a <b id=\"boostPct\">10%</b> boost to every base stat.";
   drawOpponents();
   drawCoverage();
   show("scStarter");
@@ -370,7 +370,7 @@ function spinStarter() {
              roll:() => REGIONS[1 + rnd(9)], final:REGIONS[gen] }],
     () => {
       const shiny = rnd(SHINY_ODDS) === 0;
-      const shadow = TEAM_ROCKET && rnd(10) === 0;
+      const shadow = TEAM_ROCKET;
       const left  = STARTER_SPINS - starterSpins;
       $("spinStarter").textContent = left
         ? `Respin region (${left} left)`
