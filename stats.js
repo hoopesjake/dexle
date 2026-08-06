@@ -49,18 +49,19 @@
 
   function teamHtml(team) {
     return `<div class="team">${team.map(m => `
-      <span class="mon ${m.mega ? "mega" : ""} ${m.type_form ? "type-form" : ""} ${m.shiny ? "shiny" : ""} ${m.candy ? "candy" : ""}"
-        title="${m.name}${m.mega ? " · Mega" : ""}${m.shiny ? " · Shiny" : ""}${m.candy ? " · Rare Candy" : ""}">
+      <span class="mon ${m.mega ? "mega" : ""} ${m.type_form ? "type-form" : ""} ${m.shiny ? "shiny" : ""} ${m.shadow ? "shadow" : ""} ${m.candy ? "candy" : ""}"
+        title="${m.name}${m.mega ? " · Mega" : ""}${m.shiny ? " · Shiny" : ""}${m.shadow ? " · Shadow Pokémon +50%" : ""}${m.candy ? " · Rare Candy" : ""}">
         ${monImg(m)}
         ${m.candy ? `<span class="candy-mark"><img src="${CANDY_ICON}" alt="Rare Candy"></span>` : ""}
         ${m.mega ? `<span class="mega-mark" aria-label="Mega Evolved">◈</span>` : ""}
         ${m.type_form ? `<span class="type-form-mark" aria-label="Changed Type">◇</span>` : ""}
         ${m.shiny ? `<span class="shiny-mark" aria-label="Shiny">✦</span>` : ""}
+        ${m.shadow ? `<span class="shadow-mark" aria-label="Shadow Pokémon">S</span>` : ""}
       </span>`).join("")}</div>`;
   }
 
   function runCard(run) {
-    const title = run.mode === "gauntlet" ? "Gauntlet" : REGIONS[run.region];
+    const title = run.mode === "team_rocket_gauntlet" ? "Team Rocket Gauntlet" : run.mode === "gauntlet" ? "Gauntlet" : REGIONS[run.region];
     const date = new Date(run.created_at).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"});
     return `<article class="run-card ${run.wins === run.total ? "flawless" : ""}">
       <div class="run-top">
@@ -74,9 +75,8 @@
   }
 
   function best(list) {
-    return [...list].sort((a,b) =>
-      (b.wins / b.total) - (a.wins / a.total) ||
-      b.wins - a.wins ||
+    return [...list.filter(r=>r.wins===r.total)].sort((a,b) =>
+      (+b.team_bst||0)-(+a.team_bst||0) ||
       new Date(b.created_at) - new Date(a.created_at)
     )[0] || null;
   }
@@ -126,9 +126,9 @@
 
   function drawHistory() {
     const region = $("historyRegion").value;
-    $("historyFilters").hidden = historyMode === "gauntlet";
+    $("historyFilters").hidden = historyMode !== "region";
     const list = runs.filter(r => r.mode === historyMode &&
-      (historyMode === "gauntlet" || !region || r.region === +region)).slice(0,5);
+      (historyMode !== "region" || !region || r.region === +region)).slice(0,5);
     $("history").innerHTML = list.length ? list.map(runCard).join("") :
       '<p class="empty">Your completed teams will appear here.</p>';
   }
@@ -137,15 +137,17 @@
     const region = $("bestRegion").value;
     const regionBest = best(runs.filter(r => r.mode === "region" && (!region || r.region === +region)));
     const gauntletBest = best(runs.filter(r => r.mode === "gauntlet"));
+    const rocketBest = best(runs.filter(r => r.mode === "team_rocket_gauntlet"));
     $("bestRegionCard").innerHTML = regionBest ? runCard(regionBest) : '<p class="empty">No Region runs yet.</p>';
     $("bestGauntletCard").innerHTML = gauntletBest ? runCard(gauntletBest) : '<p class="empty">No Gauntlet runs yet.</p>';
+    $("bestRocketCard").innerHTML = rocketBest ? runCard(rocketBest) : '<p class="empty">No Team Rocket Gauntlet runs yet.</p>';
   }
 
   function communityBestCard(run) {
     if (!run) {
       return '<p class="empty">The first qualifying team will claim this spot.</p>';
     }
-    const title = run.mode === "gauntlet"
+    const title = run.mode === "team_rocket_gauntlet" ? "Team Rocket Gauntlet" : run.mode === "gauntlet"
       ? "Gauntlet"
       : REGIONS[run.region];
     return `
@@ -163,12 +165,14 @@
   async function refreshCommunityBests() {
     const region = +$("communityBestRegion").value || null;
     try {
-      const [regionBest, gauntletBest] = await Promise.all([
+      const [regionBest, gauntletBest, rocketBest] = await Promise.all([
         DexleStats.communityBestTeam("region", region),
         DexleStats.communityBestTeam("gauntlet", null),
+        DexleStats.communityBestTeam("team_rocket_gauntlet", null),
       ]);
       $("communityBestRegionCard").innerHTML = communityBestCard(regionBest);
       $("communityBestGauntletCard").innerHTML = communityBestCard(gauntletBest);
+      $("communityBestRocketCard").innerHTML = communityBestCard(rocketBest);
     } catch (err) { showError(err); }
   }
 
@@ -243,6 +247,7 @@
       drawBests();
       $("communityBestRegionCard").innerHTML = communityBestCard(null);
       $("communityBestGauntletCard").innerHTML = communityBestCard(null);
+      $("communityBestRocketCard").innerHTML = communityBestCard(null);
       return;
     }
     try {

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dexle — Stats</title>
   <link rel="stylesheet" href="stats.css?v=20260802-1">
-  <link rel="stylesheet" href="trainer-menu.css?v=20260801-5">
+  <link rel="stylesheet" href="trainer-menu.css?v=20260805-3">
 </head>
 <body>
 <div class="wrap">
@@ -57,13 +57,18 @@
       <div><span id="bestStreakLabel">Best streak</span><b>0</b></div>
     </div>
     <div class="guess-chart" id="guessChart"></div>
+    <div id="dailyChampionStats" class="daily-champion-progress">
+      <div class="section-head"><div><p class="eyebrow">6 vs 6 history</p><h2>Daily Champion Battle</h2><p class="section-copy">Your account-backed attempts, streak, and strongest perfect daily team.</p></div></div>
+      <div class="dexle-metrics" id="championMetrics"><div><span>Victories</span><b>0</b></div><div><span>Average attempts</span><b>—</b></div><div><span>Daily streak</span><b>0</b></div><div><span>Best streak</span><b>0</b></div><div><span>Best attempts</span><b>—</b></div><div><span>Highest team stats</span><b>—</b></div></div>
+      <div id="championBestTeam" class="champion-best-team"></div><div id="championHistory" class="champion-history"></div>
+    </div>
   </section>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
-<script src="stats-store.js?v=20260801-2"></script>
-<script src="dexle-stats.js?v=20260802-1"></script>
-<script src="trainer-menu.js?v=20260801-7"></script>
+<script src="stats-store.js?v=20260805-1"></script>
+<script src="dexle-stats.js?v=20260805-1"></script>
+<script src="trainer-menu.js?v=20260805-3"></script>
 </body>
 </html>

@@ -31,10 +31,13 @@
   drawer.className = "trainer-menu-drawer";
   drawer.setAttribute("aria-hidden", "true");
   drawer.innerHTML = `<div class="trainer-menu-title"><b>Dexle Menu</b><button class="trainer-menu-close" type="button" aria-label="Close navigation menu">&times;</button></div>
+    <div class="trainer-identity"><span class="trainer-avatar-placeholder"></span><span><small>Logged in as</small><b>Guest Trainer</b></span></div>
     <nav class="trainer-menu-links">
       <a href="index.html">Home</a>
       <a href="stats.html">Trainer Stats</a>
-      <a href="friends.html">Friends</a>
+      <a href="unlimited.html">Unlimited</a>
+      <a href="achievements.html">Achievements</a>
+      <a href="friends.html" class="friends-menu-link">Friends <i class="friend-notification" hidden>0</i></a>
       <a href="account.html">Account</a>
     </nav>`;
   document.body.append(shade, drawer);
@@ -55,4 +58,5 @@
   button.onclick = () => setOpen(true);
   shade.onclick = drawer.querySelector(".trainer-menu-close").onclick = () => setOpen(false);
   document.addEventListener("keydown", e => { if (e.key === "Escape") setOpen(false); });
+  (async()=>{if(!window.DexleStats?.configured)return;try{const a=await DexleStats.account();if(a.anonymous)return;const identity=drawer.querySelector(".trainer-identity"),name=a.profile?.username||a.user.user_metadata?.username||"Trainer",avatar=a.profile?.avatar;identity.querySelector("b").textContent=name;if(avatar){const custom=avatar.shiny?avatar.shiny_sprite:avatar.sprite;const src=custom?`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${custom}`:`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${avatar.shiny?"shiny/":""}${avatar.id}.png`;identity.firstElementChild.outerHTML=`<img class="trainer-avatar" src="${src}" alt="${avatar.name}">`;}const rows=await DexleStats.friendConnections(),count=rows.filter(x=>x.incoming&&x.status==="pending").length,badge=drawer.querySelector(".friend-notification");badge.textContent=count>99?"99+":count;badge.hidden=count===0;}catch(e){}})();
 })();

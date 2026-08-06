@@ -1,0 +1,13 @@
+:root{--unlimited-accent:#7a66c4;--unlimited-green:#3e9d5b}
+.unlock-panel{position:relative;margin:0 0 18px;padding:20px 22px 20px 64px;border:1px solid var(--line);border-radius:14px;background:var(--panel);color:var(--ink)}
+.unlimited-back{position:absolute;top:16px;left:16px;display:grid;place-items:center;width:34px;height:34px;padding:0;border:1px solid var(--line);border-radius:50%;background:var(--panel-2);color:var(--ink-dim);text-decoration:none;line-height:1}.unlimited-back svg{display:block;width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.unlimited-back:hover{border-color:var(--unlimited-accent);color:var(--ink);filter:brightness(1.08)}
+.unlimited-eyebrow{margin:0 0 4px;color:var(--unlimited-accent);font-size:9.5px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}
+.unlock-panel h2,.unlimited-stats h2{margin:0;font-size:24px;letter-spacing:.06em;color:var(--ink)}
+.unlock-copy,.unlimited-stats>p:last-child{margin:6px 0 0;color:var(--ink-dim);font-size:13.5px;line-height:1.7}
+.unlock-requirements{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:17px}
+.unlock-requirements div{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0;padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:var(--panel-2);color:var(--ink-dim);font-size:11px}
+.unlock-requirements div b{color:inherit;font-size:11px;line-height:1.35}.unlock-requirements div span{flex:none;color:var(--ink-dim);font-size:10px;font-weight:800}
+.unlock-requirements .done{border-color:var(--unlimited-green);color:#70c987}.unlock-requirements .done span{color:#70c987}.unlock-requirements a{color:var(--ink-dim)}
+.unlimited-modes{margin-top:0}.unlimited-modes .mode{min-height:295px}.unlimited-modes .mode h2{color:var(--ink)}.unlimited-modes .mode.base-fury{--accent:#c88a2e}
+.unlimited-stats{margin-top:18px;padding:20px 22px;border:1px solid var(--line);border-radius:14px;background:var(--panel);color:var(--ink)}.unlimited-stats[hidden]{display:none}
+@media(max-width:760px){.unlock-requirements{grid-template-columns:1fr}.unlimited-modes .mode{min-height:240px}}@media(max-width:560px){.unlock-panel{padding:64px 18px 18px}.unlimited-stats{padding:18px}.unlimited-back{top:16px}.unlock-panel h2,.unlimited-stats h2{font-size:21px}}

@@ -30,6 +30,10 @@ create index if not exists runs_mode_region_idx
 
 alter table public.runs add column if not exists team_bst integer check (team_bst > 0);
 alter table public.runs add column if not exists coverage smallint check (coverage between 0 and 18);
+alter table public.runs drop constraint if exists runs_mode_check;
+alter table public.runs add constraint runs_mode_check check (mode in ('region','gauntlet','unlimited_region','unlimited_gauntlet','base_max','team_rocket_gauntlet'));
+alter table public.runs drop constraint if exists runs_region_check;
+alter table public.runs add constraint runs_region_check check ((mode in ('region','unlimited_region') and region between 1 and 9) or (mode in ('gauntlet','unlimited_gauntlet','base_max','team_rocket_gauntlet') and region is null));
 
 create table if not exists public.dexle_games (
   id uuid primary key default gen_random_uuid(),
@@ -165,6 +169,8 @@ create table if not exists public.profiles (
 );
 create unique index if not exists profiles_username_lower_idx
   on public.profiles (lower(username));
+alter table public.profiles add column if not exists avatar jsonb;
+alter table public.profiles add column if not exists login_email text;
 
 drop function if exists public.community_best_team();
 drop function if exists public.community_best_team(text, smallint);
@@ -197,7 +203,7 @@ as $$
     coalesce(p.username, 'Trainer') as username, r.created_at
   from public.runs r
   left join public.profiles p on p.user_id = r.user_id
-  where r.team_bst is not null
+  where r.team_bst is not null and r.wins = r.total
     and r.mode = p_mode
     and (p_region is null or r.region = p_region)
   order by r.team_bst desc, (r.wins::numeric / r.total) desc, r.created_at asc
@@ -346,8 +352,8 @@ begin
       v_base := coalesce((member->>'base_id')::integer, v_id);
       v_mega := coalesce((member->>'mega')::boolean, false);
       v_key := case
-        when v_mega then 'mega:' || v_id
-        when v_id <> v_base then 'form:' || v_id
+        when v_mega then 'mega:' || v_id || ':' || regexp_replace(lower(member->>'name'), '[^a-z0-9]+', '-', 'g')
+        when coalesce((member->>'type_form')::boolean, false) or v_id <> v_base then 'form:' || v_id || ':' || regexp_replace(lower(member->>'name'), '[^a-z0-9]+', '-', 'g')
         else 'base:' || v_base
       end;
       insert into public.shiny_dex
@@ -372,15 +378,18 @@ create trigger runs_collect_shinies
 after insert on public.runs
 for each row execute function public.collect_run_shinies();
 
+-- Unlimited runs use this same trigger, so shiny team members from
+-- unlimited_region, unlimited_gauntlet, and base_max are collected too.
+
 -- Backfill shinies already saved in existing completed runs.
 insert into public.shiny_dex
   (user_id, form_key, pokemon_id, base_id, pokemon_name, is_mega,
    first_seen_at, last_seen_at, times_seen)
 select r.user_id,
   case
-    when coalesce((m->>'mega')::boolean, false) then 'mega:' || (m->>'id')
-    when (m->>'id')::integer <> coalesce((m->>'base_id')::integer, (m->>'id')::integer)
-      then 'form:' || (m->>'id')
+    when coalesce((m->>'mega')::boolean, false) then 'mega:' || (m->>'id') || ':' || regexp_replace(lower(m->>'name'), '[^a-z0-9]+', '-', 'g')
+    when coalesce((m->>'type_form')::boolean, false) or (m->>'id')::integer <> coalesce((m->>'base_id')::integer, (m->>'id')::integer)
+      then 'form:' || (m->>'id') || ':' || regexp_replace(lower(m->>'name'), '[^a-z0-9]+', '-', 'g')
     else 'base:' || coalesce(m->>'base_id', m->>'id')
   end,
   (m->>'id')::integer,
@@ -463,7 +472,7 @@ begin
         or (f.addressee_id=auth.uid() and f.requester_id=p_user_id))
   ) then raise exception 'You must be friends to view this Trainer profile.'; end if;
   select jsonb_build_object(
-    'user_id',p_user_id,'username',p.username,
+    'user_id',p_user_id,'username',p.username,'avatar',p.avatar,
     'hall',coalesce((select jsonb_agg(to_jsonb(r) order by r.created_at desc)
       from public.runs r where r.user_id=p_user_id and r.wins=r.total),'[]'::jsonb),
     'shinies',coalesce((select jsonb_agg(to_jsonb(s) order by s.last_seen_at desc)
@@ -485,5 +494,68 @@ revoke update on table public.friend_requests from authenticated;
 grant select,insert,delete on table public.friend_requests to authenticated;
 revoke execute on function public.friend_profile(uuid) from public,anon;
 grant execute on function public.friend_profile(uuid) to authenticated;
+
+create table if not exists public.daily_champion_results (
+  user_id uuid not null references auth.users(id) on delete cascade,
+  challenge_date date not null, champion text not null,
+  attempts integer not null check (attempts > 0),
+  team jsonb not null check (jsonb_typeof(team)='array' and jsonb_array_length(team)=6),
+  team_bst integer not null check (team_bst > 0),
+  pokemon_left smallint not null check (pokemon_left between 1 and 6),
+  created_at timestamptz not null default now(), primary key (user_id,challenge_date)
+);
+alter table public.daily_champion_results enable row level security;
+drop policy if exists "Players read their Daily Champion history" on public.daily_champion_results;
+create policy "Players read their Daily Champion history" on public.daily_champion_results for select to authenticated using (auth.uid()=user_id);
+drop policy if exists "Players save their Daily Champion results" on public.daily_champion_results;
+create policy "Players save their Daily Champion results" on public.daily_champion_results for insert to authenticated with check (auth.uid()=user_id);
+grant select,insert on public.daily_champion_results to authenticated;
+create or replace function public.collect_daily_champion_shinies() returns trigger language plpgsql security definer set search_path='' as $$
+declare member jsonb; declare v_id integer; declare v_base integer; declare v_mega boolean; declare v_key text;
+begin for member in select value from jsonb_array_elements(new.team) loop if coalesce((member->>'shiny')::boolean,false) then
+v_id=(member->>'id')::integer; v_base=coalesce((member->>'base_id')::integer,v_id); v_mega=coalesce((member->>'mega')::boolean,false);
+v_key=case when v_mega then 'mega:'||v_id||':'||regexp_replace(lower(member->>'name'),'[^a-z0-9]+','-','g') when coalesce((member->>'type_form')::boolean,false) or v_id<>v_base then 'form:'||v_id||':'||regexp_replace(lower(member->>'name'),'[^a-z0-9]+','-','g') else 'base:'||v_base end;
+insert into public.shiny_dex(user_id,form_key,pokemon_id,base_id,pokemon_name,is_mega,first_seen_at,last_seen_at,times_seen) values(new.user_id,v_key,v_id,v_base,member->>'name',v_mega,new.created_at,new.created_at,1)
+on conflict(user_id,form_key) do update set last_seen_at=greatest(public.shiny_dex.last_seen_at,excluded.last_seen_at),times_seen=public.shiny_dex.times_seen+1,pokemon_name=excluded.pokemon_name;
+end if; end loop; return new; end $$;
+drop trigger if exists daily_champion_collect_shinies on public.daily_champion_results;
+create trigger daily_champion_collect_shinies after insert on public.daily_champion_results for each row execute function public.collect_daily_champion_shinies();
+
+-- Upgrade older ID-only bonus-form keys. Merge first because a Trainer may
+-- already own both the old key and its newer name-aware equivalent.
+insert into public.shiny_dex
+  (user_id,form_key,pokemon_id,base_id,pokemon_name,is_mega,
+   first_seen_at,last_seen_at,times_seen)
+select user_id,
+  (case when is_mega then 'mega:' else 'form:' end) || pokemon_id || ':' ||
+    regexp_replace(lower(pokemon_name),'[^a-z0-9]+','-','g'),
+  pokemon_id,base_id,pokemon_name,is_mega,first_seen_at,last_seen_at,times_seen
+from public.shiny_dex
+where form_key not like 'base:%' and form_key !~ '^(mega|form):[0-9]+:'
+on conflict (user_id,form_key) do update set
+  first_seen_at=least(public.shiny_dex.first_seen_at,excluded.first_seen_at),
+  last_seen_at=greatest(public.shiny_dex.last_seen_at,excluded.last_seen_at),
+  times_seen=public.shiny_dex.times_seen+excluded.times_seen,
+  pokemon_name=excluded.pokemon_name;
+
+delete from public.shiny_dex
+where form_key not like 'base:%' and form_key !~ '^(mega|form):[0-9]+:';
+
+-- Username login support. Email remains available only through this narrow
+-- resolver used immediately by Supabase password authentication.
+update public.profiles p set login_email=lower(u.email)
+from auth.users u where u.id=p.user_id and p.login_email is distinct from lower(u.email);
+
+create or replace function public.email_for_username(p_username text)
+returns text language sql stable security definer set search_path='' as $$
+  select p.login_email from public.profiles p
+  where lower(p.username)=lower(trim(p_username)) limit 1;
+$$;
+revoke execute on function public.email_for_username(text) from public,anon;
+grant execute on function public.email_for_username(text) to authenticated;
+
+-- Prevent normal profile reads from exposing login emails.
+revoke select on public.profiles from authenticated;
+grant select (user_id,username,avatar,created_at) on public.profiles to authenticated;
 revoke execute on function public.accept_friend_request(uuid) from public,anon;
 grant execute on function public.accept_friend_request(uuid) to authenticated;

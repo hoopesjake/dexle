@@ -120,3 +120,4 @@ h1{ margin:0; font-size:30px; letter-spacing:.16em; text-transform:uppercase }
   .mode:hover{ transform:none }
 }
 .home-lamp{display:block;cursor:pointer;text-decoration:none}
+.unlimited-home-card{display:flex;justify-content:space-between;gap:14px;margin:16px 0;padding:15px 18px;border:1px solid #493f72;border-radius:12px;background:#1c1931;color:#e8e2ff;text-decoration:none}.unlimited-home-card span{color:#aaa1cb;font-size:12px}

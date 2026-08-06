@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dexle — Trainer Account</title>
   <link rel="stylesheet" href="stats.css?v=20260801-18">
-  <link rel="stylesheet" href="account.css?v=20260801-19">
-  <link rel="stylesheet" href="trainer-menu.css?v=20260801-5">
+  <link rel="stylesheet" href="account.css?v=20260805-2">
+  <link rel="stylesheet" href="trainer-menu.css?v=20260805-3">
 </head>
 <body>
 <div class="wrap">
@@ -32,25 +32,8 @@
 
   <section class="panel account-panel" id="accountPanel">
     <div id="signedOut">
-      <p class="eyebrow">Trainer login</p>
-      <h2 id="authTitle">Create your account</h2>
-      <p class="section-copy" id="authCopy">Your runs already saved on this device will stay with you.</p>
-      <div class="seg auth-tabs" id="authTabs">
-        <button class="on" data-auth="create">Create account</button>
-        <button data-auth="login">Sign in</button>
-      </div>
-      <form id="authForm" class="auth-form">
-        <label id="usernameWrap">Username
-          <input id="authUsername" maxlength="20" pattern="[A-Za-z0-9_]{3,20}" autocomplete="username" placeholder="Trainer name">
-        </label>
-        <label>Email
-          <input id="authEmail" type="email" autocomplete="email" required placeholder="you@example.com">
-        </label>
-        <label>Password
-          <input id="authPassword" type="password" minlength="6" autocomplete="new-password" required placeholder="At least 6 characters">
-        </label>
-        <button id="authSubmit" type="submit">Create Account</button>
-      </form>
+      <b class="trainer-login-label">Trainer Login</b>
+      <div class="account-entry-options"><a href="signup.html">Create Account</a><a href="login.html">Sign In</a></div>
     </div>
     <div id="signedIn" hidden>
       <div class="welcome-card">
@@ -65,6 +48,7 @@
           <button id="signOut" class="logout-btn">Log Out</button>
         </div>
       </div>
+      <div class="profile-avatar-editor"><div><p class="eyebrow">Profile sprite</p><h3>Choose any Pok&eacute;mon or form</h3></div><div class="avatar-search-row"><input id="profileAvatarSearch" autocomplete="off" placeholder="Search any Pok&eacute;mon or form"><label class="shiny-switch"><input id="profileAvatarShiny" type="checkbox"> Shiny</label></div><div id="profileAvatarResults" class="avatar-results"></div><div id="profileAvatarChoice" class="avatar-choice"></div></div>
     </div>
   </section>
 
@@ -125,8 +109,8 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
-<script src="stats-store.js?v=20260801-10"></script>
-<script src="account.js?v=20260802-1"></script>
-<script src="trainer-menu.js?v=20260801-7"></script>
+<script src="stats-store.js?v=20260805-1"></script>
+<script src="account.js?v=20260805-1"></script>
+<script src="trainer-menu.js?v=20260805-3"></script>
 </body>
 </html>

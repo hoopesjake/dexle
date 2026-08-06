@@ -53,6 +53,11 @@
         name: p.name,
         base_name: base.name,
         gen: base.gen,
+        region: base.region || null,
+        t1: p.t1 || null,
+        t2: p.t2 || null,
+        legend: !!base.legend,
+        stage: base.stage || null,
         mega: !!member.mega,
         mega_name: member.mega || null,
         form_name: member.typeForm || member.mega || null,
@@ -60,8 +65,11 @@
         sprite: p.sprite || null,
         shiny_sprite: p.shinySprite || null,
         shiny: !!member.shiny,
+        shadow: !!member.shadow,
         starter: !!member.starter,
         candy: !!member.candy,
+        base_stats: Array.isArray(base.s) ? base.s : (Array.isArray(p.s) ? p.s : null),
+        effective_stats: Array.isArray(member.effectiveStats) ? member.effectiveStats : null,
       };
     });
   }
@@ -131,7 +139,7 @@
   async function account() {
     const current = await user();
     let { data: profile } = await client.from("profiles")
-      .select("username").eq("user_id", current.id).maybeSingle();
+      .select("username,avatar").eq("user_id", current.id).maybeSingle();
     if (!profile && current.email && !current.is_anonymous) {
       const metaName = current.user_metadata?.preferred_username ||
         current.user_metadata?.full_name || current.user_metadata?.name ||
@@ -139,12 +147,12 @@
       let clean = String(metaName || "Trainer").replace(/[^A-Za-z0-9_]/g, "").slice(0, 20);
       if (clean.length < 3) clean = `Trainer${current.id.replace(/-/g, "").slice(0, 8)}`;
       let result = await client.from("profiles")
-        .insert({ user_id:current.id, username:clean }).select("username").single();
+        .insert({ user_id:current.id, username:clean }).select("username,avatar").single();
       if (result.error?.code === "23505") {
         const suffix = current.id.replace(/-/g, "").slice(0, 5);
         clean = `${clean.slice(0, 14)}_${suffix}`;
         result = await client.from("profiles")
-          .insert({ user_id:current.id, username:clean }).select("username").single();
+          .insert({ user_id:current.id, username:clean }).select("username,avatar").single();
       }
       if (result.error) throw result.error;
       profile = result.data;
@@ -171,18 +179,33 @@
     if (error) throw error;
     const id = data.user?.id || current.id;
     const { error: profileError } = await client.from("profiles")
-      .upsert({ user_id:id, username:clean }, { onConflict:"user_id" });
+      .upsert({ user_id:id, username:clean, login_email:String(email||"").trim().toLowerCase() }, { onConflict:"user_id" });
     if (profileError) throw profileError;
     userPromise = Promise.resolve(data.user || current);
     return data.user || current;
   }
 
-  async function signIn(email, password) {
+  async function signIn(username, password) {
     getClient();
-    const { data, error } = await client.auth.signInWithPassword({ email, password });
+    const lookup=await client.rpc("email_for_username",{p_username:String(username||"").trim()});
+    if(lookup.error)throw lookup.error;
+    if(!lookup.data)throw new Error("Username or password is incorrect.");
+    const { data, error } = await client.auth.signInWithPassword({ email:lookup.data, password });
     if (error) throw error;
     userPromise = Promise.resolve(data.user);
     return data.user;
+  }
+
+  async function updateAvatar(avatar) {
+    const current = await user();
+    const clean = avatar && Number.isInteger(+avatar.id) ? {
+      id:+avatar.id, base_id:+(avatar.base_id || avatar.id), name:String(avatar.name || "Pokemon"),
+      shiny:!!avatar.shiny, sprite:avatar.sprite || null, shiny_sprite:avatar.shiny_sprite || avatar.shinySprite || null,
+    } : null;
+    const { data, error } = await client.from("profiles").update({avatar:clean})
+      .eq("user_id",current.id).select("username,avatar").single();
+    if (error) throw error;
+    return data;
   }
 
   async function signOut() {
@@ -224,7 +247,7 @@
     const current = await user();
     const clean = String(query || "").trim().replace(/[%_]/g, "");
     if (clean.length < 2) return [];
-    const { data, error } = await client.from("profiles").select("user_id,username")
+    const { data, error } = await client.from("profiles").select("user_id,username,avatar")
       .ilike("username", `%${clean}%`).neq("user_id", current.id).limit(10);
     if (error) throw error;
     return data || [];
@@ -240,14 +263,15 @@
       .filter(id => id !== current.id);
     let profiles = [];
     if (ids.length) {
-      const result = await client.from("profiles").select("user_id,username").in("user_id",ids);
+      const result = await client.from("profiles").select("user_id,username,avatar").in("user_id",ids);
       if (result.error) throw result.error;
       profiles = result.data || [];
     }
-    const names = new Map(profiles.map(p => [p.user_id,p.username]));
+    const names = new Map(profiles.map(p => [p.user_id,p]));
     return rows.map(r => ({ ...r,
       other_id:r.requester_id===current.id?r.addressee_id:r.requester_id,
-      username:names.get(r.requester_id===current.id?r.addressee_id:r.requester_id)||"Trainer",
+      username:names.get(r.requester_id===current.id?r.addressee_id:r.requester_id)?.username||"Trainer",
+      avatar:names.get(r.requester_id===current.id?r.addressee_id:r.requester_id)?.avatar||null,
       incoming:r.addressee_id===current.id,
     }));
   }
@@ -295,6 +319,8 @@
     if (error) throw error;
     return data?.[0] || null;
   }
+  async function saveDailyChampion(input) {const current=await user();const {error}=await client.from("daily_champion_results").insert({user_id:current.id,challenge_date:input.date,champion:input.champion,attempts:input.attempts,team:teamSnapshot(input.team),team_bst:input.teamBst,pokemon_left:input.left});if(error&&error.code!=="23505")throw error;}
+  async function dailyChampionHistory(){await user();const {data,error}=await client.from("daily_champion_results").select("*").order("challenge_date",{ascending:false}).limit(500);if(error)throw error;return data||[];}
 
   window.DexleStats = {
     configured,
@@ -306,6 +332,7 @@
     account,
     createAccount,
     signIn,
+    updateAvatar,
     signOut,
     hallOfFame,
     shinyCharmUnlocked,
@@ -318,5 +345,7 @@
     friendProfile,
     saveDexleGame,
     personalDexleSummary,
+    saveDailyChampion,
+    dailyChampionHistory,
   };
 })();

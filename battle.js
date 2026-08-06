@@ -501,7 +501,9 @@ function simGauntlet(team, OPP, runs) {
       lastGen = gen;
 
       const lvl   = myLevelFor(idx, of, opp.team);
-      const power = G_OPP_POWER[opp.role] || 1;
+      // Antagonist mode supplies a deliberate per-trainer curve; standard
+      // Gauntlet opponents continue to use the unchanged role multipliers.
+      const power = opp.evilPower || G_OPP_POWER[opp.role] || 1;
       const oSum  = sum(opp.team.map(m => sum(m.s)));
       const scale = scaleFactor(oSum, mySum, opp.role, opp.team.length, rng);
 

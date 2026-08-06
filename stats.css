@@ -105,6 +105,7 @@ select{display:block;margin-top:4px;background:var(--ground);border:1px solid va
   width:min(100%,390px);margin:0 auto;
 }
 .mon{position:relative;width:70px;height:70px;border-radius:50%;background:#151B31;border:1px solid var(--line)}
+.mon.shadow{border-color:#8250a5;background:radial-gradient(circle,rgba(115,48,151,.25),#120f1b);box-shadow:0 0 13px rgba(105,45,142,.3)}.shadow-mark{position:absolute;right:-3px;bottom:1px;display:grid;place-items:center;width:18px;height:18px;border:1px solid #9b65bd;border-radius:50%;background:#25122f;color:#dfbaf5;font-size:8px;font-weight:900}
 .mon>img{width:100%;height:100%;object-fit:contain}
 .mon.mega{
   border-color:#E278CE;
@@ -192,3 +193,4 @@ select{display:block;margin-top:4px;background:var(--ground);border:1px solid va
   .team,.best-grid .team{grid-template-columns:repeat(3,minmax(58px,1fr));gap:9px 6px}
   .mon{width:58px;height:58px}
 }
+.daily-champion-progress{margin-top:30px;padding-top:24px;border-top:1px solid #303a5d}.champion-history{display:grid;gap:8px;margin-top:18px}.champion-history article,.champion-best-team{padding:12px;border:1px solid #303a5d;border-radius:10px;background:#151d33}.champion-history article{display:flex;justify-content:space-between;gap:10px}.champion-best-team{margin-top:14px}.champion-team{display:flex;gap:5px}.champion-team img{width:48px;height:48px;object-fit:contain;image-rendering:pixelated}

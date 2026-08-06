@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dexle — Pokémon Games</title>
   <link rel="stylesheet" href="home.css?v=20260801-6">
-  <link rel="stylesheet" href="trainer-menu.css?v=20260801-5">
+  <link rel="stylesheet" href="trainer-menu.css?v=20260805-3">
 </head>
 <body>
 
@@ -60,7 +60,7 @@
       </ul> -->
     </a>
 
-    <a class="mode gaunt" href="gauntlet.html?mode=gauntlet">
+    <a class="mode gaunt" href="gauntlet.html?mode=gauntlet-select">
       <div class="mode-top">
         <span class="mode-tag">Endurance</span>
         <span class="mode-go">Play →</span>
@@ -79,11 +79,15 @@
     </a>
 
   </main>
+  <a class="unlimited-home-card" href="unlimited.html"><b>Unlimited Mode</b><span>Locked until 100 shinies, all nine Region wins, and a flawless Gauntlet →</span></a>
 
   <p class="foot">Built from PokéAPI data · sprites by the PokéAPI sprite project</p>
 
 </div>
 
-<script src="trainer-menu.js?v=20260801-7"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="stats-store.js?v=20260805-1"></script>
+<script src="trainer-menu.js?v=20260805-3"></script>
 </body>
 </html>

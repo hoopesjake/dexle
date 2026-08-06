@@ -1,0 +1,272 @@
+{
+  "_readme": "Dexle Gauntlet - Evil Team Mode. Each team has 3 henchmen (grunt trainers) + 1 boss (final canon roster). Levels/movesets are approximate from mainline game data - double-check exact levels/movesets on Serebii's trainer lists before finalizing if precision matters. 'moves' left empty for you/Codex to fill in from Serebii/Bulbapedia or auto-generate via a moveset generator.",
+  "schema": {
+    "team": "{ id, name, generation, theme, henchmen: [3x trainer], boss: trainer }",
+    "trainer": "{ name, title, sprite, party: [ { species, level, ability, item, moves: [] } ] }"
+  },
+  "teams": [
+    {
+      "id": "team_rocket",
+      "name": "Team Rocket",
+      "generation": 1,
+      "theme": "Kanto/Johto - Dark/Poison",
+      "henchmen": [
+        { "name": "Rocket Grunt", "title": "Henchman", "party": [
+          { "species": "Ekans", "level": 14, "moves": [] },
+          { "species": "Zubat", "level": 15, "moves": [] }
+        ]},
+        { "name": "Rocket Grunt", "title": "Henchman", "party": [
+          { "species": "Koffing", "level": 16, "moves": [] },
+          { "species": "Rattata", "level": 15, "moves": [] }
+        ]},
+        { "name": "Rocket Grunt", "title": "Henchman", "party": [
+          { "species": "Zubat", "level": 17, "moves": [] },
+          { "species": "Grimer", "level": 18, "moves": [] }
+        ]}
+      ],
+      "boss": {
+        "name": "Giovanni", "title": "Team Rocket Boss",
+        "party": [
+          { "species": "Rhyhorn", "level": 40, "moves": [] },
+          { "species": "Dugtrio", "level": 42, "moves": [] },
+          { "species": "Nidoqueen", "level": 40, "moves": [] },
+          { "species": "Nidoking", "level": 40, "moves": [] },
+          { "species": "Rhydon", "level": 45, "moves": [] }
+        ]
+      }
+    },
+    {
+      "id": "team_magma",
+      "name": "Team Magma",
+      "generation": 3,
+      "theme": "Hoenn - Fire/Ground",
+      "henchmen": [
+        { "name": "Magma Grunt", "title": "Henchman", "party": [
+          { "species": "Poochyena", "level": 16, "moves": [] }
+        ]},
+        { "name": "Magma Grunt", "title": "Henchman", "party": [
+          { "species": "Numel", "level": 18, "moves": [] },
+          { "species": "Zubat", "level": 17, "moves": [] }
+        ]},
+        { "name": "Magma Grunt", "title": "Henchman", "party": [
+          { "species": "Poochyena", "level": 19, "moves": [] },
+          { "species": "Numel", "level": 20, "moves": [] }
+        ]}
+      ],
+      "boss": {
+        "name": "Maxie", "title": "Team Magma Leader",
+        "party": [
+          { "species": "Mightyena", "level": 41, "moves": [] },
+          { "species": "Crobat", "level": 40, "moves": [] },
+          { "species": "Camerupt", "level": 43, "moves": [] },
+          { "species": "Solrock", "level": 37, "moves": [] }
+        ]
+      }
+    },
+    {
+      "id": "team_aqua",
+      "name": "Team Aqua",
+      "generation": 3,
+      "theme": "Hoenn - Water/Dark",
+      "henchmen": [
+        { "name": "Aqua Grunt", "title": "Henchman", "party": [
+          { "species": "Zubat", "level": 16, "moves": [] }
+        ]},
+        { "name": "Aqua Grunt", "title": "Henchman", "party": [
+          { "species": "Carvanha", "level": 18, "moves": [] },
+          { "species": "Poochyena", "level": 17, "moves": [] }
+        ]},
+        { "name": "Aqua Grunt", "title": "Henchman", "party": [
+          { "species": "Carvanha", "level": 19, "moves": [] },
+          { "species": "Mightyena", "level": 20, "moves": [] }
+        ]}
+      ],
+      "boss": {
+        "name": "Archie", "title": "Team Aqua Leader",
+        "party": [
+          { "species": "Mightyena", "level": 41, "moves": [] },
+          { "species": "Crobat", "level": 40, "moves": [] },
+          { "species": "Sharpedo", "level": 43, "moves": [] },
+          { "species": "Sealeo", "level": 37, "moves": [] }
+        ]
+      }
+    },
+    {
+      "id": "team_galactic",
+      "name": "Team Galactic",
+      "generation": 4,
+      "theme": "Sinnoh - Dark/Poison",
+      "henchmen": [
+        { "name": "Galactic Grunt", "title": "Henchman", "party": [
+          { "species": "Glameow", "level": 21, "moves": [] }
+        ]},
+        { "name": "Galactic Grunt", "title": "Henchman", "party": [
+          { "species": "Stunky", "level": 24, "moves": [] },
+          { "species": "Croagunk", "level": 24, "moves": [] }
+        ]},
+        { "name": "Galactic Grunt", "title": "Henchman", "party": [
+          { "species": "Stunky", "level": 28, "moves": [] },
+          { "species": "Golbat", "level": 28, "moves": [] }
+        ]}
+      ],
+      "boss": {
+        "name": "Cyrus", "title": "Team Galactic Boss",
+        "party": [
+          { "species": "Sneasel", "level": 46, "moves": [] },
+          { "species": "Golbat", "level": 46, "moves": [] },
+          { "species": "Honchkrow", "level": 47, "moves": [] },
+          { "species": "Gyarados", "level": 47, "moves": [] },
+          { "species": "Weavile", "level": 51, "moves": [] }
+        ]
+      }
+    },
+    {
+      "id": "team_plasma",
+      "name": "Team Plasma",
+      "generation": 5,
+      "theme": "Unova - Dark/Poison/Ghost",
+      "henchmen": [
+        { "name": "Plasma Grunt", "title": "Henchman", "party": [
+          { "species": "Sandile", "level": 21, "moves": [] }
+        ]},
+        { "name": "Plasma Grunt", "title": "Henchman", "party": [
+          { "species": "Scraggy", "level": 23, "moves": [] },
+          { "species": "Watchog", "level": 23, "moves": [] }
+        ]},
+        { "name": "Plasma Grunt", "title": "Henchman", "party": [
+          { "species": "Krokorok", "level": 25, "moves": [] },
+          { "species": "Liepard", "level": 25, "moves": [] }
+        ]}
+      ],
+      "boss": {
+        "name": "Ghetsis", "title": "Team Plasma True Leader",
+        "party": [
+          { "species": "Cofagrigus", "level": 48, "moves": [] },
+          { "species": "Bouffalant", "level": 48, "moves": [] },
+          { "species": "Seismitoad", "level": 48, "moves": [] },
+          { "species": "Eelektross", "level": 48, "moves": [] },
+          { "species": "Toxicroak", "level": 48, "moves": [] },
+          { "species": "Hydreigon", "level": 52, "moves": [] }
+        ]
+      }
+    },
+    {
+      "id": "team_flare",
+      "name": "Team Flare",
+      "generation": 6,
+      "theme": "Kalos - Fire/Dark",
+      "henchmen": [
+        { "name": "Flare Grunt", "title": "Henchman", "party": [
+          { "species": "Houndour", "level": 15, "moves": [] }
+        ]},
+        { "name": "Flare Grunt", "title": "Henchman", "party": [
+          { "species": "Scraggy", "level": 20, "moves": [] },
+          { "species": "Liepard", "level": 20, "moves": [] }
+        ]},
+        { "name": "Flare Grunt", "title": "Henchman", "party": [
+          { "species": "Houndoom", "level": 25, "moves": [] },
+          { "species": "Liepard", "level": 25, "moves": [] }
+        ]}
+      ],
+      "boss": {
+        "name": "Lysandre", "title": "Team Flare Boss",
+        "party": [
+          { "species": "Mienshao", "level": 48, "moves": [] },
+          { "species": "Honchkrow", "level": 48, "moves": [] },
+          { "species": "Pyroar", "level": 48, "moves": [] },
+          { "species": "Gyarados", "level": 49, "moves": [] },
+          { "species": "Gliscor", "level": 48, "moves": [] }
+        ]
+      }
+    },
+    {
+      "id": "team_skull",
+      "name": "Team Skull",
+      "generation": 7,
+      "theme": "Alola - Poison/Dark",
+      "henchmen": [
+        { "name": "Skull Grunt", "title": "Henchman", "party": [
+          { "species": "Zubat", "level": 20, "moves": [] }
+        ]},
+        { "name": "Skull Grunt", "title": "Henchman", "party": [
+          { "species": "Drowzee", "level": 22, "moves": [] },
+          { "species": "Salandit", "level": 22, "moves": [] }
+        ]},
+        { "name": "Skull Grunt", "title": "Henchman", "party": [
+          { "species": "Fomantis", "level": 25, "moves": [] },
+          { "species": "Zubat", "level": 25, "moves": [] }
+        ]}
+      ],
+      "boss": {
+        "name": "Guzma", "title": "Team Skull Boss",
+        "party": [
+          { "species": "Ariados", "level": 41, "moves": [] },
+          { "species": "Golisopod", "level": 43, "moves": [] },
+          { "species": "Masquerain", "level": 41, "moves": [] },
+          { "species": "Pinsir", "level": 41, "moves": [] }
+        ]
+      }
+    },
+    {
+      "id": "team_yell_rose",
+      "name": "Team Yell / Macro Cosmos",
+      "generation": 8,
+      "theme": "Galar - fandom chaos + corporate (weak evil-team fit, see note)",
+      "note": "Gen 8 has no true battle-strong evil team like earlier gens. Team Yell grunts are low-threat comic relief; recommend using Chairman Rose as the boss instead of a Team Yell leader for gauntlet difficulty.",
+      "henchmen": [
+        { "name": "Team Yell Grunt", "title": "Henchman", "party": [
+          { "species": "Stonjourner", "level": 30, "moves": [] }
+        ]},
+        { "name": "Team Yell Grunt", "title": "Henchman", "party": [
+          { "species": "Skwovet", "level": 32, "moves": [] },
+          { "species": "Trevenant", "level": 32, "moves": [] }
+        ]},
+        { "name": "Team Yell Grunt", "title": "Henchman", "party": [
+          { "species": "Stonjourner", "level": 40, "moves": [] },
+          { "species": "Trevenant", "level": 40, "moves": [] }
+        ]}
+      ],
+      "boss": {
+        "name": "Chairman Rose", "title": "Macro Cosmos Chairman",
+        "party": [
+          { "species": "Garbodor", "level": 57, "moves": [] },
+          { "species": "Ferrothorn", "level": 57, "moves": [] },
+          { "species": "Perrserker", "level": 57, "moves": [] },
+          { "species": "Klinklang", "level": 57, "moves": [] },
+          { "species": "Copperajah", "level": 58, "moves": [], "gmax": true }
+        ]
+      }
+    },
+    {
+      "id": "team_star",
+      "name": "Team Star",
+      "generation": 9,
+      "theme": "Paldea - Bases per Segment Leader",
+      "note": "Boss and henchmen levels scale hard with DLC/postgame - verify against your target game state (base game vs Indigo Disk).",
+      "henchmen": [
+        { "name": "Mela", "title": "Fire Crew Segment Leader", "party": [
+          { "species": "Torkoal", "level": 43, "moves": [] },
+          { "species": "Armarouge", "level": 45, "moves": [] }
+        ]},
+        { "name": "Atticus", "title": "Poison Crew Segment Leader", "party": [
+          { "species": "Muk", "level": 43, "moves": [] },
+          { "species": "Skuntank", "level": 45, "moves": [] }
+        ]},
+        { "name": "Eri", "title": "Fighting Crew Segment Leader", "party": [
+          { "species": "Passimian", "level": 43, "moves": [] },
+          { "species": "Annihilape", "level": 45, "moves": [] }
+        ]}
+      ],
+      "boss": {
+        "name": "Cassiopeia (Penny)", "title": "Team Star True Boss",
+        "party": [
+          { "species": "Toxicroak", "level": 60, "moves": [] },
+          { "species": "Muk", "level": 60, "moves": [] },
+          { "species": "Bombirdier", "level": 60, "moves": [] },
+          { "species": "Dachsbun", "level": 60, "moves": [] },
+          { "species": "Revavroom", "level": 65, "moves": [] }
+        ]
+      }
+    }
+  ]
+}

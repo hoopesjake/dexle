@@ -4,12 +4,12 @@
    ========================================================= */
 
 /* ---------- config ---------- */
-const BOOST      = 1.10;   // starter friendship bonus on every base stat
+let BOOST      = 1.10;   // starter friendship bonus on every base stat
 const BASE_SHINY_ODDS = 20; // 1 in N per spin
 const CHARM_SHINY_ODDS = 10;
 let SHINY_ODDS = BASE_SHINY_ODDS;
 const SPIN_MS    = 1500;   // reel duration
-const MAX_LEGEND = 1;      // legendaries allowed on a team
+let MAX_LEGEND = 1;      // legendaries allowed on a team
 
 const REGIONS = {1:"Kanto", 2:"Johto", 3:"Hoenn", 4:"Sinnoh", 5:"Unova",
                  6:"Kalos", 7:"Alola", 8:"Galar", 9:"Paldea"};
@@ -81,15 +81,22 @@ const boosted = p => p.s.map(v => Math.round(v * BOOST));
 
 // final battle stats for a team slot: friendship bond, then Rare Candy
 function statsFor(m) {
-  let s = m.starter ? boosted(m.p) : m.p.s;
+  let s = m.shadow ? m.p.s.map(v => Math.round(v * 1.5)) : m.starter ? boosted(m.p) : m.p.s;
   if (m.candy) s = s.map(v => Math.round(v * CANDY_BOOST));
+  if (BASE_MAX) s = s.map(v => Math.round(v * 4.5));
   return s;
 }
 const teamBst = m => m.starter ? boosted(m.p).reduce((a,b) => a+b, 0) : bst(m.p);
 
 /* ---------- mode, from the URL ---------- */
 // index.html links here as ?mode=champion or ?mode=gauntlet
-const MODE = new URLSearchParams(location.search).get("mode") === "gauntlet" ? "gauntlet" : "champion";
+const RAW_MODE=new URLSearchParams(location.search).get("mode")||"champion";
+const GAUNTLET_SELECT=RAW_MODE==="gauntlet-select";
+const TEAM_ROCKET=RAW_MODE==="team-rocket-gauntlet";
+const UNLIMITED=RAW_MODE.startsWith("unlimited-")||RAW_MODE==="base-max";
+const BASE_MAX=RAW_MODE==="base-max";
+const MODE=(RAW_MODE==="gauntlet"||RAW_MODE==="unlimited-gauntlet"||BASE_MAX||TEAM_ROCKET)?"gauntlet":"champion";
+if(UNLIMITED){BOOST=1.20;MAX_LEGEND=99;}
 const DAILY_CHAMPIONS=[
   {name:"Blue",region:"Kanto",type:"normal"},{name:"Lance",region:"Johto",type:"dragon"},
   {name:"Steven",region:"Hoenn",type:"steel"},{name:"Cynthia",region:"Sinnoh",type:"dragon"},
@@ -119,6 +126,7 @@ let byId = {};
 let OPP = {};                    // generation -> { region, game, opponents[] }
 let MEGAS = {};                  // base dex id -> [ mega forms ]
 let FORMS = {};                  // base dex id -> meaningful alternate forms
+let EVIL = null;                 // converted 36-battle antagonist circuit
 let ownedShinyIds = new Set();   // shiny forms already saved for this Trainer
 let selMode = null;              // null | "mega" | "type" | "candy"
 let locked  = false;             // true once a run has been simulated
@@ -140,23 +148,25 @@ let dailyBattleResult=null;
 
 /* ---------- load ---------- */
 (async function init() {
-  const [dexRes, oppRes, megaRes, formRes] = await Promise.all([
+  const [dexRes, oppRes, megaRes, formRes, evilRes] = await Promise.all([
     fetch("pokedex.json"),
     fetch("opponents.json"),
     fetch("megas.json"),
     fetch("forms.json"),
+    TEAM_ROCKET ? fetch("Evil teams gauntlet.json") : Promise.resolve(null),
   ]);
   DEX   = await dexRes.json();
   OPP   = await oppRes.json();
   MEGAS = await megaRes.json();
   FORMS = await formRes.json();
+  if(UNLIMITED)Object.values(OPP).forEach(region=>(region.opponents||[]).forEach(opp=>(opp.team||[]).forEach(mon=>{if(mon.s)mon.s=mon.s.map(v=>Math.round(v*1.55));})));
   DEX.forEach(p => byId[p.id] = p);
-  await loadShinyAchievement();
-  console.log("Loaded", DEX.length, "Pokémon");
-
+  EVIL = evilRes ? buildEvilOpp(await evilRes.json()) : null;
   $("boostPct").textContent = Math.round((BOOST - 1) * 100) + "%";
   drawTeamBar();
   applyMode();
+  loadShinyAchievement();
+  console.log("Loaded", DEX.length, "Pokémon");
 })();
 
 async function loadShinyAchievement() {
@@ -180,11 +190,27 @@ const ownedShinyMark = (id, shiny) => shiny && ownedShinyIds.has(+id)
 
 /* the hub already chose the mode, so skip straight past it for the Gauntlet */
 function applyMode() {
+  document.body.classList.toggle("unlimited-mode",UNLIMITED);
+  document.body.classList.toggle("unlimited-gauntlet",RAW_MODE==="unlimited-gauntlet");
+  document.body.classList.toggle("unlimited-region",RAW_MODE==="unlimited-region");
+  document.body.classList.toggle("base-max-mode",BASE_MAX);
+  document.body.classList.toggle("team-rocket-mode",TEAM_ROCKET);
+  if(GAUNTLET_SELECT){
+    $("pageTitle").textContent="Choose Your Gauntlet";
+    $("pageSub").textContent="Take on the original endurance run or challenge every major antagonist team.";
+    drawGauntletChoice();
+    return show("scChallenge");
+  }
   if (MODE === "gauntlet") {
-    $("pageTitle").textContent = "The Gauntlet";
-    $("pageSub").textContent   = "All nine regions. Draft a team of six.";
+    $("pageTitle").textContent = TEAM_ROCKET ? "Team Rocket Gauntlet" : BASE_MAX ? "Base Form Fury" : UNLIMITED ? "Unlimited Gauntlet" : "The Gauntlet";
+    $("pageSub").textContent   = TEAM_ROCKET ? "Nine organizations. Thirty-six battles. Harness the power of Shadow Pokémon." : BASE_MAX ? "Base evolutions. Maximum power. The ultimate circuit." : UNLIMITED ? "All nine regions at maximum strength. Build without limits." : "All nine regions. Draft a team of six.";
     challenge = { mode:"gauntlet" };
     startStarter();
+  } else if(UNLIMITED) {
+    $("pageTitle").textContent = "Unlimited Region";
+    $("pageSub").textContent = "Choose a region, then build a Legendary-powered team without limits.";
+    drawRegionChallenge();
+    show("scChallenge");
   } else {
     $("pageTitle").textContent = "Region Champion";
     $("pageSub").textContent   = "Take today's Champion challenge or play the full region circuit.";
@@ -200,6 +226,55 @@ const SCREENS = ["scChallenge", "scStarter", "scBall", "scDone",
                  "scResult", "scGauntlet"];
 function show(id) {
   SCREENS.forEach(s => $(s).hidden = (s !== id));
+}
+
+function modeHub(){location.href=UNLIMITED?"unlimited.html":TEAM_ROCKET?"gauntlet.html?mode=gauntlet-select":"index.html";}
+function goBackFrom(id){
+  if(id==="scChallenge")return modeHub();
+  if(id==="scStarter"){
+    team=[];drawTeamBar();
+    if(MODE==="gauntlet")return modeHub();
+    drawRegionChallenge();return show("scChallenge");
+  }
+  if(id==="scBall"){
+    team=[];spin=null;drawTeamBar();return startStarter();
+  }
+  if(id==="scDone"){
+    if(team.length>1)team.pop();
+    locked=false;drawTeamBar();return startBallPhase(false);
+  }
+  if(id==="scResult"||id==="scGauntlet")return show("scDone");
+}
+
+function drawGauntletChoice(){
+  $("chHd").textContent="Choose your gauntlet";
+  $("chHd").classList.add("mode-eyebrow-heading");
+  $("chSub").textContent="Draft one team and find out how far it can carry you.";
+  $("chgrid").classList.add("mode-choice-grid","gauntlet-choice-grid");
+  $("toStarter").hidden=true;
+  $("chgrid").innerHTML=`<a class="chcard gauntlet-choice-card" href="gauntlet.html?mode=gauntlet"><small>Original challenge</small><b>The Gauntlet</b><span>All nine regions and 121 battles using the classic rules.</span><strong>Start the Gauntlet</strong></a><a class="chcard rocket-choice-card" href="gauntlet.html?mode=team-rocket-gauntlet"><small>Shadow challenge</small><b>Team Rocket Gauntlet</b><span>Defeat every major antagonist organization across 36 escalating battles.</span><strong>Start Battling</strong></a>`;
+}
+
+function buildEvilOpp(source){
+  const names=new Map(DEX.map(p=>[norm(p.name),p]));
+  const aliases={"mr mime":"mr-mime","mime jr":"mime-jr","type null":"type-null","farfetchd":"farfetchd"};
+  const find=species=>names.get(norm(species))||names.get(norm(aliases[norm(species)]||""));
+  const out={};
+  (source.teams||[]).forEach((org,index)=>{
+    const trainers=[...(org.henchmen||[]),org.boss].filter(Boolean);
+    out[index+1]={region:org.name,game:org.theme,opponents:trainers.map((trainer,i)=>{
+      const boss=i===trainers.length-1;
+      return {name:trainer.name,role:boss?"Boss":"Henchman",place:org.name,type:null,
+        // Team Rocket is intentionally tougher than the standard Gauntlet:
+        // henchmen climb 1.12→1.32 and bosses spike from 1.25→1.49.
+        evilPower:(boss?1.25:1.12)+index*(boss ? .03 : .025),
+        team:(trainer.party||[]).map(mon=>{const p=find(mon.species);if(!p)throw new Error(`Unknown antagonist Pokémon: ${mon.species}`);return {...p,lvl:mon.level||100,moves:mon.moves||[],ability:mon.ability||null,item:mon.item||null};})};
+    })};
+  });
+  return out;
+}
+function installScreenBackButtons(){
+  SCREENS.forEach(id=>{const panel=$(id)?.querySelector(".panel");if(!panel||panel.querySelector(".screen-back"))return;const b=document.createElement("button");b.type="button";b.className="screen-back";b.setAttribute("aria-label","Go back one screen");b.title="Back";b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>';b.onclick=()=>goBackFrom(id);panel.prepend(b);});
 }
 
 /* ---------- 1. challenge ---------- */
@@ -241,6 +316,9 @@ function selectChallenge(c) {
 
 /* ---------- 2. starter ---------- */
 function startStarter() {
+  const starterPanel=$("scStarter").querySelector(".panel");
+  starterPanel.querySelector("h2").textContent=TEAM_ROCKET?"Choose your Shadow starter":UNLIMITED&&!BASE_MAX?"Choose your Legendary partner":BASE_MAX?"Choose your base-form partner":"Your starter";
+  starterPanel.querySelector(".sub").innerHTML=TEAM_ROCKET?"Spin for a region, then choose a starter infused with Shadow power. Shadow Pokémon receive a <b>50%</b> boost to every battle stat.":UNLIMITED&&!BASE_MAX?"Spin for a region, then choose any Legendary from that region's generation. Your partner receives a <b>20%</b> boost to every base stat.":BASE_MAX?"Spin for a region and choose a base-form starter. Your partner receives a <b>20%</b> bond before the Base Form Fury boost.":"Spin for a region, then pick one of its three starters. Your first Pokémon gets a friendship bond — a <b id=\"boostPct\">10%</b> boost to every base stat.";
   drawOpponents();
   drawCoverage();
   show("scStarter");
@@ -278,19 +356,36 @@ function spinStarter() {
 
 function showStarters(gen, shiny) {
   const box = $("starterPick");
+  box.classList.remove("unlimited-legend-results","shadow-starters");
   box.hidden = false;
+  if(UNLIMITED&&!BASE_MAX){
+    const legends=DEX.filter(p=>p.gen===gen&&p.legend).sort((a,b)=>bst(b)-bst(a)||a.name.localeCompare(b.name));
+    box.classList.add("unlimited-legend-results");
+    box.innerHTML=`<div class="unlimited-legend-head"><span>${legends.length} Legendary choices · ${REGIONS[gen]}</span><small>Your choice receives the 20% partner boost</small></div><div class="reslist">${legends.map(p=>`<button class="rr-row" data-id="${p.id}" data-shiny="${shiny?1:0}">${spriteImg(p,shiny)}<div class="rr-mid"><span class="rr-id">#${String(p.id).padStart(4,"0")}</span><div class="rr-name">${p.name}${shiny?' <span class="shiny-tag">✦</span>':""}${ownedShinyMark(p.id,shiny)}<span class="legend-tag">legendary</span></div><div class="rr-types">${[p.t1,p.t2].filter(Boolean).map(chip).join("")}</div></div><div class="rr-stats">${p.s.map((v,i)=>`<div class="rr-st"><b>${STAT_NAMES[i]}</b>${v}</div>`).join("")}</div><div class="rr-bst"><b>Bonded</b><span>${boosted(p).reduce((a,b)=>a+b,0)}</span></div></button>`).join("")}</div>`;
+    box.querySelectorAll("[data-id]").forEach(b=>b.onclick=()=>openLegendPreview(byId[+b.dataset.id],b.dataset.shiny==="1"));
+    return;
+  }
+  if(BASE_MAX){
+    const bases=STARTERS[gen].map(id=>byId[id]).filter(Boolean);
+    box.classList.add("unlimited-legend-results");
+    box.innerHTML=`<div class="unlimited-legend-head"><span>${bases.length} base-form choices · ${REGIONS[gen]}</span><small>Select one to continue</small></div><div class="reslist">${bases.map(p=>`<button class="rr-row" data-id="${p.id}" data-shiny="${shiny?1:0}">${spriteImg(p,shiny)}<div class="rr-mid"><span class="rr-id">#${String(p.id).padStart(4,"0")}</span><div class="rr-name">${p.name}${shiny?' <span class="shiny-tag">✦</span>':""}${ownedShinyMark(p.id,shiny)}</div><div class="rr-types">${[p.t1,p.t2].filter(Boolean).map(chip).join("")}</div></div><div class="rr-stats">${p.s.map((v,i)=>`<div class="rr-st"><b>${STAT_NAMES[i]}</b>${v}</div>`).join("")}</div><div class="rr-bst"><b>Base</b><span>${bst(p)}</span></div></button>`).join("")}</div>`;
+    box.querySelectorAll("[data-id]").forEach(b=>b.onclick=()=>{addToTeam(byId[+b.dataset.id],b.dataset.shiny==="1",true);startBallPhase();});
+    return;
+  }
+  if(TEAM_ROCKET)box.classList.add("shadow-starters");
   box.innerHTML = STARTERS[gen].map(id => {
     const p = byId[id];
     if (!p) return "";
     const fin = byId[starterFinal(p.id)];
-    const b   = boosted(fin);
+    const b   = TEAM_ROCKET ? fin.s.map(v=>Math.round(v*1.5)) : boosted(fin);
     return `
-      <button class="st" data-id="${p.id}" data-shiny="${shiny ? 1 : 0}">
+      <button class="st ${TEAM_ROCKET?"shadow-card":""}" data-id="${p.id}" data-shiny="${shiny ? 1 : 0}">
         <b>${p.name}${shiny ? ' <span class="shiny-tag">\u2726</span>' : ""}${ownedShinyMark(fin.id, shiny)}</b>
         <div>${[p.t1, p.t2].filter(Boolean).map(chip).join(" ")}</div>
         ${lineHtml(p.id, shiny)}
         <div class="st-becomes">joins as <b>${fin.name}</b></div>
-        <div class="bst">${bst(fin)} → <i>${b.reduce((x,y)=>x+y,0)}</i> with bond</div>
+        ${TEAM_ROCKET?'<span class="shadow-badge">Shadow Pokémon · +50%</span>':""}
+        <div class="bst">${bst(fin)} → <i>${b.reduce((x,y)=>x+y,0)}</i> ${TEAM_ROCKET?"with Shadow boost":"with bond"}</div>
       </button>`;
   }).join("");
 
@@ -389,6 +484,12 @@ function drawOpponents() {
     $("oppList").innerHTML=`<div class="opp daily-opp"><div class="opp-head"><b>Champion ${dailyOpponent.name}</b><span class="opp-role">${dailyOpponent.region}</span><span class="type" style="background:${TYPE_COLOR[dailyOpponent.type]}">${dailyOpponent.type}</span></div><div class="opp-team">${dailyOpponent.team.map(m=>`<div class="opp-mon ${m.ace?"daily-ace":""}" title="${m.name}"><img src="${spriteUrl(m,false)}" alt="${m.name}"><span class="opp-mn">${m.name}</span><span class="opp-mt">${[m.t1,m.t2].filter(Boolean).map(chip).join("")}</span></div>`).join("")}</div></div>`;
     return;
   }
+  if (TEAM_ROCKET && EVIL) {
+    $("oppPanel").hidden=false;
+    $("oppCount").textContent="36 battles · 9 antagonist organizations";
+    $("oppList").innerHTML=Object.values(EVIL).map(org=>`<details class="evil-preview"><summary><b>${org.region}</b><small>${org.game}</small><span aria-hidden="true">▾</span></summary>${org.opponents.map(o=>`<div class="opp"><div class="opp-head"><b>${o.name}</b><span class="opp-role">${o.role}</span></div><div class="opp-team">${o.team.map(m=>`<div class="opp-mon" title="${m.name} · Lv ${m.lvl}"><img src="${SPRITE(m.id,false)}" alt="${m.name}" loading="lazy"><span class="opp-mn">${m.name}</span><span class="opp-lv">Lv ${m.lvl}</span></div>`).join("")}</div></div>`).join("")}</details>`).join("");
+    return;
+  }
   if (MODE !== "champion" || !challenge || challenge.mode !== "single") {
     $("oppPanel").hidden = true;
     return;
@@ -475,7 +576,7 @@ function throwBall(keep) {
   removeShinyNote();
 
   runReel(reels, () => {
-    spin = { gen, type, shiny: rnd(SHINY_ODDS) === 0 };
+    spin = { gen, type, shiny: rnd(SHINY_ODDS) === 0, shadow:TEAM_ROCKET&&rnd(10)===0 };
     // one throw per slot - use a reroll if you don't like it
     $("throwBall").textContent = "Ball thrown";
     $("throwBall").disabled = true;
@@ -485,13 +586,20 @@ function throwBall(keep) {
 
 function resolveSpin() {
   const list = eligible(spin.gen, spin.type);
+  const legendLocked = team.some(m => m.p.legend);
 
   // Gen 1 + dark is the only genuinely empty combo - roll the region again
   if (!list.length) {
     $("spinNote").hidden = false;
     $("spinNote").textContent =
-      `No ${spin.type}-type Pokémon exist in ${REGIONS[spin.gen]} — rolling a new region.`;
-    setTimeout(() => throwBall("type"), 1100);
+      `No ${spin.type}-type Pokémon exist in ${REGIONS[spin.gen]} — rolling a new type.`;
+    setTimeout(() => throwBall("gen"), 1100);
+    return;
+  }
+  if (legendLocked && list.every(p => p.legend)) {
+    $("spinNote").hidden = false;
+    $("spinNote").textContent = "That roll only has Legendary Pokémon, and your Legendary slot is already used — rerolling both.";
+    setTimeout(() => throwBall(null), 1100);
     return;
   }
 
@@ -499,6 +607,11 @@ function resolveSpin() {
     $("results").insertAdjacentHTML("beforebegin",
       `<div class="shinyhit" id="shinyNote">✦ Shiny encounter! Every Pokémon in this
        result is shiny — looks only, no stat change.</div>`);
+  }
+  if (spin.shadow) {
+    $("results").insertAdjacentHTML("beforebegin",
+      `<div class="shadowhit" id="shadowNote"><b>Shadow Pokémon encounter</b>
+       Every Pokémon in this result receives +50% to all battle stats. Shadow and Shiny can occur together.</div>`);
   }
 
   $("resSearch").value = "";
@@ -512,7 +625,7 @@ function resolveSpin() {
 function eligible(gen, type) {
   const taken = new Set(team.map(m => m.p.id));
   return DEX
-    .filter(p => p.gen === gen && (p.t1 === type || p.t2 === type) && !taken.has(p.id))
+    .filter(p => p.gen === gen && (p.t1 === type || p.t2 === type) && !taken.has(p.id) && (!BASE_MAX || (p.stage===1&&!p.legend)))
     .sort((a, b) => bst(b) - bst(a));           // strongest first
 }
 
@@ -534,8 +647,9 @@ function renderResults(list) {
 
   $("reslist").innerHTML = shown.map(p => {
     const locked = legendLocked && p.legend;
+    const shownStats = spin.shadow ? p.s.map(v => Math.round(v * 1.5)) : p.s;
     return `
-    <button class="rr-row ${locked ? "locked" : ""}" data-id="${p.id}"
+    <button class="rr-row ${locked ? "locked" : ""} ${spin.shadow ? "shadow-card" : ""}" data-id="${p.id}"
             ${locked ? "disabled" : ""}>
       <img src="${SPRITE(p.id, spin.shiny)}" alt="" loading="lazy">
       <div class="rr-mid">
@@ -543,14 +657,15 @@ function renderResults(list) {
         <div class="rr-name">${p.name}
           ${ownedShinyMark(p.id, spin.shiny)}
           ${p.legend ? '<span class="legend-tag">legendary</span>' : ""}
+          ${spin.shadow ? '<span class="shadow-badge">Shadow +50%</span>' : ""}
           ${locked ? '<span class="lock-tag">1 legend max</span>' : ""}
         </div>
         <div class="rr-types">${[p.t1,p.t2].filter(Boolean).map(chip).join("")}</div>
       </div>
       <div class="rr-stats">
-        ${p.s.map((v,i) => `<div class="rr-st"><b>${STAT_NAMES[i]}</b>${v}</div>`).join("")}
+        ${shownStats.map((v,i) => `<div class="rr-st"><b>${STAT_NAMES[i]}</b>${v}</div>`).join("")}
       </div>
-      <div class="rr-bst"><b>Total</b><span>${bst(p)}</span></div>
+      <div class="rr-bst"><b>${spin.shadow ? "Shadow" : "Total"}</b><span>${shownStats.reduce((a,b)=>a+b,0)}</span></div>
     </button>`;
   }).join("");
 
@@ -564,21 +679,38 @@ function closePickPreview() {
   $("pickBody").innerHTML = "";
 }
 
+function openLegendPreview(p, shiny) {
+  const canMega=!!megaFormsFor(p),canType=typeFormsFor(p).length>0,bonded=boosted(p);
+  $("pickBody").innerHTML=`
+    <div class="pick-identity">
+      ${spriteImg(p,shiny,"pick-sprite")}
+      <span class="rr-id">#${String(p.id).padStart(4,"0")}</span>
+      <h2 id="pickName">${p.name}${shiny?'<span class="pick-shiny">&#10022; Shiny</span>':""}${ownedShinyMark(p.id,shiny)}${canMega?'<span class="pick-mega-gem" title="Has a powered form" aria-label="Has a powered form">&#9672;</span>':""}${canType?'<span class="pick-type-gem" title="Can change type or form" aria-label="Can change type or form">&#9671;</span>':""}</h2>
+      <div class="pick-types">${[p.t1,p.t2].filter(Boolean).map(chip).join("")}</div>
+    </div>
+    <div class="pick-stats">${p.s.map((v,i)=>`<div class="pick-stat"><span>${STAT_NAMES[i]}</span><b>${v} <i>→ ${bonded[i]}</i></b></div>`).join("")}</div>
+    <div class="pick-total"><span>20% bonded total</span><b>${bonded.reduce((a,b)=>a+b,0)}</b></div>
+    <button id="confirmPick" class="confirm-pick">Choose Legendary Partner</button>`;
+  $("pickModal").hidden=false;
+  $("confirmPick").onclick=()=>{addToTeam(p,shiny,true);closePickPreview();startBallPhase();};
+}
+
 function openPickPreview(p) {
   const shiny = !!spin.shiny;
   const canMega = !!megaFormsFor(p);
   const canType = typeFormsFor(p).length > 0;
+  const previewStats = spin.shadow ? p.s.map(v => Math.round(v * 1.5)) : p.s;
   $("pickBody").innerHTML = `
     <div class="pick-identity">
       ${spriteImg(p, shiny, "pick-sprite")}
       <span class="rr-id">#${String(p.id).padStart(4,"0")}</span>
-      <h2 id="pickName">${p.name}${shiny ? '<span class="pick-shiny">&#10022; Shiny</span>' : ""}${ownedShinyMark(p.id, shiny)}${canMega ? '<span class="pick-mega-gem" title="Mega Evolvable" aria-label="Mega Evolvable">&#9672;</span>' : ""}${canType ? '<span class="pick-type-gem" title="Can change type or form" aria-label="Can change type or form">&#9671;</span>' : ""}</h2>
+      <h2 id="pickName">${p.name}${shiny ? '<span class="pick-shiny">&#10022; Shiny</span>' : ""}${spin.shadow ? '<span class="shadow-badge">Shadow Pokémon</span>' : ""}${ownedShinyMark(p.id, shiny)}${canMega ? '<span class="pick-mega-gem" title="Mega Evolvable" aria-label="Mega Evolvable">&#9672;</span>' : ""}${canType ? '<span class="pick-type-gem" title="Can change type or form" aria-label="Can change type or form">&#9671;</span>' : ""}</h2>
       <div class="pick-types">${[p.t1,p.t2].filter(Boolean).map(chip).join("")}</div>
     </div>
     <div class="pick-stats">
-      ${p.s.map((v,i) => `<div class="pick-stat"><span>${STAT_NAMES[i]}</span><b>${v}</b></div>`).join("")}
+      ${previewStats.map((v,i) => `<div class="pick-stat"><span>${STAT_NAMES[i]}</span><b>${spin.shadow ? `${p.s[i]} <i>→ ${v}</i>` : v}</b></div>`).join("")}
     </div>
-    <div class="pick-total"><span>Total stats</span><b>${bst(p)}</b></div>
+    <div class="pick-total ${spin.shadow ? "shadow-total" : ""}"><span>${spin.shadow ? "Shadow total · +50%" : "Total stats"}</span><b>${previewStats.reduce((a,b)=>a+b,0)}</b></div>
     <button id="confirmPick" class="confirm-pick">Add to Team</button>`;
 
   $("pickModal").hidden = false;
@@ -626,9 +758,9 @@ function drawRerolls() {
 /* ---------- team ---------- */
 function addToTeam(picked, shiny, starter) {
   // starters arrive fully evolved; everyone else joins exactly as drafted
-  const p = starter ? byId[starterFinal(picked.id)] : picked;
+  const p = starter && !BASE_MAX && !picked.legend ? byId[starterFinal(picked.id)] : picked;
   team.push({ p, from: starter ? picked.id : null,
-              shiny:!!shiny, starter:!!starter });
+              shiny:!!shiny, shadow:!!(TEAM_ROCKET&&(starter||spin?.shadow)), starter:!!starter });
   drawTeamBar();
   drawCoverage();
 }
@@ -649,7 +781,8 @@ function drawTeamBar() {
                  m.starter ? "starter" : "",
                  m.mega    ? "megaon"  : "",
                  m.typeForm ? "typeon" : "",
-                 m.candy   ? "candyon" : ""].filter(Boolean).join(" ");
+                 m.candy   ? "candyon" : "",
+                 m.shadow  ? "shadow-card" : ""].filter(Boolean).join(" ");
     return `<div class="${cls}" title="${m.p.name}${m.mega ? " · Mega Evolved" : ""}${m.candy ? " · Rare Candy" : ""}">
       ${spriteImg(m.p, m.shiny)}
       ${m.starter ? '<span class="tb-flag">💛</span>' : ""}
@@ -657,6 +790,7 @@ function drawTeamBar() {
       ${m.typeForm ? '<span class="tb-flag tb-type">◇</span>' : ""}
       ${m.candy   ? `<span class="tb-flag tb-candy"><img src="${CANDY_ICON}" alt="Rare Candy"></span>` : ""}
       ${m.shiny   ? '<span class="tb-flag tb-shiny">✦</span>' : ""}
+      ${m.shadow  ? '<span class="tb-flag tb-shadow">S</span>' : ""}
     </div>`;
   }).join("");
   $("tbCount").textContent = `${team.length} / 6`;
@@ -700,7 +834,7 @@ function setSelMode(mode) {
   $("selHint").hidden = !mode;
   $("selHint").className = "selhint" + (mode ? " " + mode : "");
   $("selHint").textContent =
-    mode === "mega"  ? "Select one Pokémon to Mega Evolve or power-change its form."
+    mode === "mega"  ? (UNLIMITED ? "Select every eligible Pokémon you want to Mega Evolve or power-change. The diamond stays active until you turn it off." : "Select one Pokémon to Mega Evolve or power-change its form.")
   : mode === "type"  ? "Select a Pokémon to change its type or equipped Drive. This does not use your power transformation."
   : mode === "candy" ? `Select one Pokémon to feed the Rare Candy — ` +
                        `+${Math.round((CANDY_BOOST - 1) * 100)}% to every stat. ` +
@@ -713,12 +847,12 @@ function setSelMode(mode) {
 }
 
 // who may eat the candy: not the starter, not a legendary, not the Mega
-const candyOk = m => !m.starter && !m.p.legend && !m.mega;
+const candyOk = m => UNLIMITED ? (m.candy || team.filter(x=>x.candy).length<3) : !m.starter && !m.p.legend && !m.mega;
 const candyEligible = () => team.filter(candyOk);
 
 function applyMega(slot, form) {
   const m = team[slot];
-  delete m.candy;
+  if(!UNLIMITED)delete m.candy;
   m.base = m.p;                               // remember the selected style/form
   m.preMegaTypeBase = m.typeBase;
   m.preMegaTypeForm = m.typeForm;
@@ -727,7 +861,7 @@ function applyMega(slot, form) {
              region: m.base.region, baseId: m.base.baseId || m.base.id };
   m.mega = form.name;
   megaIdx = slot;
-  setSelMode(null);
+  setSelMode(UNLIMITED?"mega":null);
 }
 
 function applyTypeForm(slot, form) {
@@ -761,7 +895,8 @@ function revertMega() {
 function pickForSelection(slot) {
   if (selMode === "candy") {
     if (!candyOk(team[slot])) return;
-    team.forEach((m, i) => m.candy = (i === slot));
+    if(UNLIMITED)team[slot].candy=!team[slot].candy;
+    else team.forEach((m, i) => m.candy = (i === slot));
     setSelMode(null);
     return;
   }
@@ -781,7 +916,7 @@ function pickForSelection(slot) {
     return;
   }
 
-  if (megaIdx >= 0 && megaIdx !== slot) revertMega();
+  if (!UNLIMITED && megaIdx >= 0 && megaIdx !== slot) revertMega();
   if (forms.length === 1) return applyMega(slot, forms[0]);
   openMegaChooser(slot, forms, "power");
 }
@@ -793,7 +928,7 @@ function openMegaChooser(slot, forms, mode) {
   const baseFormName = forms.find(f => f.baseName)?.baseName || before.name;
   $("formModalTitle").textContent = isDrive ? "Choose a Drive" : isType ? "Choose a Type Form" : "Choose a Power Form";
   $("megaBody").innerHTML = `
-    <p class="mega-lead">${before.name} has ${forms.length} ${isDrive ? "Drive choices. These are free and only change Techno Blast's offensive type." : isType ? "form choices. These are free and may change appearance, typing, or stats." : "powered forms. One powered form may be active per team."}</p>
+    <p class="mega-lead">${before.name} has ${forms.length} ${isDrive ? "Drive choices. These are free and only change Techno Blast's offensive type." : isType ? "form choices. These are free and may change appearance, typing, or stats." : UNLIMITED ? "powered forms. Unlimited mode allows every eligible teammate to use one." : "powered forms. One powered form may be active per team."}</p>
     <div class="megaopts">
       ${isType && team[slot].typeForm ? `<button class="megaopt" data-original="1">
         ${spriteImg(before, team[slot].shiny)}<b>${baseFormName}</b>
@@ -846,7 +981,7 @@ function renderDone() {
     a + statsFor(m).reduce((sum, stat) => sum + stat, 0), 0);
   const shinies = team.filter(m => m.shiny).length;
   const where   = challenge.mode === "gauntlet"
-    ? "the full nine-region Gauntlet"
+    ? TEAM_ROCKET ? "the Team Rocket Gauntlet" : "the full nine-region Gauntlet"
     : challenge.mode === "daily" ? `today's battle with Champion ${dailyOpponent.name}`
     : `${REGIONS[challenge.gen]} (Generation ${challenge.gen})`;
 
@@ -906,19 +1041,21 @@ function renderDone() {
 
     return `
       <div class="fin ${m.starter ? "starter" : ""} ${m.mega ? "megaon" : ""}
-                  ${m.candy ? "candyon" : ""} ${m.typeForm ? "typeon" : ""} ${pick}"
+                  ${m.candy ? "candyon" : ""} ${m.typeForm ? "typeon" : ""} ${m.shadow ? "shadow-card" : ""} ${pick}"
            ${pick.startsWith("pickable") ? `data-slot="${slot}" role="button" tabindex="0"` : ""}>
         ${m.starter ? '<span class="fin-flag" title="Friendship bond">💛</span>' : ""}
         ${m.shiny   ? '<span class="fin-flag" style="left:8px;right:auto">✦</span>' : ""}
+        ${m.shadow  ? '<span class="fin-flag shadow-flag">SHADOW</span>' : ""}
         ${spriteImg(p, m.shiny)}
         <b>${p.name}</b>
         <div>${[p.t1,p.t2].filter(Boolean).map(chip).join(" ")}</div>
         ${m.from ? `<div class="fin-from">from ${byId[m.from].name}</div>` : ""}
-        <div class="fin-bst">${p.gmax ? `${t} → ${t + s[0]} (2× HP)` : `${t}${m.starter ? " (bonded)" : m.candy ? " (candied)" : ""}`}</div>
+        <div class="fin-bst">${p.gmax ? `${t} → ${t + s[0]} (2× HP)` : `${t}${m.shadow ? " (Shadow +50%)" : m.starter ? " (bonded)" : m.candy ? " (candied)" : ""}`}</div>
         <div class="fin-badges">
           ${m.mega   ? `<span class="badge mega">${p.gmax ? "Gigantamax" : "Mega Evolved"}</span>` : ""}
           ${m.typeForm ? `<span class="badge typeform">${m.p.driveName || "Change Type"}</span>` : ""}
           ${m.candy  ? `<span class="badge candy"><img src="${CANDY_ICON}" alt="">Rare Candy +${Math.round((CANDY_BOOST-1)*100)}%</span>` : ""}
+          ${m.shadow ? '<span class="badge shadow-badge">Shadow Pokémon</span>' : ""}
         </div>
       </div>`;
   }).join("");
@@ -965,13 +1102,13 @@ function saveCompletedRun(res, rk, mode) {
     : null;
 
   window.DexleStats.saveRun({
-    mode,
+    mode:TEAM_ROCKET?"team_rocket_gauntlet":UNLIMITED?(mode==="gauntlet"?(BASE_MAX?"base_max":"unlimited_gauntlet"):"unlimited_region"):mode,
     region: mode === "region" ? challenge.gen : null,
     wins: res.record[0],
     losses: res.record[1],
     total: res.total || (res.record[0] + res.record[1]),
     tier: rk.key,
-    team,
+    team:team.map(member=>({...member,effectiveStats:statsFor(member)})),
     teamBst: team.reduce((sum, member) =>
       sum + statsFor(member).reduce((a, stat) => a + stat, 0), 0),
     coverage: coverage(),
@@ -987,15 +1124,17 @@ function saveCompletedRun(res, rk, mode) {
 /* ---------- 6. the nine-region Gauntlet ---------- */
 function runGauntlet() {
   const roster = team.map(m => ({ p: m.p, stats: statsFor(m) }));
+  const circuit = TEAM_ROCKET ? EVIL : OPP;
+  const battleTotal = TEAM_ROCKET ? 36 : 121;
 
   locked = true;
   lastScreen = "scGauntlet";
-  $("gSub").textContent = "Simulating 121 battles…";
+  $("gSub").textContent = `Simulating ${battleTotal} battles…`;
   show("scGauntlet");
 
   // let the screen paint before the heavy loop
   setTimeout(() => {
-    const res = simGauntlet(roster, OPP);
+    const res = simGauntlet(roster, circuit);
     const [w, l] = res.record;
 
     const rk = rankFor(w, res.total);
@@ -1007,10 +1146,10 @@ function runGauntlet() {
     $("gRank").innerHTML = rankBadge(rk, w, res.total);
 
     $("gTitle").textContent = l === 0
-      ? "Undisputed Champion of All Nine Regions"
-      : `${w} of ${res.total} across nine regions`;
+      ? TEAM_ROCKET ? "Every Evil Team Defeated" : "Undisputed Champion of All Nine Regions"
+      : `${w} of ${res.total} across ${TEAM_ROCKET ? "nine organizations" : "nine regions"}`;
     $("gSub").innerHTML = l === 0
-      ? "Every gym, every Elite Four, every Champion. Nobody took a battle off you."
+      ? TEAM_ROCKET ? "Every henchman and every boss fell before your Shadow-powered squad." : "Every gym, every Elite Four, every Champion. Nobody took a battle off you."
       : `Most likely outcome for this team. Your worst matchup is ` +
         `<b>${res.hardest[0].name}</b> (${Math.round(res.hardest[0].rate * 100)}%).`;
 
@@ -1029,7 +1168,7 @@ function runGauntlet() {
       return `
       <div class="reg ${clean ? "clean" : ""}">
         <button class="reg-head" aria-expanded="false">
-          <span class="reg-gen">Gen ${r.gen}</span>
+          <span class="reg-gen">${TEAM_ROCKET ? "Team" : `Gen ${r.gen}`}</span>
           <b>${r.region}</b>
           <span class="reg-game">${r.game}</span>
           <span class="reg-rec ${clean ? "ok" : ""}">${r.record[0]}-${r.record[1]}</span>
@@ -1193,12 +1332,12 @@ function runDailyChampion(){
   $("recStats").innerHTML=`<div class="rstat"><b>Your Pokémon left</b><span>${result.left}/6</span></div><div class="rstat"><b>Champion fainted</b><span>${6-result.oleft}/6</span></div><div class="rstat"><b>Team total stats</b><span>${finalTeamStats.toLocaleString()}</span></div><div class="rstat"><b>Attempts</b><span>${attempts}</span></div>`;
   $("battles").innerHTML=`<div class="daily-battle-summary"><h3>Your team</h3><div class="daily-result-team">${team.map(m=>`<span class="${faintedMine.includes(m.p.name)?"fainted":""}">${spriteImg(m.p,m.shiny)}<b>${m.p.name}</b></span>`).join("")}</div><h3>Champion ${dailyOpponent.name}</h3><div class="daily-result-team">${dailyOpponent.team.map(m=>`<span class="${faintedTheirs.includes(m.name)?"fainted":""}">${spriteImg(m,false)}<b>${m.name}</b></span>`).join("")}</div></div>`;
   $("againBtn2").textContent=result.win?"Share Results":"Draft a New Team";
-  if(result.win){const saved={date:dailyChampionDate(),champion:dailyOpponent.name,attempts,team:team.map(m=>m.p.name),members:team.map(m=>m.p),left:result.left,opponent:dailyOpponent};localStorage.setItem(dailyChampionKey(),JSON.stringify(saved));}
+  if(result.win){const saved={date:dailyChampionDate(),champion:dailyOpponent.name,attempts,team:team.map(m=>m.p.name),members:team.map(m=>({...m.p,shiny:m.shiny})),left:result.left,opponent:dailyOpponent,teamBst:finalTeamStats};localStorage.setItem(dailyChampionKey(),JSON.stringify(saved));if(window.DexleStats?.configured)DexleStats.saveDailyChampion({date:saved.date,champion:saved.champion,attempts,team,left:result.left,teamBst:finalTeamStats}).then(()=>team.filter(m=>m.shiny).forEach(m=>ownedShinyIds.add(+m.p.id))).catch(e=>console.error("Could not save Daily Champion result:",e));}
   show("scResult");requestAnimationFrame(()=>$("scResult").scrollIntoView({block:"start"}));
 }
 function dailyChampionShareText(saved=dailyChampionResult()){return `I beat Champion ${saved.champion} in ${saved.attempts} ${saved.attempts===1?"attempt":"attempts"}! My team: ${saved.team.join(", ")}. Try the Daily Champion Battle here: dexle.io`;}
 async function shareDailyChampion(){const saved=dailyChampionResult();if(!saved)return;const text=dailyChampionShareText(saved);try{if(navigator.share)await navigator.share({title:"My Daily Champion result",text});else{await navigator.clipboard.writeText(text);alert("Result copied — paste it into a text message!");}}catch(e){}}
-function showSavedDailyChampion(saved){$("dailyChampionShareSummary").textContent=`You defeated Champion ${saved.champion} in ${saved.attempts} ${saved.attempts===1?"attempt":"attempts"} with ${saved.left} Pokémon left.`;const members=(saved.members||saved.team.map(name=>DEX.find(p=>p.name===name))).filter(Boolean);$("dailyChampionShareTeam").innerHTML=members.map(p=>`<span>${spriteImg(p,false)}<b>${p.name}</b><i>${[p.t1,p.t2].filter(Boolean).map(chip).join("")}</i></span>`).join("");$("dailyChampionModal").hidden=false;}
+function showSavedDailyChampion(saved){$("dailyChampionShareSummary").textContent=`You defeated Champion ${saved.champion} in ${saved.attempts} ${saved.attempts===1?"attempt":"attempts"} with ${saved.left} Pokémon left.`;const members=(saved.members||saved.team.map(name=>DEX.find(p=>p.name===name))).filter(Boolean);$("dailyChampionShareTeam").innerHTML=members.map(p=>`<span>${spriteImg(p,!!p.shiny)}<b>${p.name}</b><i>${[p.t1,p.t2].filter(Boolean).map(chip).join("")}</i></span>`).join("");$("dailyChampionModal").hidden=false;}
 
 const dailyChampionDate=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;};
 const dailyChampionKey=()=>`dexle-daily-champion-v2:${dailyChampionDate()}`;
@@ -1281,7 +1420,7 @@ function runReel(reels, done) {
 }
 
 const reelSlot = el => el.closest(".slot");
-const removeShinyNote = () => { const n = $("shinyNote"); if (n) n.remove(); };
+const removeShinyNote = () => { ["shinyNote","shadowNote"].forEach(id=>{const n=$(id);if(n)n.remove();}); };
 
 /* ---------- start over ---------- */
 function startOver() {
@@ -1329,7 +1468,7 @@ function startOver() {
   } else {
     challenge = null;
     $("toStarter").disabled = true;
-    drawChallenge();
+    drawRegionChallenge();
     show("scChallenge");
   }
 }
@@ -1384,9 +1523,10 @@ $("simBtn").onclick      = () => {
 };
 $("gAgain").onclick      = startOver;
 $("gBack").onclick       = () => show("scDone");
+document.querySelector(".result-home").onclick=e=>{e.preventDefault();show("scDone");};
 $("megaBtn").onclick     = () => {
   if (selMode === "mega") return setSelMode(null);
-  if (megaIdx >= 0) { revertMega(); return setSelMode("mega"); }
+  if (!UNLIMITED && megaIdx >= 0) { revertMega(); return setSelMode("mega"); }
   setSelMode("mega");
 };
 $("typeBtn").onclick     = () => setSelMode(selMode === "type" ? null : "type");
@@ -1401,6 +1541,7 @@ $("againBtn2").onclick   = () => challenge?.mode==="daily"&&dailyChampionResult(
 $("dailyChampionClose").onclick=()=>{$("dailyChampionModal").hidden=true;};
 $("dailyChampionShare").onclick=shareDailyChampion;
 $("dailyChampionModal").onclick=e=>{if(e.target.id==="dailyChampionModal")$("dailyChampionModal").hidden=true;};
+installScreenBackButtons();
 $("restart").onclick     = startOver;
 // $("debugTeam").onclick = debugTeam;
 
