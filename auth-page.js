@@ -5,7 +5,7 @@
   let pokemon=[],forms={},megas={},avatar=null;
   const msg=(text,error=false)=>{const el=$("authPageMessage");el.textContent=text;el.classList.toggle("error",error);el.hidden=!text;};
   const sprite=a=>{const custom=a.shiny?(a.shinySprite||a.shiny_sprite):a.sprite;return custom?root+custom:`${root}${a.shiny?"shiny/":""}${a.id}.png`;};
-  const renderChoice=()=>{$("focusedAvatarChoice").innerHTML=avatar?`<img class="profile-avatar" src="${sprite(avatar)}"><span><b>${avatar.name}</b>${avatar.shiny?" · Shiny":""}</span><button type="button" class="avatar-remove" aria-label="Remove selected Pokémon">&times;</button>`:'<span class="avatar-placeholder"></span><span>No sprite selected</span>';};
+  const renderChoice=()=>{$("focusedAvatarChoice").innerHTML=avatar?`<img class="profile-avatar" src="${sprite(avatar)}"><span><b>${avatar.name}</b>${avatar.shiny?" · Shiny":""}</span><button type="button" class="avatar-remove" aria-label="Remove selected Pokémon">&times;</button>`:'<span class="rankball avatar-placeholder" style="--rc:#E0483C"></span><span>No sprite selected</span>';};
   try{
     const account=await DexleStats.account();
     if(!account.anonymous)return location.replace("account.html");

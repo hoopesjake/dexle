@@ -16,3 +16,7 @@ header>#shiny+.trainer-menu-button{margin-left:0}
 .friend-notification[hidden]{display:none!important}
 .trainer-menu-controls{display:grid;gap:8px;margin-top:18px;padding-top:18px;border-top:1px solid #303A5D}
 @media(prefers-reduced-motion:reduce){.trainer-menu-drawer{transition:none}}
+.trainer-avatar-placeholder{--rc:#e0483c;position:relative;overflow:visible;background:linear-gradient(180deg,var(--rc) 0 48%,#f2f4fa 52% 100%);box-shadow:0 0 0 2px #10162a,0 0 16px color-mix(in srgb,var(--rc) 55%,transparent)}
+.trainer-avatar-placeholder:after{content:"";position:absolute;inset:0;margin:auto;width:11px;height:11px;border:2px solid #10162a;border-radius:50%;background:#f2f4fa}
+.rankball.trainer-avatar-placeholder{position:relative;overflow:visible;flex:none;background:linear-gradient(180deg,var(--rc) 0 48%,#f2f4fa 52% 100%);box-shadow:0 0 0 2px #10162a,0 0 16px color-mix(in srgb,var(--rc) 55%,transparent)}
+.rankball.trainer-avatar-placeholder::after{content:"";position:absolute;inset:0;margin:auto;width:11px;height:11px;border-radius:50%;background:#f2f4fa;border:2px solid #10162a}

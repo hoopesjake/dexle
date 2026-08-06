@@ -8,6 +8,7 @@
     master:"#B061D6", oak:"#5FE3B0",
   };
   const $ = id => document.getElementById(id);
+  const UNLIMITED_VIEW=new URLSearchParams(location.search).get("view")==="unlimited";
   const sprite = (id, shiny) =>
     `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${shiny ? "shiny/" : ""}${id}.png`;
   const CANDY_ICON =
@@ -26,7 +27,7 @@
   };
   let runs = [];
   let scope = "personal";
-  let historyMode = "region";
+  let historyMode = UNLIMITED_VIEW ? "unlimited_region" : "region";
   let showStarters = false;
 
   function pokemonGeneration(mon) {
@@ -56,12 +57,11 @@
         ${m.mega ? `<span class="mega-mark" aria-label="Mega Evolved">◈</span>` : ""}
         ${m.type_form ? `<span class="type-form-mark" aria-label="Changed Type">◇</span>` : ""}
         ${m.shiny ? `<span class="shiny-mark" aria-label="Shiny">✦</span>` : ""}
-        ${m.shadow ? `<span class="shadow-mark" aria-label="Shadow Pokémon">S</span>` : ""}
       </span>`).join("")}</div>`;
   }
 
   function runCard(run) {
-    const title = run.mode === "team_rocket_gauntlet" ? "Team Rocket Gauntlet" : run.mode === "gauntlet" ? "Gauntlet" : REGIONS[run.region];
+    const title = run.mode === "unlimited_region" ? `Region Ascendant · ${REGIONS[run.region]||"Region"}` : run.mode === "unlimited_gauntlet" ? "Infinite Gauntlet" : run.mode === "base_max" ? "Base Form Fury" : run.mode === "team_rocket_gauntlet" ? "Team Rocket Gauntlet" : run.mode === "gauntlet" ? "Gauntlet" : REGIONS[run.region];
     const date = new Date(run.created_at).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"});
     return `<article class="run-card ${run.wins === run.total ? "flawless" : ""}">
       <div class="run-top">
@@ -118,6 +118,11 @@
       return drawLeaders(personalTop(mode, generation));
     }
     try {
+      if(UNLIMITED_VIEW&&!mode){
+        const lists=await Promise.all(["unlimited_region","unlimited_gauntlet","base_max"].map(m=>DexleStats.communityTop(m,+generation||null,showStarters,50)));
+        const merged=new Map();lists.flat().forEach(p=>{const key=`${p.pokemon_id}|${!!p.is_mega}`,old=merged.get(key);if(old)old.uses=+old.uses + +p.uses;else merged.set(key,{...p,uses:+p.uses});});
+        return drawLeaders([...merged.values()].sort((a,b)=>b.uses-a.uses).slice(0,10));
+      }
       drawLeaders(await DexleStats.communityTop(
         mode, +generation || null, showStarters, 10
       ));
@@ -134,6 +139,15 @@
   }
 
   function drawBests() {
+    if(UNLIMITED_VIEW){
+      const regionBest=best(runs.filter(r=>r.mode==="unlimited_region"));
+      const gauntletBest=best(runs.filter(r=>r.mode==="unlimited_gauntlet"));
+      const furyBest=best(runs.filter(r=>r.mode==="base_max"));
+      $("bestRegionCard").innerHTML=regionBest?runCard(regionBest):'<p class="empty">No flawless Region Ascendant runs yet.</p>';
+      $("bestGauntletCard").innerHTML=gauntletBest?runCard(gauntletBest):'<p class="empty">No flawless Infinite Gauntlet runs yet.</p>';
+      $("bestRocketCard").innerHTML=furyBest?runCard(furyBest):'<p class="empty">No flawless Base Form Fury runs yet.</p>';
+      return;
+    }
     const region = $("bestRegion").value;
     const regionBest = best(runs.filter(r => r.mode === "region" && (!region || r.region === +region)));
     const gauntletBest = best(runs.filter(r => r.mode === "gauntlet"));
@@ -147,7 +161,7 @@
     if (!run) {
       return '<p class="empty">The first qualifying team will claim this spot.</p>';
     }
-    const title = run.mode === "team_rocket_gauntlet" ? "Team Rocket Gauntlet" : run.mode === "gauntlet"
+    const title = run.mode === "unlimited_region" ? `Region Ascendant · ${REGIONS[run.region]||"Region"}` : run.mode === "unlimited_gauntlet" ? "Infinite Gauntlet" : run.mode === "base_max" ? "Base Form Fury" : run.mode === "team_rocket_gauntlet" ? "Team Rocket Gauntlet" : run.mode === "gauntlet"
       ? "Gauntlet"
       : REGIONS[run.region];
     return `
@@ -165,6 +179,10 @@
   async function refreshCommunityBests() {
     const region = +$("communityBestRegion").value || null;
     try {
+      if(UNLIMITED_VIEW){
+        const [regionBest,gauntletBest,furyBest]=await Promise.all([DexleStats.communityBestTeam("unlimited_region",null),DexleStats.communityBestTeam("unlimited_gauntlet",null),DexleStats.communityBestTeam("base_max",null)]);
+        $("communityBestRegionCard").innerHTML=communityBestCard(regionBest);$("communityBestGauntletCard").innerHTML=communityBestCard(gauntletBest);$("communityBestRocketCard").innerHTML=communityBestCard(furyBest);return;
+      }
       const [regionBest, gauntletBest, rocketBest] = await Promise.all([
         DexleStats.communityBestTeam("region", region),
         DexleStats.communityBestTeam("gauntlet", null),
@@ -220,6 +238,16 @@
   }
 
   async function init() {
+    if(UNLIMITED_VIEW){
+      document.body.classList.add("unlimited-stats-view");
+      document.querySelector("h1").textContent="Unlimited Stats";
+      document.querySelector("header")?.insertAdjacentHTML("afterbegin",'<a class="unlimited-stats-back" href="unlimited.html" aria-label="Back to Unlimited modes" title="Back to Unlimited modes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></a>');
+      $("usageMode").innerHTML='<option value="">All Unlimited modes</option><option value="unlimited_region">Region Ascendant</option><option value="unlimited_gauntlet">Infinite Gauntlet</option><option value="base_max">Base Form Fury</option>';
+      $("historyTabs").innerHTML='<button class="on" data-mode="unlimited_region">Region</button><button data-mode="unlimited_gauntlet">Gauntlet</button><button data-mode="base_max">Base Fury</button>';
+      const personalTitles=$("personalPanel").querySelectorAll(".best-title-row h3");["Best Region Ascendant team","Best Infinite Gauntlet team","Best Base Form Fury team"].forEach((t,i)=>{if(personalTitles[i])personalTitles[i].textContent=t;});
+      const communityTitles=$("communityPanel").querySelectorAll(".best-title-row h3");["Best Region Ascendant team","Best Infinite Gauntlet team","Best Base Form Fury team"].forEach((t,i)=>{if(communityTitles[i])communityTitles[i].textContent=t;});
+      ["bestRegion","communityBestRegion"].forEach(id=>$(id)?.closest("label")?.setAttribute("hidden",""));
+    }
     $("summary").after($("personalPanel"), $("usagePanel"), $("communityPanel"), $("historyPanel"));
     const historyToggle = document.createElement("button");
     historyToggle.className = "history-toggle";
@@ -255,7 +283,7 @@
         DexleStats.personalRuns(),
         DexleStats.communitySummary(),
       ]);
-      runs = mine;
+      runs = UNLIMITED_VIEW ? mine.filter(r=>["unlimited_region","unlimited_gauntlet","base_max"].includes(r.mode)) : mine;
       drawSummary(community);
       await refreshCommunityBests();
       await refreshLeaderboard();

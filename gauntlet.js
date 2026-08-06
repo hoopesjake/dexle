@@ -145,9 +145,14 @@ const STARTER_SPINS = 2;
 let spinning  = false;
 let dailyOpponent=null;
 let dailyBattleResult=null;
+let challengePickerView="mode";
 
 /* ---------- load ---------- */
 (async function init() {
+  if(UNLIMITED && !(await unlimitedAccessUnlocked())){
+    location.replace("unlimited.html?locked=1");
+    return;
+  }
   const [dexRes, oppRes, megaRes, formRes, evilRes] = await Promise.all([
     fetch("pokedex.json"),
     fetch("opponents.json"),
@@ -159,7 +164,10 @@ let dailyBattleResult=null;
   OPP   = await oppRes.json();
   MEGAS = await megaRes.json();
   FORMS = await formRes.json();
-  if(UNLIMITED)Object.values(OPP).forEach(region=>(region.opponents||[]).forEach(opp=>(opp.team||[]).forEach(mon=>{if(mon.s)mon.s=mon.s.map(v=>Math.round(v*1.55));})));
+  if(UNLIMITED){
+    const opponentBoost=BASE_MAX?5.0:1.55;
+    Object.values(OPP).forEach(region=>(region.opponents||[]).forEach(opp=>(opp.team||[]).forEach(mon=>{if(mon.s)mon.s=mon.s.map(v=>Math.round(v*opponentBoost));})));
+  }
   DEX.forEach(p => byId[p.id] = p);
   EVIL = evilRes ? buildEvilOpp(await evilRes.json()) : null;
   $("boostPct").textContent = Math.round((BOOST - 1) * 100) + "%";
@@ -168,6 +176,16 @@ let dailyBattleResult=null;
   loadShinyAchievement();
   console.log("Loaded", DEX.length, "Pokémon");
 })();
+
+async function unlimitedAccessUnlocked(){
+  if(!window.DexleStats?.configured)return false;
+  try{
+    const [runs,dex]=await Promise.all([DexleStats.personalRuns(),DexleStats.shinyDex()]);
+    const shinies=new Set(dex.map(x=>x.form_key)).size;
+    const regions=new Set(runs.filter(r=>r.mode==="region"&&r.wins===r.total).map(r=>+r.region)).size;
+    return shinies>=100&&regions>=9&&runs.some(r=>r.mode==="gauntlet"&&r.wins===r.total);
+  }catch(e){return false;}
+}
 
 async function loadShinyAchievement() {
   if (!window.DexleStats?.configured) return;
@@ -202,7 +220,7 @@ function applyMode() {
     return show("scChallenge");
   }
   if (MODE === "gauntlet") {
-    $("pageTitle").textContent = TEAM_ROCKET ? "Team Rocket Gauntlet" : BASE_MAX ? "Base Form Fury" : UNLIMITED ? "Unlimited Gauntlet" : "The Gauntlet";
+    $("pageTitle").textContent = TEAM_ROCKET ? "Shadow Challenge" : BASE_MAX ? "Base Form Fury" : UNLIMITED ? "Unlimited Gauntlet" : "The Gauntlet";
     $("pageSub").textContent   = TEAM_ROCKET ? "Nine organizations. Thirty-six battles. Harness the power of Shadow Pokémon." : BASE_MAX ? "Base evolutions. Maximum power. The ultimate circuit." : UNLIMITED ? "All nine regions at maximum strength. Build without limits." : "All nine regions. Draft a team of six.";
     challenge = { mode:"gauntlet" };
     startStarter();
@@ -228,12 +246,17 @@ function show(id) {
   SCREENS.forEach(s => $(s).hidden = (s !== id));
 }
 
-function modeHub(){location.href=UNLIMITED?"unlimited.html":TEAM_ROCKET?"gauntlet.html?mode=gauntlet-select":"index.html";}
+function modeHub(){location.href=UNLIMITED?"unlimited.html":(TEAM_ROCKET||RAW_MODE==="gauntlet")?"gauntlet.html?mode=gauntlet-select":"index.html";}
 function goBackFrom(id){
-  if(id==="scChallenge")return modeHub();
+  if(id==="scChallenge"){
+    if(UNLIMITED)return modeHub();
+    if(MODE==="champion"&&challengePickerView==="region"){drawChallenge();return show("scChallenge");}
+    return modeHub();
+  }
   if(id==="scStarter"){
     team=[];drawTeamBar();
-    if(MODE==="gauntlet")return modeHub();
+    if(UNLIMITED||MODE==="gauntlet")return modeHub();
+    if(challenge?.mode==="daily"){challenge=null;drawChallenge();return show("scChallenge");}
     drawRegionChallenge();return show("scChallenge");
   }
   if(id==="scBall"){
@@ -279,6 +302,7 @@ function installScreenBackButtons(){
 
 /* ---------- 1. challenge ---------- */
 function drawChallenge() {
+  challengePickerView="mode";
   const done=dailyChampionResult();
   const now=new Date(),midnight=new Date(now);midnight.setHours(24,0,0,0);const ms=midnight-now,reset=`${Math.floor(ms/3600000)}h ${Math.floor(ms%3600000/60000)}m`;
   $("chHd").textContent="Choose your challenge";
@@ -291,6 +315,7 @@ function drawChallenge() {
   $("chgrid").querySelector("[data-regular]").onclick=drawRegionChallenge;
 }
 function drawRegionChallenge() {
+  challengePickerView="region";
   $("toStarter").hidden=false;
   $("chHd").textContent="Choose your region";$("chHd").classList.remove("mode-eyebrow-heading");$("chgrid").classList.remove("mode-choice-grid");$("chSub").textContent="Which Champion are you going after? You'll still draft Pokémon from every generation.";
   $("chgrid").innerHTML = Object.keys(REGIONS).map(g => {
@@ -790,7 +815,6 @@ function drawTeamBar() {
       ${m.typeForm ? '<span class="tb-flag tb-type">◇</span>' : ""}
       ${m.candy   ? `<span class="tb-flag tb-candy"><img src="${CANDY_ICON}" alt="Rare Candy"></span>` : ""}
       ${m.shiny   ? '<span class="tb-flag tb-shiny">✦</span>' : ""}
-      ${m.shadow  ? '<span class="tb-flag tb-shadow">S</span>' : ""}
     </div>`;
   }).join("");
   $("tbCount").textContent = `${team.length} / 6`;
@@ -1333,6 +1357,7 @@ function runDailyChampion(){
   $("battles").innerHTML=`<div class="daily-battle-summary"><h3>Your team</h3><div class="daily-result-team">${team.map(m=>`<span class="${faintedMine.includes(m.p.name)?"fainted":""}">${spriteImg(m.p,m.shiny)}<b>${m.p.name}</b></span>`).join("")}</div><h3>Champion ${dailyOpponent.name}</h3><div class="daily-result-team">${dailyOpponent.team.map(m=>`<span class="${faintedTheirs.includes(m.name)?"fainted":""}">${spriteImg(m,false)}<b>${m.name}</b></span>`).join("")}</div></div>`;
   $("againBtn2").textContent=result.win?"Share Results":"Draft a New Team";
   if(result.win){const saved={date:dailyChampionDate(),champion:dailyOpponent.name,attempts,team:team.map(m=>m.p.name),members:team.map(m=>({...m.p,shiny:m.shiny})),left:result.left,opponent:dailyOpponent,teamBst:finalTeamStats};localStorage.setItem(dailyChampionKey(),JSON.stringify(saved));if(window.DexleStats?.configured)DexleStats.saveDailyChampion({date:saved.date,champion:saved.champion,attempts,team,left:result.left,teamBst:finalTeamStats}).then(()=>team.filter(m=>m.shiny).forEach(m=>ownedShinyIds.add(+m.p.id))).catch(e=>console.error("Could not save Daily Champion result:",e));}
+  else if(window.DexleStats?.configured&&team.some(m=>m.shiny))DexleStats.saveShinyTeam(team).then(()=>team.filter(m=>m.shiny).forEach(m=>ownedShinyIds.add(+m.p.id))).catch(e=>console.error("Could not save Daily Champion shinies:",e));
   show("scResult");requestAnimationFrame(()=>$("scResult").scrollIntoView({block:"start"}));
 }
 function dailyChampionShareText(saved=dailyChampionResult()){return `I beat Champion ${saved.champion} in ${saved.attempts} ${saved.attempts===1?"attempt":"attempts"}! My team: ${saved.team.join(", ")}. Try the Daily Champion Battle here: dexle.io`;}

@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dexle — Trainer Account</title>
   <link rel="stylesheet" href="stats.css?v=20260801-18">
-  <link rel="stylesheet" href="account.css?v=20260805-2">
-  <link rel="stylesheet" href="trainer-menu.css?v=20260805-3">
+  <link rel="stylesheet" href="account.css?v=20260806-5">
+  <link rel="stylesheet" href="trainer-menu.css?v=20260805-4">
 </head>
 <body>
 <div class="wrap">
@@ -22,6 +22,7 @@
   </header>
 
   <div class="stats-view-toggle" aria-label="Choose statistics view">
+    <a href="index.html" aria-label="Home">Home</a>
     <a href="stats.html">Team Stats</a>
     <a href="dexle-stats.html">Dexle Progress</a>
     <a class="on" href="account.html">Account</a>
@@ -41,6 +42,7 @@
         <span class="welcome-spark spark-two">&#9672;</span>
         <p class="eyebrow">Trainer account active</p>
         <div class="profile-row">
+          <span id="profileHeaderAvatar" class="rankball avatar-placeholder profile-header-avatar" style="--rc:#E0483C" aria-hidden="true"></span>
           <div>
             <h2>Welcome, Trainer <span id="profileName">Trainer</span>!</h2>
             <p id="profileEmail" class="section-copy"></p>
@@ -48,7 +50,7 @@
           <button id="signOut" class="logout-btn">Log Out</button>
         </div>
       </div>
-      <div class="profile-avatar-editor"><div><p class="eyebrow">Profile sprite</p><h3>Choose any Pok&eacute;mon or form</h3></div><div class="avatar-search-row"><input id="profileAvatarSearch" autocomplete="off" placeholder="Search any Pok&eacute;mon or form"><label class="shiny-switch"><input id="profileAvatarShiny" type="checkbox"> Shiny</label></div><div id="profileAvatarResults" class="avatar-results"></div><div id="profileAvatarChoice" class="avatar-choice"></div></div>
+      <div id="profileAvatarEditor" class="profile-avatar-editor collapsed"><button id="profileAvatarChange" class="profile-avatar-change" type="button">Select Profile Sprite</button><div class="profile-avatar-edit-body"><button id="profileAvatarClose" class="profile-avatar-close" type="button" aria-label="Close profile sprite picker">&times;</button><div><p class="eyebrow">Profile sprite</p><h3>Choose any Pok&eacute;mon or form</h3></div><div class="avatar-search-row"><input id="profileAvatarSearch" autocomplete="off" placeholder="Search these results&hellip;"><label class="shiny-switch"><input id="profileAvatarShiny" type="checkbox"> Shiny</label></div><div id="profileAvatarResults" class="avatar-results"></div><div id="profileAvatarChoice" class="avatar-choice"></div><button id="profileAvatarSave" class="profile-avatar-save" type="button" hidden>Save Sprite</button></div></div>
     </div>
   </section>
 
@@ -63,6 +65,7 @@
     <div id="hallBadgeView"><div id="badgeGrid" class="badge-grid"><p class="empty">Loading badges…</p></div></div>
     <div id="hallTeamsView" hidden>
       <div class="hall-detail-head"><button id="hallBack" class="hall-back" aria-label="Back to badges">&larr;</button><h3 id="hallDetailTitle">Region teams</h3></div>
+      <div id="regionMastery" class="region-mastery" hidden></div>
       <div id="hallList" class="hall-list"></div>
     </div>
   </section>
@@ -79,7 +82,7 @@
         <select id="shinySort"><option value="recent">Most recent</option><option value="dex">Dex number</option></select>
       </label>
     </div>
-    <div class="dex-progress"><b id="shinyCount">0 / 1025</b><span>base Pokémon</span><i><span id="shinyBar"></span></i><b id="formCount">0 bonus forms</b></div>
+    <div class="dex-progress"><b id="shinyCount">0 / 1,347</b><span>unique shinies</span><i><span id="shinyBar"></span></i><b id="formCount">0 / 1,025 base &middot; 0 / 322 bonus</b></div>
     <div id="shinyGrid" class="shiny-grid"><p class="empty">Loading your collection…</p></div>
     <button id="shinyMore" class="shiny-more" type="button" hidden>See more&hellip;</button>
   </section>
@@ -110,7 +113,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script src="stats-store.js?v=20260805-1"></script>
-<script src="account.js?v=20260805-1"></script>
-<script src="trainer-menu.js?v=20260805-3"></script>
+<script src="account.js?v=20260806-1"></script>
+<script src="trainer-menu.js?v=20260805-4"></script>
 </body>
 </html>

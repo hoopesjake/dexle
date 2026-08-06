@@ -38,6 +38,7 @@ h1,h2,h3,p{margin-top:0} h1{margin:0;font-size:30px;letter-spacing:.16em;text-tr
 }
 .stats-view-toggle a.on{background:var(--panel2);color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.22)}
 .stats-view-toggle a:hover{color:var(--ink)}
+.unlimited-stats-view header{min-height:58px;justify-content:flex-start;gap:12px;margin-bottom:18px;padding:10px 14px;border:1px solid #7565b5;border-radius:12px;background:linear-gradient(105deg,rgba(95,227,208,.08),rgba(226,120,206,.08)),var(--panel)}.unlimited-stats-view header>.home-lamp,.unlimited-stats-view header>.hdr-btns,.unlimited-stats-view header .tag,.unlimited-stats-view>.wrap>.stats-view-toggle,.unlimited-stats-view .trainer-menu-button{display:none!important}.unlimited-stats-view header .titles h1{margin:0}.unlimited-stats-back{display:grid;place-items:center;width:36px;height:36px;flex:none;border:1px solid #7565b5;border-radius:50%;background:#2b2447;color:#c9bef5;text-decoration:none}.unlimited-stats-back svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.unlimited-stats-back:hover{border-color:#e278ce;color:#fff}
 .play-dexle{
   display:inline-flex;align-items:center;padding:9px 14px;border-radius:8px;
   background:var(--red);color:#fff;text-decoration:none;font-size:12px;
@@ -105,7 +106,7 @@ select{display:block;margin-top:4px;background:var(--ground);border:1px solid va
   width:min(100%,390px);margin:0 auto;
 }
 .mon{position:relative;width:70px;height:70px;border-radius:50%;background:#151B31;border:1px solid var(--line)}
-.mon.shadow{border-color:#8250a5;background:radial-gradient(circle,rgba(115,48,151,.25),#120f1b);box-shadow:0 0 13px rgba(105,45,142,.3)}.shadow-mark{position:absolute;right:-3px;bottom:1px;display:grid;place-items:center;width:18px;height:18px;border:1px solid #9b65bd;border-radius:50%;background:#25122f;color:#dfbaf5;font-size:8px;font-weight:900}
+.mon.shadow{border-color:#8250a5;background:radial-gradient(circle,rgba(115,48,151,.25),#120f1b);box-shadow:0 0 13px rgba(105,45,142,.3)}
 .mon>img{width:100%;height:100%;object-fit:contain}
 .mon.mega{
   border-color:#E278CE;
@@ -156,6 +157,7 @@ select{display:block;margin-top:4px;background:var(--ground);border:1px solid va
 .section-copy{margin:-8px 0 16px;color:var(--dim);font-size:13px}
 .history-toggle{margin-left:auto;display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);color:var(--ink);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;cursor:pointer}.history-toggle i{font-style:normal;transition:transform .18s}.history-toggle[aria-expanded="true"] i{transform:rotate(180deg)}#historyTabs[hidden],#historyFilters[hidden],#history[hidden]{display:none}
 .community-best-card{width:100%;max-width:100%}
+.run-card{overflow:hidden}.run-card .team{max-width:100%;box-sizing:border-box}
 .community-best-meta{display:flex;align-items:center;gap:12px;margin-bottom:13px;flex-wrap:nowrap}
 .community-best-meta .team-metrics{margin-left:auto}
 .community-best-meta .team-metrics+.record{margin-left:-6px}

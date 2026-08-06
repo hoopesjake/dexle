@@ -320,6 +320,7 @@
     return data?.[0] || null;
   }
   async function saveDailyChampion(input) {const current=await user();const {error}=await client.from("daily_champion_results").insert({user_id:current.id,challenge_date:input.date,champion:input.champion,attempts:input.attempts,team:teamSnapshot(input.team),team_bst:input.teamBst,pokemon_left:input.left});if(error&&error.code!=="23505")throw error;}
+  async function saveShinyTeam(team){await user();const {error}=await client.rpc("record_shiny_team",{p_team:teamSnapshot(team)});if(error)throw error;}
   async function dailyChampionHistory(){await user();const {data,error}=await client.from("daily_champion_results").select("*").order("challenge_date",{ascending:false}).limit(500);if(error)throw error;return data||[];}
 
   window.DexleStats = {
@@ -346,6 +347,7 @@
     saveDexleGame,
     personalDexleSummary,
     saveDailyChampion,
+    saveShinyTeam,
     dailyChampionHistory,
   };
 })();
