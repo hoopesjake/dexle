@@ -342,8 +342,8 @@ function selectChallenge(c) {
 /* ---------- 2. starter ---------- */
 function startStarter() {
   const starterPanel=$("scStarter").querySelector(".panel");
-  starterPanel.querySelector("h2").textContent=TEAM_ROCKET?"Choose your Shadow starter":UNLIMITED&&!BASE_MAX?"Choose your Legendary partner":BASE_MAX?"Choose your base-form partner":"Your starter";
-  starterPanel.querySelector(".sub").innerHTML=TEAM_ROCKET?"Spin for a region, then choose a starter infused with Shadow power. Shadow Pokémon receive a <b>50%</b> boost to every battle stat.":UNLIMITED&&!BASE_MAX?"Spin for a region, then choose any Legendary from that region's generation. Your partner receives a <b>20%</b> boost to every base stat.":BASE_MAX?"Spin for a region and choose a base-form starter. Your partner receives a <b>20%</b> bond before the Base Form Fury boost.":"Spin for a region, then pick one of its three starters. Your first Pokémon gets a friendship bond — a <b id=\"boostPct\">10%</b> boost to every base stat.";
+  starterPanel.querySelector("h2").textContent=TEAM_ROCKET?"Choose your starter":UNLIMITED&&!BASE_MAX?"Choose your Legendary partner":BASE_MAX?"Choose your base-form partner":"Your starter";
+  starterPanel.querySelector(".sub").innerHTML=TEAM_ROCKET?"Spin for a region, then choose a starter. Every spin has a <b>10%</b> chance to produce a Shadow encounter. Shadow Pokémon receive a <b>50%</b> boost but cannot use Rare Candy.":UNLIMITED&&!BASE_MAX?"Spin for a region, then choose any Legendary from that region's generation. Your partner receives a <b>20%</b> boost to every base stat.":BASE_MAX?"Spin for a region and choose a base-form starter. Your partner receives a <b>20%</b> bond before the Base Form Fury boost.":"Spin for a region, then pick one of its three starters. Your first Pokémon gets a friendship bond — a <b id=\"boostPct\">10%</b> boost to every base stat.";
   drawOpponents();
   drawCoverage();
   show("scStarter");
@@ -370,16 +370,17 @@ function spinStarter() {
              roll:() => REGIONS[1 + rnd(9)], final:REGIONS[gen] }],
     () => {
       const shiny = rnd(SHINY_ODDS) === 0;
+      const shadow = TEAM_ROCKET && rnd(10) === 0;
       const left  = STARTER_SPINS - starterSpins;
       $("spinStarter").textContent = left
         ? `Respin region (${left} left)`
         : "No respins left";
       $("spinStarter").disabled = !left;
-      showStarters(gen, shiny);
+      showStarters(gen, shiny, shadow);
     });
 }
 
-function showStarters(gen, shiny) {
+function showStarters(gen, shiny, shadow = false) {
   const box = $("starterPick");
   box.classList.remove("unlimited-legend-results","shadow-starters");
   box.hidden = false;
@@ -397,20 +398,20 @@ function showStarters(gen, shiny) {
     box.querySelectorAll("[data-id]").forEach(b=>b.onclick=()=>{addToTeam(byId[+b.dataset.id],b.dataset.shiny==="1",true);startBallPhase();});
     return;
   }
-  if(TEAM_ROCKET)box.classList.add("shadow-starters");
+  if(shadow)box.classList.add("shadow-starters");
   box.innerHTML = STARTERS[gen].map(id => {
     const p = byId[id];
     if (!p) return "";
     const fin = byId[starterFinal(p.id)];
-    const b   = TEAM_ROCKET ? fin.s.map(v=>Math.round(v*1.5)) : boosted(fin);
+    const b   = shadow ? fin.s.map(v=>Math.round(v*1.5)) : boosted(fin);
     return `
-      <button class="st ${TEAM_ROCKET?"shadow-card":""}" data-id="${p.id}" data-shiny="${shiny ? 1 : 0}">
+      <button class="st ${shadow?"shadow-card":""}" data-id="${p.id}" data-shiny="${shiny ? 1 : 0}" data-shadow="${shadow ? 1 : 0}">
         <b>${p.name}${shiny ? ' <span class="shiny-tag">\u2726</span>' : ""}${ownedShinyMark(fin.id, shiny)}</b>
         <div>${[p.t1, p.t2].filter(Boolean).map(chip).join(" ")}</div>
         ${lineHtml(p.id, shiny)}
         <div class="st-becomes">joins as <b>${fin.name}</b></div>
-        ${TEAM_ROCKET?'<span class="shadow-badge">Shadow Pokémon · +50%</span>':""}
-        <div class="bst">${bst(fin)} → <i>${b.reduce((x,y)=>x+y,0)}</i> ${TEAM_ROCKET?"with Shadow boost":"with bond"}</div>
+        ${shadow?'<span class="shadow-badge">Shadow Pokémon · +50%</span>':""}
+        <div class="bst">${bst(fin)} → <i>${b.reduce((x,y)=>x+y,0)}</i> ${shadow?"with Shadow boost":"with bond"}</div>
       </button>`;
   }).join("");
 
@@ -424,7 +425,7 @@ function showStarters(gen, shiny) {
 
   box.querySelectorAll("[data-id]").forEach(b => {
     b.onclick = () => {
-      addToTeam(byId[+b.dataset.id], b.dataset.shiny === "1", true);
+      addToTeam(byId[+b.dataset.id], b.dataset.shiny === "1", true, b.dataset.shadow === "1");
       startBallPhase();
     };
   });
@@ -781,11 +782,11 @@ function drawRerolls() {
 }
 
 /* ---------- team ---------- */
-function addToTeam(picked, shiny, starter) {
+function addToTeam(picked, shiny, starter, shadow = !!(TEAM_ROCKET && spin?.shadow)) {
   // starters arrive fully evolved; everyone else joins exactly as drafted
   const p = starter && !BASE_MAX && !picked.legend ? byId[starterFinal(picked.id)] : picked;
   team.push({ p, from: starter ? picked.id : null,
-              shiny:!!shiny, shadow:!!(TEAM_ROCKET&&(starter||spin?.shadow)), starter:!!starter });
+              shiny:!!shiny, shadow:!!(TEAM_ROCKET&&shadow), starter:!!starter });
   drawTeamBar();
   drawCoverage();
 }
@@ -862,7 +863,7 @@ function setSelMode(mode) {
   : mode === "type"  ? "Select a Pokémon to change its type or equipped Drive. This does not use your power transformation."
   : mode === "candy" ? `Select one Pokémon to feed the Rare Candy — ` +
                        `+${Math.round((CANDY_BOOST - 1) * 100)}% to every stat. ` +
-                       `Not your starter, a legendary, or the Mega.`
+                       `Not your starter, a legendary, the Mega, or a Shadow Pokémon.`
   : "";
   $("megaBtn").classList.toggle("armed", mode === "mega");
   $("typeBtn").classList.toggle("armed", mode === "type");
@@ -870,8 +871,8 @@ function setSelMode(mode) {
   renderDone();                               // repaint without scrolling
 }
 
-// who may eat the candy: not the starter, not a legendary, not the Mega
-const candyOk = m => UNLIMITED ? (m.candy || team.filter(x=>x.candy).length<3) : !m.starter && !m.p.legend && !m.mega;
+// Shadow power and Rare Candy never stack.
+const candyOk = m => !m.shadow && (UNLIMITED ? (m.candy || team.filter(x=>x.candy).length<3) : !m.starter && !m.p.legend && !m.mega);
 const candyEligible = () => team.filter(candyOk);
 
 function applyMega(slot, form) {
@@ -1042,7 +1043,7 @@ function renderDone() {
   $("candyBtn").disabled = !cOk.length;
   $("candyBtn").title = cOk.length
     ? `${cOk.length} of your team can take the candy`
-    : "Nobody eligible - the candy can't go to your starter, a legendary, or the Mega";
+    : "Nobody eligible - the candy can't go to your starter, a legendary, the Mega, or a Shadow Pokémon";
   const cIcon = `<span class="cb-candy"><img src="${CANDY_ICON}" alt=""></span>`;
   $("candyBtn").innerHTML = `${cIcon}<span class="tool-label">${fed?`Candy: ${fed.p.name}`:"Rare Candy"}</span>`;
   $("candyBtn").setAttribute("aria-label",fed?`Rare Candy given to ${fed.p.name}`:"Use Rare Candy");
@@ -1069,7 +1070,6 @@ function renderDone() {
            ${pick.startsWith("pickable") ? `data-slot="${slot}" role="button" tabindex="0"` : ""}>
         ${m.starter ? '<span class="fin-flag" title="Friendship bond">💛</span>' : ""}
         ${m.shiny   ? '<span class="fin-flag" style="left:8px;right:auto">✦</span>' : ""}
-        ${m.shadow  ? '<span class="fin-flag shadow-flag">SHADOW</span>' : ""}
         ${spriteImg(p, m.shiny)}
         <b>${p.name}</b>
         <div>${[p.t1,p.t2].filter(Boolean).map(chip).join(" ")}</div>
@@ -1111,13 +1111,20 @@ function rankBadge(rk, wins, total) {
 function saveCompletedRun(res, rk, mode) {
   if (runSaveStarted) return;
   runSaveStarted = true;
+  const savedMode=TEAM_ROCKET?"team_rocket_gauntlet":UNLIMITED?(mode==="gauntlet"?(BASE_MAX?"base_max":"unlimited_gauntlet"):"unlimited_region"):mode;
+  const saveStatus=document.createElement("p");
+  saveStatus.className="run-save-status saving";
+  saveStatus.textContent="Saving this run to Trainer Stats…";
+  (mode==="gauntlet"?$("scGauntlet"):$("scResult")).querySelector(".panel").appendChild(saveStatus);
   if (!window.DexleStats?.configured) {
     console.info("Run finished, but Dexle stats is not connected yet.");
+    saveStatus.className="run-save-status failed";
+    saveStatus.textContent="This run was not saved because Trainer Stats is not connected.";
     return;
   }
 
   const regionRecords = mode === "gauntlet"
-    ? res.regions.map(r => ({
+    ? (res.regions||[]).map(r => ({
         gen: r.gen,
         region: r.region,
         wins: r.record[0],
@@ -1126,7 +1133,7 @@ function saveCompletedRun(res, rk, mode) {
     : null;
 
   window.DexleStats.saveRun({
-    mode:TEAM_ROCKET?"team_rocket_gauntlet":UNLIMITED?(mode==="gauntlet"?(BASE_MAX?"base_max":"unlimited_gauntlet"):"unlimited_region"):mode,
+    mode:savedMode,
     region: mode === "region" ? challenge.gen : null,
     wins: res.record[0],
     losses: res.record[1],
@@ -1139,9 +1146,14 @@ function saveCompletedRun(res, rk, mode) {
     regionRecords,
   }).then(() => {
     team.filter(member => member.shiny).forEach(member => ownedShinyIds.add(+member.p.id));
+    const statsHref=["unlimited_region","unlimited_gauntlet","base_max"].includes(savedMode)?"stats.html?view=unlimited":"stats.html";
+    saveStatus.className="run-save-status saved";
+    saveStatus.innerHTML=`Run saved. <a href="${statsHref}">View it in Trainer Stats</a>`;
   }).catch(err => {
     runSaveStarted = false;
     console.error("Could not save this Dexle run:", err);
+    saveStatus.className="run-save-status failed";
+    saveStatus.textContent=`Run not saved: ${err.message||err}`;
   });
 }
 
@@ -1467,6 +1479,7 @@ function startOver() {
   $("megaModal").hidden = true;
   closePickPreview();
   removeShinyNote();
+  document.querySelectorAll(".run-save-status").forEach(el=>el.remove());
   drawTeamBar();
 
   $("starterPick").hidden    = true;
