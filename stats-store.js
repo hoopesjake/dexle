@@ -156,7 +156,8 @@
     let { data: profile } = await client.from("profiles")
       .select("username,avatar").eq("user_id", current.id).maybeSingle();
     if (!profile && current.email && !current.is_anonymous) {
-      const metaName = current.user_metadata?.preferred_username ||
+      const metaName = current.user_metadata?.username ||
+        current.user_metadata?.preferred_username ||
         current.user_metadata?.full_name || current.user_metadata?.name ||
         current.email.split("@")[0];
       let clean = String(metaName || "Trainer").replace(/[^A-Za-z0-9_]/g, "").slice(0, 20);
@@ -194,18 +195,18 @@
     if (error) throw error;
     const id = data.user?.id || current.id;
     const { error: profileError } = await client.from("profiles")
-      .upsert({ user_id:id, username:clean, login_email:String(email||"").trim().toLowerCase() }, { onConflict:"user_id" });
+      .upsert({ user_id:id, username:clean }, { onConflict:"user_id" });
     if (profileError) throw profileError;
     userPromise = Promise.resolve(data.user || current);
     return data.user || current;
   }
 
-  async function signIn(username, password) {
+  async function signIn(email, password) {
     getClient();
-    const lookup=await client.rpc("email_for_username",{p_username:String(username||"").trim()});
-    if(lookup.error)throw lookup.error;
-    if(!lookup.data)throw new Error("Username or password is incorrect.");
-    const { data, error } = await client.auth.signInWithPassword({ email:lookup.data, password });
+    const { data, error } = await client.auth.signInWithPassword({
+      email: String(email || "").trim().toLowerCase(),
+      password,
+    });
     if (error) throw error;
     userPromise = Promise.resolve(data.user);
     return data.user;
