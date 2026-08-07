@@ -23,5 +23,5 @@
       toggle.onchange=()=>{if(avatar){avatar={...avatar,shiny:toggle.checked};renderChoice();}draw();};
     }
   }catch(e){msg(e.message,true);}
-  $("focusedAuthForm").onsubmit=async e=>{e.preventDefault();const button=$("focusedSubmit");button.disabled=true;try{if(signup){await DexleStats.createAccount($("focusedEmail").value,$("focusedPassword").value,$("focusedUsername").value);if(avatar)await DexleStats.updateAvatar(avatar);}else await DexleStats.signIn($("focusedUsername").value,$("focusedPassword").value);location.href="account.html";}catch(err){msg(/invalid login credentials/i.test(err.message)?"Username or password is incorrect.":err.message,true);button.disabled=false;}};
+  $("focusedAuthForm").onsubmit=async e=>{e.preventDefault();const button=$("focusedSubmit");button.disabled=true;try{if(signup){await DexleStats.createAccount($("focusedEmail").value,$("focusedPassword").value,$("focusedUsername").value);if(avatar)await DexleStats.updateAvatar(avatar);}else await DexleStats.signIn($("focusedEmail").value,$("focusedPassword").value);location.href="account.html";}catch(err){msg(/invalid login credentials/i.test(err.message)?"Email or password is incorrect.":err.message,true);button.disabled=false;}};
 })();
