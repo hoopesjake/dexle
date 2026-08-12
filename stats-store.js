@@ -195,16 +195,28 @@
     if (error) throw error;
     const id = data.user?.id || current.id;
     const { error: profileError } = await client.from("profiles")
-      .upsert({ user_id:id, username:clean }, { onConflict:"user_id" });
+      .upsert({
+        user_id:id,
+        username:clean,
+        login_email:String(email || "").trim().toLowerCase(),
+      }, { onConflict:"user_id" });
     if (profileError) throw profileError;
     userPromise = Promise.resolve(data.user || current);
     return data.user || current;
   }
 
-  async function signIn(email, password) {
+  async function signIn(username, password) {
     getClient();
+    // Supabase password auth uses an email internally. Resolve it from the
+    // public-facing username so trainers never need it to sign in.
+    await user();
+    const { data: email, error: lookupError } = await client.rpc(
+      "email_for_username", { p_username:String(username || "").trim() }
+    );
+    if (lookupError) throw lookupError;
+    if (!email) throw new Error("Invalid login credentials");
     const { data, error } = await client.auth.signInWithPassword({
-      email: String(email || "").trim().toLowerCase(),
+      email,
       password,
     });
     if (error) throw error;

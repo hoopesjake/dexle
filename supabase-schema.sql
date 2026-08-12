@@ -597,6 +597,21 @@ where form_key not like 'base:%' and form_key !~ '^(mega|form):[0-9]+:';
 update public.profiles p set login_email=lower(u.email)
 from auth.users u where u.id=p.user_id and p.login_email is distinct from lower(u.email);
 
+-- Keep the private login lookup current if an account email changes later.
+create or replace function public.sync_profile_login_email()
+returns trigger language plpgsql security definer set search_path='' as $$
+begin
+  update public.profiles
+  set login_email=lower(new.email)
+  where user_id=new.id;
+  return new;
+end;
+$$;
+drop trigger if exists sync_profile_login_email on auth.users;
+create trigger sync_profile_login_email
+  after update of email on auth.users
+  for each row execute function public.sync_profile_login_email();
+
 create or replace function public.email_for_username(p_username text)
 returns text language sql stable security definer set search_path='' as $$
   select p.login_email from public.profiles p
