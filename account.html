@@ -4,6 +4,18 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dexle — Trainer Account</title>
+  <script>
+    (() => {
+      const recoveryReturn = /(?:[?#&]type=recovery)|(?:[?#&]access_token=)/.test(location.href) ||
+        (localStorage.getItem("dexleRecoveryPending") && /[?#&](?:code|error_description)=/.test(location.href));
+      if (recoveryReturn) {
+        const recovery = new URL("recover-account.html", location.href);
+        recovery.search = location.search;
+        recovery.hash = location.hash;
+        location.replace(recovery.href);
+      }
+    })();
+  </script>
   <link rel="stylesheet" href="stats.css?v=20260801-18">
   <link rel="stylesheet" href="account.css?v=20260806-6">
   <link rel="stylesheet" href="trainer-menu.css?v=20260805-4">
