@@ -1085,7 +1085,8 @@ button:disabled{ opacity:.4; cursor:not-allowed; filter:none }
 .tb-slot.typeon{border-color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.45),0 0 14px rgba(255,255,255,.2)}
 .tb-flag.tb-type{top:-3px;left:-3px;bottom:auto;right:auto;color:#fff;background:#202433;border-color:#fff;font-size:12px}
 .evil-preview summary{display:flex;align-items:center;gap:9px;color:#ef5c70;cursor:pointer;list-style:none}.evil-preview summary::-webkit-details-marker{display:none}.evil-preview summary small{color:var(--ink-dim);font-size:9px;font-weight:500}.evil-preview summary span{margin-left:auto;transition:transform .18s}.evil-preview[open] summary span{transform:rotate(180deg)}
-@media(max-width:560px){.shadow-card{max-width:100%;box-sizing:border-box;overflow:hidden}.finalgrid,.team,.tb-slots{max-width:100%;box-sizing:border-box}.fin.shadow-card img{max-width:100%}}
+@media(max-width:560px){.shadow-card{max-width:100%;box-sizing:border-box;overflow:visible}.finalgrid,.team,.tb-slots{max-width:100%;box-sizing:border-box}.fin.shadow-card img{max-width:100%}}
 /* Keep Shadow identification only in the badge row beneath the Pokémon. This
    also hides markers produced by an older cached copy of gauntlet.js. */
 .fin .shadow-flag{display:none!important}
+.tb-slot.shadow-card,.fin.shadow-card,.rr-row.shadow-card{overflow:visible}.shadow-card .tb-flag,.shadow-card .fin-flag{z-index:3}

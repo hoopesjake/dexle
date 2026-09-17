@@ -35,11 +35,11 @@
     <nav class="trainer-menu-links">
       <a href="index.html">Home</a>
       <a href="stats.html">Trainer Stats</a>
-      <a href="team-tester.html">Team Builder</a>
       <a href="unlimited.html">Unlimited</a>
       <a href="achievements.html">Achievements</a>
       <a href="friends.html" class="friends-menu-link">Friends <i class="friend-notification" hidden>0</i></a>
       <a href="account.html">Account</a>
+      <a href="team-tester.html">Team Builder</a>
     </nav>`;
   document.body.append(shade, drawer);
   const identityLink = drawer.querySelector(".trainer-identity");

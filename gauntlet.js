@@ -603,7 +603,7 @@ function throwBall(keep) {
   removeShinyNote();
 
   runReel(reels, () => {
-    spin = { gen, type, shiny: rnd(SHINY_ODDS) === 0, shadow:TEAM_ROCKET&&rnd(10)===0 };
+    spin = { gen, type, shiny: rnd(SHINY_ODDS) === 0, shadow:TEAM_ROCKET&&rnd(5)===0 };
     // one throw per slot - use a reroll if you don't like it
     $("throwBall").textContent = "Ball thrown";
     $("throwBall").disabled = true;
