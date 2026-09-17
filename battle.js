@@ -249,9 +249,9 @@ const hpAt   = (base, lvl) => Math.floor((2 * base + 36) * lvl / 100) + lvl + 10
 function fighter(mon, lvl, stats, power, minMult) {
   const k = power || 1;
   const s = (stats || mon.s).map(v => v * k);
-  // Level-10 Dynamax/Gigantamax doubles calculated HP only. Base stats and
-  // Attack, Defense, Sp. Atk, Sp. Def, and Speed remain unchanged.
-  const maxHp = Math.round(hpAt(s[0], lvl) * (mon.hpMultiplier || 1));
+  // Current roster stats already include the configured Gigantamax HP boost.
+  // Keep support for raw callers without applying the multiplier twice.
+  const maxHp = Math.round(hpAt(s[0], lvl) * (stats ? 1 : (mon.gmax ? 2.5 : (mon.hpMultiplier || 1))));
   return {
     name: mon.name, id: mon.id, t1: mon.t1, t2: mon.t2,
     attackType: mon.attackType || null, lvl,

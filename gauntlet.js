@@ -84,6 +84,7 @@ function statsFor(m) {
   let s = m.shadow ? m.p.s.map(v => Math.round(v * 1.5)) : m.starter ? boosted(m.p) : m.p.s;
   if (m.candy) s = s.map(v => Math.round(v * CANDY_BOOST));
   if (BASE_MAX) s = s.map(v => Math.round(v * 4.5));
+  if (m.p.gmax) s = s.map((v, i) => i ? v : Math.round(v * 2.5));
   return s;
 }
 const teamBst = m => m.starter ? boosted(m.p).reduce((a,b) => a+b, 0) : bst(m.p);
@@ -967,7 +968,7 @@ function openMegaChooser(slot, forms, mode) {
           <small class="form-kind">${f.kind}</small>
           <div>${[f.t1, f.t2].filter(Boolean).map(chip).join(" ")}</div>
           ${f.attackType ? `<div class="drive-attack">Techno Blast: ${chip(f.attackType)}</div>` : ""}
-          <div class="mo-bst">${f.gmax ? `${sumStats(f.s)} → <i>${sumStats(f.s) + f.s[0]}</i> (2× HP)` : isType ? `${sumStats(f.s)} total stats` : `${sumStats(before.s)} → <i>${sumStats(f.s)}</i>`}</div>
+          <div class="mo-bst">${f.gmax ? `${sumStats(f.s)} → <i>${sumStats(f.s) + Math.round(f.s[0] * 1.5)}</i> (2.5× HP)` : isType ? `${sumStats(f.s)} total stats` : `${sumStats(before.s)} → <i>${sumStats(f.s)}</i>`}</div>
           ${isType ? "" : `<div class="mo-diff">${statDiff(before.s, f.s)}</div>`}
         </button>`).join("")}
     </div>`;
@@ -1075,7 +1076,7 @@ function renderDone() {
         <b>${p.name}</b>
         <div>${[p.t1,p.t2].filter(Boolean).map(chip).join(" ")}</div>
         ${m.from ? `<div class="fin-from">from ${byId[m.from].name}</div>` : ""}
-        <div class="fin-bst">${p.gmax ? `${t} → ${t + s[0]} (2× HP)` : `${t}${m.shadow ? " (Shadow +50%)" : m.starter ? " (bonded)" : m.candy ? " (candied)" : ""}`}</div>
+        <div class="fin-bst">${t}${p.gmax ? " (2.5× HP included)" : m.shadow ? " (Shadow +50%)" : m.starter ? " (bonded)" : m.candy ? " (candied)" : ""}</div>
         <div class="fin-badges">
           ${m.mega   ? `<span class="badge mega">${p.gmax ? "Gigantamax" : "Mega Evolved"}</span>` : ""}
           ${m.typeForm ? `<span class="badge typeform">${m.p.driveName || "Change Type"}</span>` : ""}
@@ -1550,7 +1551,7 @@ $("simBtn").onclick      = () => {
 };
 $("gAgain").onclick      = startOver;
 $("gBack").onclick       = () => show("scDone");
-document.querySelector(".result-home").onclick=e=>{e.preventDefault();show("scDone");};
+document.querySelector("#scResult .result-back").onclick=e=>{e.preventDefault();show("scDone");};
 $("megaBtn").onclick     = () => {
   if (selMode === "mega") return setSelMode(null);
   if (!UNLIMITED && megaIdx >= 0) { revertMega(); return setSelMode("mega"); }

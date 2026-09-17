@@ -3,33 +3,40 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Dexle — Team Tester</title>
-  <link rel="stylesheet" href="team-tester.css">
+  <title>Dexle — Team Builder</title>
+  <link rel="stylesheet" href="team-tester.css?v=20260917-1">
+  <link rel="stylesheet" href="trainer-menu.css?v=20260917-1">
 </head>
 <body>
 <main class="tester-wrap">
   <header class="tester-head">
-    <div><p class="eyebrow">Temporary debug lab</p><h1>Team &amp; Sprite Tester</h1><p>Inspect every supported sprite and transformation without running a draft.</p></div>
-    <nav><a href="account.html">Account</a><a href="gauntlet.html?mode=gauntlet">Gauntlet</a></nav>
+    <a class="builder-home" href="index.html" aria-label="Dexle home">⌂</a>
+    <div><p class="eyebrow">Plan your adventure</p><h1>Team Builder</h1><p>Build, compare, analyze, and save teams from every region and form.</p></div>
   </header>
 
   <section class="team-stage">
-    <div class="stage-head"><div><p class="eyebrow">Pre-Gauntlet view</p><h2>Test Team</h2></div><button id="clearTeam" type="button">Clear team</button></div>
+    <div class="stage-head"><div><p class="eyebrow">Your six</p><h2 id="activeTeamTitle">New Team</h2></div><button id="clearTeam" type="button">Clear Team</button></div>
     <div id="teamGrid" class="team-grid"></div>
-    <div class="team-math"><span>Total BST <b id="teamBst">0</b></span><span>With 2× Gmax HP <b id="teamEffective">0</b></span><span>Average BST <b id="teamAvg">0</b></span><span>Offensive coverage <b id="teamCoverage">0 / 18</b></span></div>
+    <div class="team-math"><span>Base stats <b id="teamBst">0</b></span><span>Effective stats <b id="teamEffective">0</b></span><span>Average <b id="teamAvg">0</b></span><span>Coverage <b id="teamCoverage">0 / 18</b></span></div>
+    <div id="memberStats" class="member-stats"></div>
+    <div class="analysis-grid"><div><h3>Offensive coverage</h3><div id="coverageTypes" class="analysis-types"></div></div><div><h3>Team weaknesses</h3><div id="weaknessTypes" class="analysis-types"></div></div></div>
+    <div class="save-row"><input id="teamName" maxlength="40" placeholder="Name this team"><button id="saveTeam" type="button">Save Team</button><span id="saveStatus" aria-live="polite"></span></div>
   </section>
 
   <section class="catalog-panel">
+    <div class="section-title"><div><p class="eyebrow">Pokédex</p><h2>Add a team member</h2></div><label class="shiny-check"><input id="shinyToggle" type="checkbox"> Show shiny sprites</label></div>
     <div class="filters">
-      <label>Search<input id="search" type="search" placeholder="Pokémon or form name…" autofocus></label>
+      <label class="search-filter">Search<input id="search" type="search" placeholder="Pokémon or form name…" autofocus></label>
       <label>Type<select id="typeFilter"><option value="">All types</option></select></label>
-      <label>Transformation<select id="formFilter"><option value="">Everything</option><option value="base">Base Pokémon</option><option value="type">Change Type / Form</option><option value="mega">Mega / Primal</option><option value="gmax">Gigantamax</option></select></label>
-      <label class="shiny-check"><input id="shinyToggle" type="checkbox"> Show shiny sprites</label>
+      <label>Form<select id="formFilter"><option value="">All forms</option><option value="base">Base Pokémon</option><option value="type">Alternate forms</option><option value="mega">Mega / Primal</option><option value="gmax">Gigantamax</option></select></label>
     </div>
+    <fieldset class="region-filter"><legend>Regions <small>choose one or several</small></legend><div id="regionFilters"></div><button id="allRegions" type="button">All</button><button id="noRegions" type="button">None</button></fieldset>
     <p id="resultCount" class="result-count"></p>
     <div id="catalog" class="catalog"></div>
   </section>
+
+  <section class="saved-panel"><div class="section-title"><div><p class="eyebrow">Your collection</p><h2>Saved Teams</h2></div></div><div id="savedTeams" class="saved-teams"></div></section>
 </main>
-<script src="team-tester.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="stats-store.js?v=20260811-1"></script><script src="team-tester.js?v=20260917-1"></script><script src="trainer-menu.js?v=20260917-1"></script>
 </body>
 </html>

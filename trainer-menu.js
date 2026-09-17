@@ -31,16 +31,24 @@
   drawer.className = "trainer-menu-drawer";
   drawer.setAttribute("aria-hidden", "true");
   drawer.innerHTML = `<div class="trainer-menu-title"><b>Dexle Menu</b><button class="trainer-menu-close" type="button" aria-label="Close navigation menu">&times;</button></div>
-    <div class="trainer-identity"><span class="rankball trainer-avatar-placeholder" style="--rc:#E0483C"></span><span><small>Logged in as</small><b>Guest Trainer</b></span></div>
+    <a class="trainer-identity" href="signup.html"><span class="rankball trainer-avatar-placeholder" style="--rc:#E0483C"></span><span><small>Logged in as</small><b>Guest Trainer</b></span></a>
     <nav class="trainer-menu-links">
       <a href="index.html">Home</a>
       <a href="stats.html">Trainer Stats</a>
+      <a href="team-tester.html">Team Builder</a>
       <a href="unlimited.html">Unlimited</a>
       <a href="achievements.html">Achievements</a>
       <a href="friends.html" class="friends-menu-link">Friends <i class="friend-notification" hidden>0</i></a>
       <a href="account.html">Account</a>
     </nav>`;
   document.body.append(shade, drawer);
+  const identityLink = drawer.querySelector(".trainer-identity");
+  identityLink.onclick = event => {
+    if (identityLink.querySelector("b").textContent !== "Guest Trainer") {
+      event.preventDefault();
+      location.href = "account.html";
+    }
+  };
 
   const current = location.pathname.split("/").pop() || "index.html";
   drawer.querySelectorAll("a").forEach(a => {

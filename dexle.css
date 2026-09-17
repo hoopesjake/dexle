@@ -270,6 +270,7 @@ button.ghost{ background:var(--panel-2); color:var(--ink); border:1px solid var(
 .endbtns{
   display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:12px;
 }
+.end-home{display:grid;place-items:center;width:42px;height:42px;border:1px solid var(--line);border-radius:50%;background:var(--panel-2);color:#fff;text-decoration:none;font-size:23px;font-weight:900}
 
 /* ---------- confetti ---------- */
 #confetti{

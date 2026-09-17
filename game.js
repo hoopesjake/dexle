@@ -122,6 +122,7 @@ function newRound() {
 
 const dailyDateKey = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 const dailyStorageKey = () => `dexle-daily:${dailyDateKey()}`;
+const dailyProgressKey = () => `dexle-daily-progress:${dailyDateKey()}`;
 function dailyIndex(key, length) {
   const [year,month,day]=key.split("-").map(Number);
   const ordinal=Math.floor(Date.UTC(year,month-1,day)/86400000);
@@ -151,6 +152,24 @@ function startDaily(){
   $("q").placeholder="Type a Pokémon name…";$("searchbar").classList.remove("caught");$("inspect").className="";
   $("grid").innerHTML="";$("hints").innerHTML="";$("hintbar").innerHTML="";$("dexmodal").hidden=true;$("end").className="";$("end").dataset.win="";
   $("again").textContent="Play again";drawPips();$("q").focus();
+  restoreDailyProgress();
+}
+function saveDailyProgress(){
+  if(!DAILY_MODE||over)return;
+  try{localStorage.setItem(dailyProgressKey(),JSON.stringify({date:dailyDateKey(),target:target.id,guesses:guesses.map(p=>p.id),hints:[...hintsTaken]}));}catch(e){}
+}
+function restoreDailyProgress(){
+  let saved=null;
+  try{saved=JSON.parse(localStorage.getItem(dailyProgressKey())||"null");}catch(e){}
+  if(!saved||saved.date!==dailyDateKey()||+saved.target!==target.id)return;
+  guesses=(saved.guesses||[]).map(id=>DEX.find(p=>p.id===+id)).filter(Boolean).slice(0,BUDGET);
+  hintsTaken=(saved.hints||[]).filter(key=>HINTS[key]).slice(0,BUDGET-guesses.length);
+  hintsUsed=hintsTaken.length;
+  guesses.slice(0,-1).forEach(appendRow);
+  pending=guesses.at(-1)||null;
+  if(pending)showInspect(pending);
+  hintsTaken.forEach(key=>{const h=HINTS[key];$("hints").insertAdjacentHTML("beforeend",`<div class="hint ${h.wide?"wide":""}"><b>${h.label}</b>${h.get()}</div>`);});
+  drawPips();
 }
 function dailyGuessBoxes(result={won:true,guesses:guesses.length}){
   const count=result.won?result.guesses:BUDGET;
@@ -279,7 +298,7 @@ function submit() {
 
   if (p.id === target.id)    finish(true);
   else if (remaining() <= 0) finish(false);
-  else $("q").focus();
+  else { saveDailyProgress(); $("q").focus(); }
 }
 
 /* ---------- history ---------- */
@@ -422,7 +441,7 @@ function takeHint(key) {
 
   drawPips();
   if (remaining() <= 0) finish(false);
-  else $("q").focus();
+  else { saveDailyProgress(); $("q").focus(); }
 }
 
 /* ---------- win / lose ---------- */
@@ -435,6 +454,7 @@ function finish(won) {
   if (pending) { appendRow(pending); pending = null; }
   if (DAILY_MODE) {
     try { localStorage.setItem(dailyStorageKey(), JSON.stringify({date:dailyDateKey(),won,guesses:guesses.length,hints:hintsUsed,target:target.id,emoji:dailyGuessBoxes({won,guesses:guesses.length}),completedAt:new Date().toISOString()})); } catch (e) {}
+    try { localStorage.removeItem(dailyProgressKey()); } catch (e) {}
     $("again").textContent = "Choose a Mode";
     updateDailyCard();
   }
