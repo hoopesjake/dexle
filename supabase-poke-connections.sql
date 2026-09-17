@@ -62,6 +62,47 @@ insert into public.poke_connections_puzzles (id,title,groups,card_order) values
 ]'::jsonb,array[641,880,638,133,642,63,882,640,203,905,881,639,250,883,647,645])
 on conflict (id) do update set title=excluded.title,groups=excluded.groups,card_order=excluded.card_order;
 
+-- Build 50 additional daily boards from the curated tier banks above. Each
+-- board has one group per difficulty and is rejected if a Pokemon would occur
+-- twice. IDs 7-56 are stable, so this block is safe to run again after edits.
+do $$
+declare
+  v_poke jsonb[]; v_great jsonb[]; v_ultra jsonb[]; v_master jsonb[];
+  v_groups jsonb; v_order integer[]; v_code integer; v_try integer:=0;
+  v_a integer; v_b integer; v_c integer; v_d integer;
+  v_total integer; v_unique integer; v_made integer:=0;
+begin
+  select array_agg(grp order by p.id) filter(where grp->>'tier'='poke'),
+         array_agg(grp order by p.id) filter(where grp->>'tier'='great'),
+         array_agg(grp order by p.id) filter(where grp->>'tier'='ultra'),
+         array_agg(grp order by p.id) filter(where grp->>'tier'='master')
+    into v_poke,v_great,v_ultra,v_master
+    from public.poke_connections_puzzles p
+    cross join lateral jsonb_array_elements(p.groups) grp
+    where p.id between 1 and 6;
+  while v_made<50 and v_try<1296 loop
+    v_code:=mod(v_try*37,1296); v_try:=v_try+1;
+    v_a:=mod(v_code,6)+1; v_b:=mod(v_code/6,6)+1;
+    v_c:=mod(v_code/36,6)+1; v_d:=mod(v_code/216,6)+1;
+    if v_a=v_b and v_b=v_c and v_c=v_d then continue; end if;
+    v_groups:=jsonb_build_array(v_poke[v_a],v_great[v_b],v_ultra[v_c],v_master[v_d]);
+    select count(*),count(distinct (mon->>'id')::integer) into v_total,v_unique
+      from jsonb_array_elements(v_groups) grp
+      cross join lateral jsonb_array_elements(grp->'pokemon') mon;
+    if v_total<>16 or v_unique<>16 then continue; end if;
+    v_made:=v_made+1;
+    select array_agg((mon->>'id')::integer order by
+      md5((mon->>'id') || ':' || (6+v_made)::text)) into v_order
+      from jsonb_array_elements(v_groups) grp
+      cross join lateral jsonb_array_elements(grp->'pokemon') mon;
+    insert into public.poke_connections_puzzles(id,title,groups,card_order)
+      values(6+v_made,'Daily Mix '||lpad(v_made::text,2,'0'),v_groups,v_order)
+      on conflict(id) do update set title=excluded.title,groups=excluded.groups,
+        card_order=excluded.card_order;
+  end loop;
+  if v_made<>50 then raise exception 'Could only build % valid daily boards',v_made; end if;
+end $$;
+
 select setval(pg_get_serial_sequence('public.poke_connections_puzzles','id'),
   (select max(id) from public.poke_connections_puzzles));
 
