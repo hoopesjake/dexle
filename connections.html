@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Dexle — PokéConnections</title>
+  <link rel="stylesheet" href="connections.css?v=20260917-1">
+  <link rel="stylesheet" href="trainer-menu.css?v=20260917-3">
+</head>
+<body><main class="connections-wrap">
+  <header><a class="lamp home-lamp" href="index.html" aria-label="Dexle home"></a><div><div class="title-line"><h1>PokéConnections</h1><span>Beta</span></div><p>Find the four hidden Pokémon connections.</p></div></header>
+  <section class="connections-panel">
+    <div class="instructions"><p class="eyebrow">Daily Challenge</p><h2>Create four groups of four</h2><p>Select four Pokémon that share a connection, then submit your guess. Categories can involve types, regions, forms, Trainers, evolution methods, names, and more.</p></div>
+    <div id="connectionNotice" class="connection-notice" aria-live="polite">Loading today’s puzzle…</div>
+    <div id="solvedGroups" class="solved-groups"></div>
+    <div id="connectionGrid" class="connection-grid" aria-label="Pokémon choices"></div>
+    <div id="connectionStatus" class="connection-status" aria-live="polite"></div>
+    <div class="mistakes"><span>Mistakes remaining</span><div id="mistakeDots" aria-label="Four mistakes remaining"></div></div>
+    <div class="connection-actions"><button id="deselectAll" type="button">Deselect All</button><button id="submitConnection" type="button" disabled>Submit</button></div>
+    <div id="connectionResult" class="connection-result" hidden><h2 id="connectionResultTitle"></h2><p id="connectionResultCopy"></p><button id="shareConnections" type="button">Share Result</button><span id="shareConnectionsStatus"></span></div>
+    <div class="difficulty-key"><span class="poke">Poké Ball · easiest</span><span class="great">Great Ball</span><span class="ultra">Ultra Ball</span><span class="master">Master Ball · hardest</span></div>
+  </section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="stats-store.js?v=20260917-2"></script><script src="connections.js?v=20260917-1"></script><script src="trainer-menu.js?v=20260917-3"></script>
+</body></html>

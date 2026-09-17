@@ -40,6 +40,7 @@
       <a href="friends.html" class="friends-menu-link">Friends <i class="friend-notification" hidden>0</i></a>
       <a href="account.html">Account</a>
       <a href="team-tester.html">Team Builder</a>
+      <a href="connections.html">PokéConnections <small class="menu-beta">Beta</small></a>
     </nav>`;
   document.body.append(shade, drawer);
   const identityLink = drawer.querySelector(".trainer-identity");
